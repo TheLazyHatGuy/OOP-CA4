@@ -10,13 +10,18 @@ This *java* application is a client-server application which will grant users ac
 Some of the functionality that the users can avail of is:
 * Register to the server
     * The client will be given a persistent ID for them to use with the database.
+    
 * Add 
     * Allows clients to add new movies to the database.
+    
 * Remove
     * Allows clients to remove data from the database.
+    
 * Update 
-    * users can change certain info about the movies in the database.
+    * Users can change certain info about the movies in the database.
+    
 * Watch
     * Users will be able to track what movies in the database they have watched.
+    
 * Recommend
     * Will recommend users movies that they should watch.

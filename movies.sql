@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `movie` (
   `barcode` varchar(24) DEFAULT NULL,
   `user_rating` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1053 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1053 ;
 
 --
 -- Dumping data for table `movies`

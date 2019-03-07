@@ -22,7 +22,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface {
             throw new DAOException("registerUser() " + e.getMessage());
         }finally{
             try{
-                closeConnection(con, ps);
+                this.closeConnection(con, ps);
             }catch(SQLException e){
                 throw new DAOException("registerUser() " + e.getMessage());
             }
@@ -43,7 +43,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface {
             throw new DAOException("deleteUser() " + e.getMessage());
         }finally{
             try{
-                closeConnection(con, ps);
+                this.closeConnection(con, ps);
             }catch(SQLException e){
                 throw new DAOException("deleteUser() " + e.getMessage());
             }
@@ -66,23 +66,10 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface {
             throw new DAOException("updateUser() " + e.getMessage());
         }finally{
             try{
-                closeConnection(con, ps);
+                this.closeConnection(con, ps);
             }catch(SQLException e){
                 throw new DAOException("updateUser() " + e.getMessage());
             }
-        }
-    }
-
-    private void closeConnection(Connection con, PreparedStatement ps) throws DAOException{
-        try{
-            if (ps != null) {
-                ps.close();
-            }
-            if (con != null) {
-                this.closeConnection(con);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage());
         }
     }
 }

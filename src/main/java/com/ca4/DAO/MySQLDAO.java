@@ -1,9 +1,8 @@
 package com.ca4.DAO;
 
 import com.ca4.Exceptions.DAOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
+import java.sql.*;
 
 public class MySQLDAO
 {
@@ -34,6 +33,53 @@ public class MySQLDAO
             }
         }
         catch(SQLException e){
+            System.out.println("Failed to free the connection: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public void closeConnection(Connection con, PreparedStatement ps) throws DAOException
+    {
+        try
+        {
+            if (ps != null)
+            {
+                ps.close();
+            }
+
+            if (con !=  null)
+            {
+                this.closeConnection(con);
+            }
+        }
+        catch(SQLException e)
+        {
+            System.out.println("Failed to free the connection: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public void closeConnection(Connection con, ResultSet rs, PreparedStatement ps) throws DAOException
+    {
+        try
+        {
+            if (rs != null)
+            {
+                rs.close();
+            }
+
+            if (ps != null)
+            {
+                ps.close();
+            }
+
+            if (con !=  null)
+            {
+                this.closeConnection(con);
+            }
+        }
+        catch(SQLException e)
+        {
             System.out.println("Failed to free the connection: " + e.getMessage());
             System.exit(1);
         }

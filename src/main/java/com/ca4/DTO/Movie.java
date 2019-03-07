@@ -40,6 +40,24 @@ public class Movie
         this.userRating = userRating;
     }
 
+    public Movie(){
+        this.id = 0;
+        this.title = "";
+        this.genre = "";
+        this.director = "";
+        this.runtime = "";
+        this.plot = "";
+        this.location = "";
+        this.poster = "";
+        this.rating = "";
+        this.format = "";
+        this.year = "";
+        this.starring = "";
+        this.copies = 0;
+        this.barcode = "";
+        this.userRating = "";
+    }
+
     public int getId()
     {
         return id;

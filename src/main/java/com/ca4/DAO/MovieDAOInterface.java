@@ -1,19 +1,22 @@
 package com.ca4.DAO;
 
 import com.ca4.DTO.Movie;
+import com.ca4.Exceptions.DAOException;
 
 import java.util.ArrayList;
 
 public interface MovieDAOInterface {
-    ArrayList<Movie> getAllMovies();
+    ArrayList<Movie> getAllMovies() throws DAOException;
 
-    Movie getMoviebyName(String name);
+    Movie getMoviebyName(String title) throws DAOException;
 
-    ArrayList<Movie> getMoviesbyGenre(String genre);
+    ArrayList<Movie> getMoviesbyGenre(String genre) throws DAOException;
 
-    ArrayList<Movie> getMoviesbyDirector(String dirName);
+    ArrayList<Movie> getMoviesbyDirector(String dirName) throws DAOException;
 
-    ArrayList<Movie> addMovieToDatabase(String title, ArrayList<String> genres, String director, String runtime,
+    void addMovieToDatabase(String title, String genres, String director, String runtime,
                                         String plot, String rating, String format, String Year,
-                                        ArrayList<String> starring);
+                                        String starring) throws DAOException;
+
+    void DeleteMovieInDatabase(int movie_id) throws DAOException;
 }

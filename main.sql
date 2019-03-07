@@ -1,0 +1,12 @@
+CREATE TABLE user(
+  id INT AUTO_INCREMENT NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+PRIMARY KEY (id));
+
+CREATE TABLE watched(
+  userID INT NOT NULL,
+  movieID INT NOT NULL,
+PRIMARY KEY (userID, movieID),
+FOREIGN KEY (userID) REFERENCES user(id),
+FOREIGN KEY (movieID) REFERENCES movie(id));

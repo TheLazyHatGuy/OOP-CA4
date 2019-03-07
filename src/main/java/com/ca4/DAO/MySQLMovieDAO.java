@@ -15,7 +15,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "SELECT * FROM MOVIES";
+            String query = "SELECT * FROM movie";
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -41,7 +41,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try {
             con = this.getConnection();
-            String query = "SELECT * FROM MOVIES WHERE title like ?";
+            String query = "SELECT * FROM movie WHERE title like ?";
             ps = con.prepareStatement(query);
             ps.setString(1, inputTitle);
             rs = ps.executeQuery();
@@ -86,7 +86,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "SELECT * FROM MOVIES WHERE genre like ?";
+            String query = "SELECT * FROM movie WHERE genre like ?";
             ps = con.prepareStatement(query);
             ps.setString(1, Genre);
             rs = ps.executeQuery();
@@ -112,7 +112,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "SELECT * FROM MOVIES WHERE director like ?";
+            String query = "SELECT * FROM movie WHERE director like ?";
             ps = con.prepareStatement(query);
             ps.setString(1, dirname);
             rs = ps.executeQuery();
@@ -138,7 +138,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "INSERT INTO MOVIES (title, genre, director, runtime, plot, rating, " +
+            String query = "INSERT INTO movie (title, genre, director, runtime, plot, rating, " +
                     "format, Year, starring) values (?,?,?,?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
             ps.setString(1, title);

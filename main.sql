@@ -9,4 +9,4 @@ CREATE TABLE watched(
   movieID INT NOT NULL,
 PRIMARY KEY (userID, movieID),
 FOREIGN KEY (userID) REFERENCES user(id),
-FOREIGN KEY (movieID) REFERENCES movie(id));
+FOREIGN KEY (movieID) REFERENCES movies(id));

@@ -1,5 +1,7 @@
 package com.ca4.DTO;
 
+import org.json.JSONObject;
+
 public class Movie
 {
     private int id;
@@ -153,5 +155,38 @@ public class Movie
                 ", barcode='" + barcode + '\'' +
                 ", userRating='" + userRating + '\'' +
                 '}';
+    }
+
+    public JSONObject toJSONObject()
+    {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("id", this.id);
+        jsonObject.put("title", this.title);
+        jsonObject.put("genre", this.genre);
+        jsonObject.put("director", this.director);
+        jsonObject.put("runtime", this.runtime);
+        jsonObject.put("plot", this.plot);
+        jsonObject.put("location", this.location);
+        jsonObject.put("poster", poster);
+        jsonObject.put("rating", this.rating);
+        jsonObject.put("format", this.format);
+        jsonObject.put("year", this.year);
+        jsonObject.put("staring", this.starring);
+        jsonObject.put("copies", this.copies);
+        jsonObject.put("barcode", this.barcode);
+        jsonObject.put("user-rating", this.userRating);
+
+        return jsonObject;
+    }
+
+    public String toJSONString()
+    {
+        return toJSONObject().toString(4);
+    }
+
+    public String toJSONString(int indentFactor)
+    {
+        return toJSONObject().toString(indentFactor);
     }
 }

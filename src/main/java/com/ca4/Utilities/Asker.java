@@ -1,5 +1,9 @@
 package com.ca4.Utilities;
 
+/*
+Taken from Cameron's CA3
+ */
+
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.InputMismatchException;

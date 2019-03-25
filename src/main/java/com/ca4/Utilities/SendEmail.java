@@ -1,5 +1,9 @@
 package com.ca4.Utilities;
 
+/*
+Taken from Cameron's CA3
+ */
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;

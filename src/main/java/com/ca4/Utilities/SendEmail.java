@@ -1,4 +1,4 @@
-package com.ca4;
+package com.ca4.Utilities;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;

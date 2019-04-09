@@ -14,7 +14,7 @@ public class MovieServiceDetails
     public static final String REMOVE_MOVIE             = "RMF";
     public static final String UPDATE_MOVIE             = "UPTT";
     public static final String WATCH_MOVIE              = "WX";
-    public static final String RECOMMEND_MOVIE              = "WX";
+    public static final String RECOMMEND_MOVIE          = "RKMN";
 
     //Responses
     public static final String LOGIN_SUCCESS        = "WLKM";

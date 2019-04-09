@@ -22,5 +22,5 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.platform:junit-platform-engine:1.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.opentest4j:opentest4j:1.0.0" level="project" />
   </component>
-  <component name="TestModuleProperties" production-module="co.uk.flyingtoilet.OOP-CA4.main" />
+  <component name="TestModuleProperties" production-module="OOP-CA4.main" />
 </module>

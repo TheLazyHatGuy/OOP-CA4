@@ -17,7 +17,6 @@ public class MovieClient
         InputStream inputFromSocket;
         PrintWriter streamWriter;
         BufferedReader streamReader;
-        Scanner scan = new Scanner(System.in);
 
         try{
             InetAddress serverIP = InetAddress.getByName(MovieServiceDetails.SERVER_IP);

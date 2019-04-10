@@ -31,7 +31,7 @@ Some of the functionality that the users can avail of is:
 ## Fixes we were given
 * Aaron gave us the fix for the error `Connection failed The server time zone value 'GMT Summer Time' is unrecognized or represents more than one time zone. You must configure either the server or JDBC driver (via the serverTimezone configuration property) to use a more specifc time zone value if you want to utilize time zone support.`
 
- ```sql
+```sql
 SET @@global.time_zone = '+00:00';
 SET @@session.time_zone = '+00:00';
 ```

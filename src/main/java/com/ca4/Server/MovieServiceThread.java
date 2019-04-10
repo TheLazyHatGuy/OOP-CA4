@@ -3,6 +3,7 @@ package com.ca4.Server;
 import com.ca4.Core.MovieServiceDetails;
 import com.ca4.DAO.MySQLUserDAO;
 import com.ca4.DAO.UserDAOInterface;
+import com.ca4.Exceptions.DAOException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
@@ -72,20 +73,7 @@ public class MovieServiceThread implements Runnable
                 {
                     if (components.length > 2)
                     {
-                        UserDAOInterface userDAO = new MySQLUserDAO();
-                        String hashedPassword = hash(components[2]);
-
-                        boolean isRegister = userDAO.registerUser(components[1], hashedPassword);
-
-                        if (isRegister)
-                        {
-                            //TODO - Redesign protocol with better responses
-                            response = MovieServiceDetails.REGISTER_SUCCESS;
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
+                        response = registerUser(components[1], components[2]);
                     }
                     else
                     {
@@ -149,6 +137,29 @@ public class MovieServiceThread implements Runnable
         }
     }
 
+    private String registerUser(String email, String password)
+    {
+        UserDAOInterface userDAO = new MySQLUserDAO();
+        String hashedPassword = hash(password);
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            boolean isRegister = userDAO.registerUser(email, hashedPassword);
+
+            if (isRegister)
+            {
+                //TODO - Redesign protocol with better responses
+                response = MovieServiceDetails.REGISTER_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
 
     /**
      * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt

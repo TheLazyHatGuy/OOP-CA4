@@ -25,7 +25,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("getAllMovies() " + e.getMessage());
         }finally {
             try{
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             }catch (SQLException e){
                 throw new DAOException("getAllMovies() " + e.getMessage());
             }
@@ -70,7 +70,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("getMoviebyName() " + e.getMessage());
         } finally {
             try {
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             } catch (SQLException e) {
                 throw new DAOException("getMoviebyName() " + e.getMessage());
             }
@@ -96,7 +96,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("getMoviebyGenre() " + e.getMessage());
         } finally {
             try {
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             } catch (SQLException e) {
                 throw new DAOException("getMoviebyGenre() " + e.getMessage());
             }
@@ -122,7 +122,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("getMoviebyDirector() " + e.getMessage());
         } finally {
             try {
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             } catch (SQLException e) {
                 throw new DAOException("getMoviebyDirector() " + e.getMessage());
             }
@@ -156,12 +156,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("addMovieToDatabase() " + e.getMessage());
         } finally {
             try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    this.closeConnection(con);
-                }
+                closeConnection(con, ps);
             } catch (SQLException e) {
                 throw new DAOException("addMovieToDatabase() " + e.getMessage());
             }
@@ -183,12 +178,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("DeleteMovieInDatabase() " + e.getMessage());
         } finally {
             try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    this.closeConnection(con);
-                }
+                closeConnection(con, ps);
             } catch (SQLException e) {
                 throw new DAOException("DeleteMovieInDatabase() " + e.getMessage());
             }
@@ -222,12 +212,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("addMovieToDatabase() " + e.getMessage());
         } finally {
             try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    this.closeConnection(con);
-                }
+                closeConnection(con, ps);
             } catch (SQLException e) {
                 throw new DAOException("addMovieToDatabase() " + e.getMessage());
             }
@@ -263,21 +248,5 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException(e.getMessage());
         }
         return ListToReturn;
-    }
-
-    private void closeConnections(ResultSet rs, Connection con, PreparedStatement ps) throws DAOException{
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if (ps != null) {
-                ps.close();
-            }
-            if (con != null) {
-                this.closeConnection(con);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage());
-        }
     }
 }

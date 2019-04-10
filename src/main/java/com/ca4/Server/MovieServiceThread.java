@@ -8,6 +8,7 @@ import com.ca4.DAO.UserDAOInterface;
 import com.ca4.DTO.Movie;
 import com.ca4.DTO.User;
 import com.ca4.Exceptions.DAOException;
+import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
@@ -114,7 +115,14 @@ public class MovieServiceThread implements Runnable
                         }
                         break;
                     case MovieServiceDetails.ADD_MOVIE:
-                        response = "NOT IMPLEMENTED";
+                        if (components.length > 1)
+                        {
+                            response = addMovie(components[1]);
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
                         break;
                     case MovieServiceDetails.REMOVE_MOVIE:
                         response = "NOT IMPLEMENTED";
@@ -227,7 +235,7 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
-    private String searchForMovieByDirector (String searchString)
+    private String searchForMovieByDirector(String searchString)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -251,7 +259,7 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
-    private String searchForMovieByGenre (String searchString)
+    private String searchForMovieByGenre(String searchString)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -275,6 +283,36 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
+    /**
+     * Converts a movie JSON String to the movie class and adds it to the database
+     * @param movieJSONString A full movie JSON String
+     * @return Server response message
+     */
+    private String addMovie(String movieJSONString)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            Movie movieToAdd = convertJSONStringToMovie(movieJSONString);
+            movieDAO.addMovieToDatabase(movieToAdd);
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * Converts a Movie ArrayList to a JSON string
+     * @param movies An ArrayList of movie
+     * @return A JSON string
+     */
     private String buildMovieJSONString(ArrayList<Movie> movies)
     {
         // '[' is added to start a JSON array
@@ -293,6 +331,37 @@ public class MovieServiceThread implements Runnable
         movieString.append("]");
 
         return movieString.toString();
+    }
+
+
+    /**
+     * Converts a movie JSON String back to a Movie object
+     * @param jsonStringToConvert Movie JSON String
+     * @return Movie object
+     */
+    //This is added to avoid the warnings related to similar SQL code
+    @SuppressWarnings("Duplicates")
+    private Movie convertJSONStringToMovie(String jsonStringToConvert)
+    {
+        JSONObject movieJSON = new JSONObject(jsonStringToConvert);
+
+        String title = movieJSON.getString("title");
+        String genre = movieJSON.getString("genre");
+        String director = movieJSON.getString("director");
+        String runtime = movieJSON.getString("runtime");
+        String plot = movieJSON.getString("plot");
+        String location = movieJSON.getString("location");
+        String poster = movieJSON.getString("poster");
+        String rating = movieJSON.getString("rating");
+        String format = movieJSON.getString("format");
+        String year = movieJSON.getString("year");
+        String starring  = movieJSON.getString("staring");
+        int copies = movieJSON.getInt("copies");
+        String barcode = movieJSON.getString("barcode");
+        String userRating = movieJSON.getString("user-rating");
+
+        return new Movie(0, title, genre, director, runtime, plot, location, poster, rating,
+                format, year, starring, copies, barcode, userRating);
     }
 
     /**

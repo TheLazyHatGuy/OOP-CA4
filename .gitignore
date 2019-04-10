@@ -1,5 +1,9 @@
 .gradle/
 
+# Project log files
+log.txt
+error.txt
+
 # Compiled class file
 *.class
 

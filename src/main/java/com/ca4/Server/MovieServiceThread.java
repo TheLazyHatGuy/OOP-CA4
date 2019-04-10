@@ -8,6 +8,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MovieServiceThread implements Runnable
@@ -205,9 +206,10 @@ public class MovieServiceThread implements Runnable
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
         try
         {
+            Date date = new Date();
             BufferedWriter log = new BufferedWriter(new FileWriter("error.txt", true));
 
-            log.write(stringToWrite);
+            log.write(date + " " + stringToWrite + "\n\n");
             log.close();
         }
         catch (IOException e)

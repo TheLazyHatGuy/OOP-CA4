@@ -12,6 +12,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -97,7 +98,14 @@ public class MovieServiceThread implements Runnable
                 }
                 else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR))
                 {
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 1)
+                    {
+                        response = searchForMovieByDirector(components[1]);
+                    }
+                    else
+                    {
+                        response = MovieServiceDetails.FAIL;
+                    }
                 }
                 else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_GENRE))
                 {
@@ -212,6 +220,44 @@ public class MovieServiceThread implements Runnable
         {
             Movie movie = movieDAO.getMoviebyName(searchString);
             response = movie.toJSONString();
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    private String searchForMovieByDirector (String searchString)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            ArrayList<Movie> movies = movieDAO.getMoviesbyDirector(searchString);
+
+            if (movies.size() >= 1)
+            {
+                // '[' is added to start a JSON array
+                StringBuilder movieString = new StringBuilder("[");
+
+                for (Movie movie : movies)
+                {
+                    movieString.append(movie.toJSONString());
+                    // Comma is added to denote a new object
+                    movieString.append(",\n");
+                }
+                // Removes the last comma and new line in order to create a proper JSON Array
+                movieString.deleteCharAt(movieString.length() - 1);
+                movieString.deleteCharAt(movieString.length() - 1);
+                // ']' is added to close the JSON array
+                movieString.append("]");
+                response = movieString.toString();
+            }
         }
         catch (DAOException e)
         {

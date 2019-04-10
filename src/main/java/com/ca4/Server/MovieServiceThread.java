@@ -1,8 +1,11 @@
 package com.ca4.Server;
 
 import com.ca4.Core.MovieServiceDetails;
+import com.ca4.DAO.MovieDAOInterface;
+import com.ca4.DAO.MySQLMovieDAO;
 import com.ca4.DAO.MySQLUserDAO;
 import com.ca4.DAO.UserDAOInterface;
+import com.ca4.DTO.Movie;
 import com.ca4.DTO.User;
 import com.ca4.Exceptions.DAOException;
 import org.mindrot.jbcrypt.BCrypt;
@@ -83,7 +86,14 @@ public class MovieServiceThread implements Runnable
                 }
                 else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_TITLE))
                 {
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 1)
+                    {
+                        response = searchForMovieByTitle(components[1]);
+                    }
+                    else
+                    {
+                        response = MovieServiceDetails.FAIL;
+                    }
                 }
                 else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR))
                 {
@@ -182,6 +192,26 @@ public class MovieServiceThread implements Runnable
             {
                 response = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + toLogin.getId();
             }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    private String searchForMovieByTitle(String searchString)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            Movie movie = movieDAO.getMoviebyName(searchString);
+            response = movie.toJSONString();
         }
         catch (DAOException e)
         {

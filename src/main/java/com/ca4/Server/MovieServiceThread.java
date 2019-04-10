@@ -3,6 +3,7 @@ package com.ca4.Server;
 import com.ca4.Core.MovieServiceDetails;
 import com.ca4.DAO.MySQLUserDAO;
 import com.ca4.DAO.UserDAOInterface;
+import com.ca4.DTO.User;
 import com.ca4.Exceptions.DAOException;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -62,7 +63,7 @@ public class MovieServiceThread implements Runnable
                 {
                     if (components.length > 2)
                     {
-                        response = "Email: " + components[1] + " Password: " + components[2];
+                        response = loginUser(components[1], components[2]);
                     }
                     else
                     {
@@ -145,12 +146,37 @@ public class MovieServiceThread implements Runnable
 
         try
         {
-            boolean isRegister = userDAO.registerUser(email, hashedPassword);
+            boolean isRegistered = userDAO.registerUser(email, hashedPassword);
 
-            if (isRegister)
+            if (isRegistered)
             {
                 //TODO - Redesign protocol with better responses
                 response = MovieServiceDetails.REGISTER_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    private String loginUser(String email, String password)
+    {
+        UserDAOInterface userDAO = new MySQLUserDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            User toLogin = userDAO.loginUser(email);
+            boolean isLoggedIn = verifyHash(password, toLogin.getPassword());
+
+            if (isLoggedIn)
+            {
+                response = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + toLogin.getId();
             }
         }
         catch (DAOException e)

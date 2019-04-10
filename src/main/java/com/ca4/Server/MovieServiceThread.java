@@ -185,7 +185,7 @@ public class MovieServiceThread implements Runnable
         return BCrypt.checkpw(password, hash);
     }
 
-    public static void writeToLogFile(String stringToWrite)
+    private static void writeToLogFile(String stringToWrite)
     {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
         try
@@ -201,7 +201,7 @@ public class MovieServiceThread implements Runnable
         }
     }
 
-    public static void writeToErrorLogFile(String stringToWrite)
+    private static void writeToErrorLogFile(String stringToWrite)
     {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
         try

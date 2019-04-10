@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface {
-    public void registerUser(String email, String password) throws DAOException{
+    public boolean registerUser(String email, String password) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -17,7 +17,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface {
             ps = con.prepareStatement(query);
             ps.setString(1, email);
             ps.setString(2, password);
-            ps.execute();
+            return ps.execute();
         }catch (SQLException e){
             throw new DAOException("registerUser() " + e.getMessage());
         }finally{

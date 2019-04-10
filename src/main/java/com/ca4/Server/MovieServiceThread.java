@@ -1,6 +1,9 @@
 package com.ca4.Server;
 
 import com.ca4.Core.MovieServiceDetails;
+import com.ca4.DAO.MySQLUserDAO;
+import com.ca4.DAO.UserDAOInterface;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,11 +59,38 @@ public class MovieServiceThread implements Runnable
                 //Process the information
                 if (components[0].equals(MovieServiceDetails.LOGIN))
                 {
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 2)
+                    {
+                        response = "Email: " + components[1] + " Password: " + components[2];
+                    }
+                    else
+                    {
+                        response = MovieServiceDetails.FAIL;
+                    }
                 }
                 else if (components[0].equals(MovieServiceDetails.REGISTER))
                 {
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 2)
+                    {
+                        UserDAOInterface userDAO = new MySQLUserDAO();
+                        String hashedPassword = hash(components[2]);
+
+                        boolean isRegister = userDAO.registerUser(components[1], hashedPassword);
+
+                        if (isRegister)
+                        {
+                            //TODO - Redesign protocol with better responses
+                            response = MovieServiceDetails.REGISTER_SUCCESS;
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
+                    }
+                    else
+                    {
+                        response = MovieServiceDetails.FAIL;
+                    }
                 }
                 else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_TITLE))
                 {
@@ -90,6 +120,10 @@ public class MovieServiceThread implements Runnable
                 {
                     response = "NOT IMPLEMENTED";
                 }
+                else if (components[0].equals(MovieServiceDetails.CLOSE_CONNECTION))
+                {
+                    response = MovieServiceDetails.CLOSE_CONNECTION;
+                }
                 else
                 {
                     response = MovieServiceDetails.UNRECOGNISED_COMMAND;
@@ -113,5 +147,28 @@ public class MovieServiceThread implements Runnable
                 e.printStackTrace();
             }
         }
+    }
+
+
+    /**
+     * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt
+     * @param password Raw password to hash
+     * @return Hashed password
+     */
+    private String hash(String password)
+    {
+        //Applies 12 rounds of salting to password
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
+    }
+
+    /**
+     * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt
+     * @param password Raw password to compare
+     * @param hash The hash taken from the database
+     * @return True if the hashes match
+     */
+    private boolean verifyHash(String password, String hash)
+    {
+        return BCrypt.checkpw(password, hash);
     }
 }

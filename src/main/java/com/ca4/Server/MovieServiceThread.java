@@ -89,6 +89,10 @@ public class MovieServiceThread implements Runnable
                 {
                     response = "NOT IMPLEMENTED";
                 }
+                else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_GENRE))
+                {
+                    response = "NOT IMPLEMENTED";
+                }
                 else if (components[0].equals(MovieServiceDetails.ADD_MOVIE))
                 {
                     response = "NOT IMPLEMENTED";

@@ -104,7 +104,14 @@ public class MovieServiceThread implements Runnable
                         }
                         break;
                     case MovieServiceDetails.SEARCH_MOVIE_GENRE:
-                        response = "NOT IMPLEMENTED";
+                        if (components.length > 1)
+                        {
+                            response = searchForMovieByGenre(components[1]);
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
                         break;
                     case MovieServiceDetails.ADD_MOVIE:
                         response = "NOT IMPLEMENTED";
@@ -231,21 +238,7 @@ public class MovieServiceThread implements Runnable
 
             if (movies.size() >= 1)
             {
-                // '[' is added to start a JSON array
-                StringBuilder movieString = new StringBuilder("[");
-
-                for (Movie movie : movies)
-                {
-                    movieString.append(movie.toJSONString());
-                    // Comma is added to denote a new object
-                    movieString.append(",\n");
-                }
-                // Removes the last comma and new line in order to create a proper JSON Array
-                movieString.deleteCharAt(movieString.length() - 1);
-                movieString.deleteCharAt(movieString.length() - 1);
-                // ']' is added to close the JSON array
-                movieString.append("]");
-                response = movieString.toString();
+                response = buildMovieJSONString(movies);
             }
         }
         catch (DAOException e)
@@ -256,6 +249,50 @@ public class MovieServiceThread implements Runnable
         }
 
         return response;
+    }
+
+    private String searchForMovieByGenre (String searchString)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            ArrayList<Movie> movies = movieDAO.getMoviesbyGenre(searchString);
+
+            if (movies.size() >= 1)
+            {
+                response = buildMovieJSONString(movies);
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    private String buildMovieJSONString(ArrayList<Movie> movies)
+    {
+        // '[' is added to start a JSON array
+        StringBuilder movieString = new StringBuilder("[");
+
+        for (Movie movie : movies)
+        {
+            movieString.append(movie.toJSONString());
+            // Comma is added to denote a new object
+            movieString.append(",\n");
+        }
+        // Removes the last comma and new line in order to create a proper JSON Array
+        movieString.deleteCharAt(movieString.length() - 1);
+        movieString.deleteCharAt(movieString.length() - 1);
+        // ']' is added to close the JSON array
+        movieString.append("]");
+
+        return movieString.toString();
     }
 
     /**

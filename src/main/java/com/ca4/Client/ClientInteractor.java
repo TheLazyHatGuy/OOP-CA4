@@ -5,13 +5,37 @@ import java.util.Scanner;
 public class ClientInteractor {
     private static Scanner scan = new Scanner(System.in);
 
-    public static String[] Login(){
-        System.out.println("Please enter your username: ");
-        String username = ClientInteractor.getUsername();
+    public static String getMenuOption_NotLoggedIn(){
+        System.out.println("A) Login");
+        System.out.println("B) Register");
+
+        String option = getStringFromUser();
+
+        return option;
+    }
+
+    public static String getMenuOption_LoggedIn(){
+        System.out.println("A) Find movie by name");
+        System.out.println("B) Find movies by director");
+        System.out.println("C) Find movies by genre");
+        System.out.println("D) Update a movie");
+        System.out.println("E) Add a movie");
+        System.out.println("F) Delete a movie");
+        System.out.println("G) Update your profile");
+        System.out.println("H) Delete your profile");
+
+        String option = ClientInteractor.getStringFromUser();
+
+        return option;
+    }
+
+    public static String[] loginRegister(){
+        System.out.println("Please enter your email: ");
+        String email = ClientInteractor.getEmail();
         System.out.println("Please enter your password: ");
         String password = ClientInteractor.getPassword();
 
-        String[] userDetails = {username, password};
+        String[] userDetails = {email, password};
 
         return userDetails;
     }
@@ -44,7 +68,7 @@ public class ClientInteractor {
         return stringFromUser;
     }
 
-    public static String getUsername(){
+    public static String getEmail(){
         String username = scan.nextLine();
         //TODO add input and username validation
 

@@ -53,7 +53,6 @@ public class MovieServiceThread implements Runnable
             //While the client doesn't want to end the session
             while (!incomingMessage.equals(MovieServiceDetails.CLOSE_CONNECTION))
             {
-                response = null;
                 //Take the input information from the client
                 incomingMessage = input.nextLine();
                 System.out.println(threadNumber + ": Received a message: " + incomingMessage);
@@ -63,81 +62,71 @@ public class MovieServiceThread implements Runnable
                 String[] components = incomingMessage.split(MovieServiceDetails.BREAKING_CHARACTER);
 
                 //Process the information
-                if (components[0].equals(MovieServiceDetails.LOGIN))
-                {
-                    if (components.length > 2)
-                    {
-                        response = loginUser(components[1], components[2]);
-                    }
-                    else
-                    {
-                        response = MovieServiceDetails.FAIL;
-                    }
-                }
-                else if (components[0].equals(MovieServiceDetails.REGISTER))
-                {
-                    if (components.length > 2)
-                    {
-                        response = registerUser(components[1], components[2]);
-                    }
-                    else
-                    {
-                        response = MovieServiceDetails.FAIL;
-                    }
-                }
-                else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_TITLE))
-                {
-                    if (components.length > 1)
-                    {
-                        response = searchForMovieByTitle(components[1]);
-                    }
-                    else
-                    {
-                        response = MovieServiceDetails.FAIL;
-                    }
-                }
-                else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR))
-                {
-                    if (components.length > 1)
-                    {
-                        response = searchForMovieByDirector(components[1]);
-                    }
-                    else
-                    {
-                        response = MovieServiceDetails.FAIL;
-                    }
-                }
-                else if (components[0].equals(MovieServiceDetails.SEARCH_MOVIE_GENRE))
-                {
-                    response = "NOT IMPLEMENTED";
-                }
-                else if (components[0].equals(MovieServiceDetails.ADD_MOVIE))
-                {
-                    response = "NOT IMPLEMENTED";
-                }
-                else if (components[0].equals(MovieServiceDetails.REMOVE_MOVIE))
-                {
-                    response = "NOT IMPLEMENTED";
-                }
-                else if (components[0].equals(MovieServiceDetails.UPDATE_MOVIE))
-                {
-                    response = "NOT IMPLEMENTED";
-                }
-                else if (components[0].equals(MovieServiceDetails.WATCH_MOVIE))
-                {
-                    response = "NOT IMPLEMENTED";
-                }
-                else if (components[0].equals(MovieServiceDetails.RECOMMEND_MOVIE))
-                {
-                    response = "NOT IMPLEMENTED";
-                }
-                else if (components[0].equals(MovieServiceDetails.CLOSE_CONNECTION))
-                {
-                    response = MovieServiceDetails.CLOSE_CONNECTION;
-                }
-                else
-                {
-                    response = MovieServiceDetails.UNRECOGNISED_COMMAND;
+                switch (components[0]) {
+                    case MovieServiceDetails.LOGIN:
+                        if (components.length > 2)
+                        {
+                            response = loginUser(components[1], components[2]);
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
+                        break;
+                    case MovieServiceDetails.REGISTER:
+                        if (components.length > 2)
+                        {
+                            response = registerUser(components[1], components[2]);
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
+                        break;
+                    case MovieServiceDetails.SEARCH_MOVIE_TITLE:
+                        if (components.length > 1)
+                        {
+                            response = searchForMovieByTitle(components[1]);
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
+                        break;
+                    case MovieServiceDetails.SEARCH_MOVIE_DIRECTOR:
+                        if (components.length > 1)
+                        {
+                            response = searchForMovieByDirector(components[1]);
+                        }
+                        else
+                        {
+                            response = MovieServiceDetails.FAIL;
+                        }
+                        break;
+                    case MovieServiceDetails.SEARCH_MOVIE_GENRE:
+                        response = "NOT IMPLEMENTED";
+                        break;
+                    case MovieServiceDetails.ADD_MOVIE:
+                        response = "NOT IMPLEMENTED";
+                        break;
+                    case MovieServiceDetails.REMOVE_MOVIE:
+                        response = "NOT IMPLEMENTED";
+                        break;
+                    case MovieServiceDetails.UPDATE_MOVIE:
+                        response = "NOT IMPLEMENTED";
+                        break;
+                    case MovieServiceDetails.WATCH_MOVIE:
+                        response = "NOT IMPLEMENTED";
+                        break;
+                    case MovieServiceDetails.RECOMMEND_MOVIE:
+                        response = "NOT IMPLEMENTED";
+                        break;
+                    case MovieServiceDetails.CLOSE_CONNECTION:
+                        response = MovieServiceDetails.CLOSE_CONNECTION;
+                        break;
+                    default:
+                        response = MovieServiceDetails.UNRECOGNISED_COMMAND;
+                        break;
                 }
 
                 output.println(response);

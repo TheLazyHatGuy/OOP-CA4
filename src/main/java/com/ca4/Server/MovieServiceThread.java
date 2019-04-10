@@ -6,9 +6,7 @@ import com.ca4.DAO.UserDAOInterface;
 import com.ca4.Exceptions.DAOException;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -53,6 +51,7 @@ public class MovieServiceThread implements Runnable
                 //Take the input information from the client
                 incomingMessage = input.nextLine();
                 System.out.println(threadNumber + ": Received a message: " + incomingMessage);
+                writeToLogFile(threadNumber + ": Received a message: " + incomingMessage);
 
                 //Tokenize the input
                 String[] components = incomingMessage.split(MovieServiceDetails.BREAKING_CHARACTER);
@@ -156,6 +155,8 @@ public class MovieServiceThread implements Runnable
         catch (DAOException e)
         {
             e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
         }
 
         return response;
@@ -181,5 +182,37 @@ public class MovieServiceThread implements Runnable
     private boolean verifyHash(String password, String hash)
     {
         return BCrypt.checkpw(password, hash);
+    }
+
+    public static void writeToLogFile(String stringToWrite)
+    {
+        //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
+        try
+        {
+            BufferedWriter log = new BufferedWriter(new FileWriter("log.txt", true));
+
+            log.write(stringToWrite);
+            log.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeToErrorLogFile(String stringToWrite)
+    {
+        //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
+        try
+        {
+            BufferedWriter log = new BufferedWriter(new FileWriter("error.txt", true));
+
+            log.write(stringToWrite);
+            log.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

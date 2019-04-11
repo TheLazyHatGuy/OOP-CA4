@@ -14,9 +14,9 @@ public interface MovieDAOInterface {
 
     ArrayList<Movie> getMoviesByDirector(String dirName) throws DAOException;
 
-    void addMovieToDatabase(Movie movieToAdd) throws DAOException;
+    boolean addMovieToDatabase(Movie movieToAdd) throws DAOException;
 
-    void deleteMovie(int movie_id) throws DAOException;
+    boolean deleteMovie(int movie_id) throws DAOException;
 
-    void updateMovie(Movie movieToUpdate) throws DAOException;
+    boolean updateMovie(Movie movieToUpdate) throws DAOException;
 }

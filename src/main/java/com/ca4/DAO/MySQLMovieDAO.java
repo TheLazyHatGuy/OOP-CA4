@@ -130,7 +130,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movies;
     }
 
-    public void addMovieToDatabase(Movie movieToAdd) throws  DAOException{
+    public boolean addMovieToDatabase(Movie movieToAdd) throws  DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -154,7 +154,9 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             ps.setInt(12, movieToAdd.getCopies());
             ps.setString(13, movieToAdd.getBarcode());
             ps.setString(14, movieToAdd.getUserRating());
-            ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
 
         }catch (SQLException e) {
             throw new DAOException("addMovieToDatabase() " + e.getMessage());
@@ -167,7 +169,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         }
     }
 
-    public void deleteMovie(int movie_id) throws DAOException{
+    public boolean deleteMovie(int movie_id) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -176,7 +178,9 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             String query = "DELETE FROM movie WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1,movie_id);
-            ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
 
         }catch (SQLException e) {
             throw new DAOException("DeleteMovieInDatabase() " + e.getMessage());
@@ -190,7 +194,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
     }
 
     @SuppressWarnings("Duplicates")
-    public void updateMovie(Movie movieToUpdate) throws DAOException{
+    public boolean updateMovie(Movie movieToUpdate) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -215,7 +219,9 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             ps.setString(13, movieToUpdate.getBarcode());
             ps.setString(14, movieToUpdate.getUserRating());
             ps.setInt(15, movieToUpdate.getId());
-            ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
 
         }catch (SQLException e) {
             throw new DAOException("addMovieToDatabase() " + e.getMessage());

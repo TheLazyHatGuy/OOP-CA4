@@ -20,7 +20,9 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
             ps = con.prepareStatement(query);
             ps.setString(1, email);
             ps.setString(2, password);
-            return ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
         }catch (SQLException e){
             throw new DAOException("registerUser() " + e.getMessage());
         }finally{
@@ -72,7 +74,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
         return user;
     }
 
-    public void deleteUser(int user_id) throws DAOException{
+    public boolean deleteUser(int user_id) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -81,7 +83,9 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
             String query = "DELETE FROM user WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1, user_id);
-            ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
         }catch (SQLException e){
             throw new DAOException("deleteUser() " + e.getMessage());
         }finally{
@@ -93,7 +97,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
         }
     }
 
-    public void updateUser(int id, String email, String password) throws DAOException{
+    public boolean updateUser(int id, String email, String password) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
@@ -104,7 +108,9 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
             ps.setString(1, email);
             ps.setString(2, password);
             ps.setInt(3, id);
-            ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
         }catch (SQLException e){
             throw new DAOException("updateUser() " + e.getMessage());
         }finally{

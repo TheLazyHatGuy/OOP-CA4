@@ -7,6 +7,6 @@ public interface UserDAOInterface
 {
     boolean registerUser(String email, String password) throws DAOException;
     User loginUser(String email) throws DAOException;
-    void deleteUser(int user_id) throws DAOException;
-    void updateUser(int id, String email, String password) throws DAOException;
+    boolean deleteUser(int user_id) throws DAOException;
+    boolean updateUser(int id, String email, String password) throws DAOException;
 }

@@ -15,16 +15,13 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-public class MovieConnectionHandler implements Runnable
-{
+public class MovieConnectionHandler implements Runnable {
     private Socket clientSocket;
     //Crate a list to store the clients that haven't been processed yet
     private static List pool = new LinkedList();
 
-    static void processRequest(Socket incomingClient)
-    {
-        synchronized (pool)
-        {
+    static void processRequest(Socket incomingClient) {
+        synchronized (pool) {
             pool.add(pool.size(), incomingClient);
 
             //Notify all waiting threads that there is a new client to be serviced
@@ -33,23 +30,16 @@ public class MovieConnectionHandler implements Runnable
     }
 
     @Override
-    public void run()
-    {
-        while (true)
-        {
+    public void run() {
+        while (true) {
             //Lock the pool, if another thread has the lock then we will have to wait
-            synchronized (pool)
-            {
+            synchronized (pool) {
                 //While the pool is empty, wait
-                while (pool.isEmpty())
-                {
-                    try
-                    {
+                while (pool.isEmpty()) {
+                    try {
                         //Wait until another client is added to the pool
                         pool.wait();
-                    }
-                    catch (InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                         return;
                     }
                 }
@@ -61,10 +51,8 @@ public class MovieConnectionHandler implements Runnable
         }
     }
 
-    private void handleConnection()
-    {
-        try
-        {
+    private void handleConnection() {
+        try {
             OutputStream outputToSocket = clientSocket.getOutputStream();
             InputStream inputFromSocket = clientSocket.getInputStream();
 
@@ -72,8 +60,7 @@ public class MovieConnectionHandler implements Runnable
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputFromSocket));
 
             String line = null;
-            while ((line = streamReader.readLine()) != null && !line.equals(MovieServiceDetails.CLOSE_CONNECTION))
-            {
+            while ((line = streamReader.readLine()) != null && !line.equals(MovieServiceDetails.CLOSE_CONNECTION)) {
                 String response = processCommand(line);
 
                 output.println(response);
@@ -84,22 +71,18 @@ public class MovieConnectionHandler implements Runnable
 
             output.close();
             streamReader.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             MovieRequestHandler.writeToLogFile(e.getMessage());
             MovieRequestHandler.writeToErrorLogFile(e.getMessage());
         }
     }
 
-    private String processCommand(String commandToProcess)
-    {
+    private String processCommand(String commandToProcess) {
         String response = "";
 
         //While the client doesn't want to end the session
-        if (!commandToProcess.equals(MovieServiceDetails.CLOSE_CONNECTION))
-        {
+        if (!commandToProcess.equals(MovieServiceDetails.CLOSE_CONNECTION)) {
             System.out.println("Received a message: " + commandToProcess);
             MovieRequestHandler.writeToLogFile("Received a message: " + commandToProcess);
 
@@ -151,7 +134,15 @@ public class MovieConnectionHandler implements Runnable
                     }
                     break;
                 case MovieServiceDetails.REMOVE_MOVIE:
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 1) {
+                        int movieID = Integer.parseInt(components[1]);
+
+                        if (movieID >= 1) {
+                            response = MovieRequestHandler.removeMovie(movieID);
+                        }
+                    } else {
+                        response = MovieServiceDetails.FAIL;
+                    }
                     break;
                 case MovieServiceDetails.UPDATE_MOVIE:
                     response = "NOT IMPLEMENTED";

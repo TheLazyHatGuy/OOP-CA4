@@ -1,6 +1,7 @@
 package com.ca4.Client;
 
 import com.ca4.Core.MovieServiceDetails;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -93,19 +94,19 @@ public class MovieClient
             messageToSend = messageCode;
 
             for(int i = 0; i < message.length; ++i){
-                messageToSend += message[i];
+                messageToSend += MovieServiceDetails.BREAKING_CHARACTER + message[i];
             }
 
             streamWriter = new PrintWriter(client.getOutputStream());
             streamWriter.println(messageToSend);
             streamWriter.flush();
-            recieveJSONObject(endingChar);
+            receiveJSONObject(endingChar);
         }catch (IOException io) {
             io.printStackTrace();
         }
     }
 
-    public static void recieveJSONObject(CharSequence endingChar){
+    public static void receiveJSONObject(CharSequence endingChar){
             Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
             String currentline = "";
@@ -115,8 +116,12 @@ public class MovieClient
                 currentline += input.nextLine();
             }
 
-            JSONObject jsObj = new JSONObject(currentline);
-
-            System.out.println(jsObj.toString(4));
+            if(endingChar.equals(MovieServiceDetails.JSONARRAY_ENDINGCHAR)){
+                JSONArray jsArray = new JSONArray(currentline);
+                System.out.println(jsArray.toString(4));
+            }else if(endingChar.equals(MovieServiceDetails.JSONOBJECT_ENDINGCHAR)){
+                JSONObject jsObj = new JSONObject(currentline);
+                System.out.println(jsObj.toString(4));
+            }
         }
 }

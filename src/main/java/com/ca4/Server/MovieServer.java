@@ -25,6 +25,7 @@ public class MovieServer
 
             while (continueRunning)
             {
+                System.out.println("Ready to accept connections");
                 //Wait for incoming connections
                 Socket dataSocket = listenSocket.accept();
                 threadCount ++;

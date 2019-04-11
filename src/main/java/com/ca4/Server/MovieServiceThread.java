@@ -145,6 +145,9 @@ public class MovieServiceThread implements Runnable
                 }
 
                 output.println(response);
+                System.out.println("*****START RESPONSE*****");
+                System.out.println(response);
+                System.out.println("*****END RESPONSE*****");
             }
         }
         catch (Exception e)

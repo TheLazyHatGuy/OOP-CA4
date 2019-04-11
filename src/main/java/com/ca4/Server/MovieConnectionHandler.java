@@ -21,8 +21,10 @@ public class MovieConnectionHandler implements Runnable
     //Crate a list to store the clients that haven't been processed yet
     private static List pool = new LinkedList();
 
-    static void processRequest(Socket incomingClient) {
-        synchronized (pool) {
+    static void processRequest(Socket incomingClient)
+    {
+        synchronized (pool)
+        {
             pool.add(pool.size(), incomingClient);
 
             //Notify all waiting threads that there is a new client to be serviced
@@ -31,16 +33,23 @@ public class MovieConnectionHandler implements Runnable
     }
 
     @Override
-    public void run() {
-        while (true) {
+    public void run()
+    {
+        while (true)
+        {
             //Lock the pool, if another thread has the lock then we will have to wait
-            synchronized (pool) {
+            synchronized (pool)
+            {
                 //While the pool is empty, wait
-                while (pool.isEmpty()) {
-                    try {
+                while (pool.isEmpty())
+                {
+                    try
+                    {
                         //Wait until another client is added to the pool
                         pool.wait();
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e)
+                    {
                         return;
                     }
                 }
@@ -63,7 +72,7 @@ public class MovieConnectionHandler implements Runnable
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputFromSocket));
 
             String line = null;
-            while ((line = streamReader.readLine()) != null)
+            while ((line = streamReader.readLine()) != null && !line.equals(MovieServiceDetails.CLOSE_CONNECTION))
             {
                 String response = processCommand(line);
 
@@ -152,9 +161,6 @@ public class MovieConnectionHandler implements Runnable
                     break;
                 case MovieServiceDetails.RECOMMEND_MOVIE:
                     response = "NOT IMPLEMENTED";
-                    break;
-                case MovieServiceDetails.CLOSE_CONNECTION:
-                    response = MovieServiceDetails.CLOSE_CONNECTION;
                     break;
                 default:
                     response = MovieServiceDetails.UNRECOGNISED_COMMAND;

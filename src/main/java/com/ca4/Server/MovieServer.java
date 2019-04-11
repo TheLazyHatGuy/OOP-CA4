@@ -23,9 +23,10 @@ public class MovieServer
             //Place more emphasis on accepting threads than on processing threads
             group.setMaxPriority(Thread.currentThread().getPriority() - 1);
 
+            System.out.println("Ready to accept connections");
+
             while (continueRunning)
             {
-                System.out.println("Ready to accept connections");
                 //Wait for incoming connections
                 Socket dataSocket = listenSocket.accept();
                 threadCount ++;

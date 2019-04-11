@@ -15,13 +15,11 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-public class MovieConnectionHandler implements Runnable {
+public class MovieConnectionHandler implements Runnable
+{
     private Socket clientSocket;
     //Crate a list to store the clients that haven't been processed yet
     private static List pool = new LinkedList();
-
-    MovieConnectionHandler() {
-    }
 
     static void processRequest(Socket incomingClient) {
         synchronized (pool) {
@@ -54,8 +52,10 @@ public class MovieConnectionHandler implements Runnable {
         }
     }
 
-    private void handleConnection() {
-        try {
+    private void handleConnection()
+    {
+        try
+        {
             OutputStream outputToSocket = clientSocket.getOutputStream();
             InputStream inputFromSocket = clientSocket.getInputStream();
 
@@ -63,7 +63,8 @@ public class MovieConnectionHandler implements Runnable {
             BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputFromSocket));
 
             String line = null;
-            while ((line = streamReader.readLine()) != null) {
+            while ((line = streamReader.readLine()) != null)
+            {
                 String response = processCommand(line);
 
                 output.println(response);
@@ -74,20 +75,24 @@ public class MovieConnectionHandler implements Runnable {
 
             output.close();
             streamReader.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
-            writeToLogFile(e.getMessage());
-            writeToErrorLogFile(e.getMessage());
+            MovieRequestHandler.writeToLogFile(e.getMessage());
+            MovieRequestHandler.writeToErrorLogFile(e.getMessage());
         }
     }
 
-    private String processCommand(String commandToProcess) {
+    private String processCommand(String commandToProcess)
+    {
         String response = "";
 
         //While the client doesn't want to end the session
-        if (!commandToProcess.equals(MovieServiceDetails.CLOSE_CONNECTION)) {
+        if (!commandToProcess.equals(MovieServiceDetails.CLOSE_CONNECTION))
+        {
             System.out.println("Received a message: " + commandToProcess);
-            writeToLogFile("Received a message: " + commandToProcess);
+            MovieRequestHandler.writeToLogFile("Received a message: " + commandToProcess);
 
             //Tokenize the input
             String[] components = commandToProcess.split(MovieServiceDetails.BREAKING_CHARACTER);
@@ -103,35 +108,35 @@ public class MovieConnectionHandler implements Runnable {
                     break;
                 case MovieServiceDetails.REGISTER:
                     if (components.length > 2) {
-                        response = registerUser(components[1], components[2]);
+                        response = MovieRequestHandler.registerUser(components[1], components[2]);
                     } else {
                         response = MovieServiceDetails.FAIL;
                     }
                     break;
                 case MovieServiceDetails.SEARCH_MOVIE_TITLE:
                     if (components.length > 1) {
-                        response = searchForMovieByTitle(components[1]);
+                        response = MovieRequestHandler.searchForMovieByTitle(components[1]);
                     } else {
                         response = MovieServiceDetails.FAIL;
                     }
                     break;
                 case MovieServiceDetails.SEARCH_MOVIE_DIRECTOR:
                     if (components.length > 1) {
-                        response = searchForMovieByDirector(components[1]);
+                        response = MovieRequestHandler.searchForMovieByDirector(components[1]);
                     } else {
                         response = MovieServiceDetails.FAIL;
                     }
                     break;
                 case MovieServiceDetails.SEARCH_MOVIE_GENRE:
                     if (components.length > 1) {
-                        response = searchForMovieByGenre(components[1]);
+                        response = MovieRequestHandler.searchForMovieByGenre(components[1]);
                     } else {
                         response = MovieServiceDetails.FAIL;
                     }
                     break;
                 case MovieServiceDetails.ADD_MOVIE:
                     if (components.length > 1) {
-                        response = addMovie(components[1]);
+                        response = MovieRequestHandler.addMovie(components[1]);
                     } else {
                         response = MovieServiceDetails.FAIL;
                     }

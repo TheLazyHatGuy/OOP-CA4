@@ -130,26 +130,30 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movies;
     }
 
-    public void addMovieToDatabase(String title, String genres, String director,
-                                               String runtime, String plot, String rating, String format,
-                                               String Year, String starring) throws  DAOException{
+    public void addMovieToDatabase(Movie movieToAdd) throws  DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
         try{
             con = this.getConnection();
-            String query = "INSERT INTO movie (title, genre, director, runtime, plot, rating, " +
-                    "format, year, starring) values (?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO movie (title, genre, director, runtime, plot, location, poster,"
+                    + "rating, format, year, starring, copies, barcode, user_rating) " +
+                    "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
-            ps.setString(1, title);
-            ps.setString(2, genres);
-            ps.setString(3, director);
-            ps.setString(4, runtime);
-            ps.setString(5, plot);
-            ps.setString(6, rating);
-            ps.setString(7, format);
-            ps.setString(8, Year);
-            ps.setString(9, starring);
+            ps.setString(1, movieToAdd.getTitle());
+            ps.setString(2, movieToAdd.getGenre());
+            ps.setString(3, movieToAdd.getDirector());
+            ps.setString(4, movieToAdd.getRuntime());
+            ps.setString(5, movieToAdd.getPlot());
+            ps.setString(6, movieToAdd.getLocation());
+            ps.setString(7, movieToAdd.getPoster());
+            ps.setString(8, movieToAdd.getRating());
+            ps.setString(9, movieToAdd.getFormat());
+            ps.setString(10, movieToAdd.getYear());
+            ps.setString(11, movieToAdd.getStarring());
+            ps.setInt(12, movieToAdd.getCopies());
+            ps.setString(13, movieToAdd.getBarcode());
+            ps.setString(14, movieToAdd.getUserRating());
             ps.execute();
 
         }catch (SQLException e) {

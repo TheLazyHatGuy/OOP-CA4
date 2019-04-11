@@ -1,12 +1,10 @@
 package com.ca4.Server;
 
 import com.ca4.Core.MovieServiceDetails;
-import com.ca4.DAO.MovieDAOInterface;
-import com.ca4.DAO.MySQLMovieDAO;
-import com.ca4.DAO.MySQLUserDAO;
-import com.ca4.DAO.UserDAOInterface;
+import com.ca4.DAO.*;
 import com.ca4.DTO.Movie;
 import com.ca4.DTO.User;
+import com.ca4.DTO.WatchedMovie;
 import com.ca4.Exceptions.DAOException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
@@ -206,6 +204,31 @@ class MovieRequestHandler
             boolean isUpdated = movieDAO.updateMovie(movieToUpdate);
 
             if (isUpdated)
+            {
+                response = MovieServiceDetails.UPDATE_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    static String watchMovie(int userID, int movieID)
+    {
+        WatchedMovieDAOInterface watchedMovieDAO = new MySQLWatchedMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            WatchedMovie watchedMovie = new WatchedMovie(userID, movieID);
+            boolean isWatched = watchedMovieDAO.addWatchedMovie(watchedMovie);
+
+            if (isWatched)
             {
                 response = MovieServiceDetails.UPDATE_SUCCESS;
             }

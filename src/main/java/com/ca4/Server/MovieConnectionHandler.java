@@ -152,7 +152,16 @@ public class MovieConnectionHandler implements Runnable {
                     }
                     break;
                 case MovieServiceDetails.WATCH_MOVIE:
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 2) {
+                        int userID = Integer.parseInt(components[1]);
+                        int movieID = Integer.parseInt(components[2]);
+
+                        if (userID >= 1 && movieID >= 1) {
+                            response = MovieRequestHandler.watchMovie(userID, movieID);
+                        }
+                    } else {
+                        response = MovieServiceDetails.FAIL;
+                    }
                     break;
                 case MovieServiceDetails.RECOMMEND_MOVIE:
                     response = "NOT IMPLEMENTED";

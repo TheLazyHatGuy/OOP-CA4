@@ -35,3 +35,5 @@ Some of the functionality that the users can avail of is:
 SET @@global.time_zone = '+00:00';
 SET @@session.time_zone = '+00:00';
 ```
+
+* James gave me the solution for ensuring a successful database insert and update

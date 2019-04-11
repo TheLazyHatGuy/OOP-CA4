@@ -222,7 +222,7 @@ public class MovieServiceThread implements Runnable
 
         try
         {
-            Movie movie = movieDAO.getMoviebyName(searchString);
+            Movie movie = movieDAO.getMovieByName(searchString);
             response = movie.toJSONString();
         }
         catch (DAOException e)
@@ -242,7 +242,7 @@ public class MovieServiceThread implements Runnable
 
         try
         {
-            ArrayList<Movie> movies = movieDAO.getMoviesbyDirector(searchString);
+            ArrayList<Movie> movies = movieDAO.getMoviesByDirector(searchString);
 
             if (movies.size() >= 1)
             {
@@ -266,7 +266,7 @@ public class MovieServiceThread implements Runnable
 
         try
         {
-            ArrayList<Movie> movies = movieDAO.getMoviesbyGenre(searchString);
+            ArrayList<Movie> movies = movieDAO.getMoviesByGenre(searchString);
 
             if (movies.size() >= 1)
             {

@@ -3,7 +3,7 @@ package com.ca4.Core;
 public class MovieServiceDetails
 {
     public static final int SERVER_PORT = 50000;
-    public static final String SERVER_IP = "127.0.0.1";
+    public static final String SERVER_IP = "10.102.23.82";
     public static final String BREAKING_CHARACTER = "%%";
 
     //Commands
@@ -27,4 +27,8 @@ public class MovieServiceDetails
 
     public static final String FAIL                 = "ERR";
     public static final String UNRECOGNISED_COMMAND = "ANKN";
+
+    // ending characters
+    public static final CharSequence JSONOBJECT_ENDINGCHAR = "}";
+    public static final CharSequence JSONARRAY_ENDINGCHAR = "]";
 }

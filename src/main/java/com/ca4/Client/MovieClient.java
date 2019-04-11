@@ -38,14 +38,18 @@ public class MovieClient
 
                     switch (option){
                         case "A":
-                            String movieName = ClientInteractor.getMovieName();
-                            sendStringMessage(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName);
+                            String[] movieName = {ClientInteractor.getMovieName()};
+                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName,
+                                    MovieServiceDetails.JSONOBJECT_ENDINGCHAR);
                             break;
                         case "B":
-                            ClientInteractor.getMovieDirector();
+                            String[] movieDirector = {ClientInteractor.getMovieDirector()};
+                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, movieDirector,
+                                    MovieServiceDetails.JSONARRAY_ENDINGCHAR);
                             break;
                         case "C":
-                            ClientInteractor.getMovieGenre();
+                            String[] movieGenre = {ClientInteractor.getMovieGenre()};
+                            //sendStringArray();
                             break;
                         case "D":
                             //TODO add update movie logic
@@ -80,31 +84,35 @@ public class MovieClient
         }
     }
 
-    public static void sendStringMessage(String messageCode, String message){
-        try{
-            inputFromSocket = client.getInputStream();
-            //streamReader = new BufferedReader(new InputStreamReader(inputFromSocket));
 
-            message = messageCode + MovieServiceDetails.BREAKING_CHARACTER + message;
+    public static void sendStringArray(String messageCode, String[] message, CharSequence endingChar){
+        try{
+            String messageToSend;
+            inputFromSocket = client.getInputStream();
+
+            messageToSend = messageCode;
+
+            for(int i = 0; i < message.length; ++i){
+                messageToSend += message[i];
+            }
+
             streamWriter = new PrintWriter(client.getOutputStream());
-            streamWriter.println(message);
+            streamWriter.println(messageToSend);
             streamWriter.flush();
-            recieveJSONMessage();
+            recieveJSONObject(endingChar);
         }catch (IOException io) {
             io.printStackTrace();
         }
     }
 
-    public static void recieveJSONMessage(){
+    public static void recieveJSONObject(CharSequence endingChar){
             Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
             String currentline = "";
             stringBuilder = new StringBuilder();
 
-            while(!(currentline.contains("}"))){
-
+            while(!(currentline.contains(endingChar))){
                 currentline += input.nextLine();
-                //System.out.println(currentline);
             }
 
             JSONObject jsObj = new JSONObject(currentline);

@@ -23,6 +23,7 @@ public class ClientInteractor {
         System.out.println("F) Delete a movie");
         System.out.println("G) Update your profile");
         System.out.println("H) Delete your profile");
+        System.out.println("G) Exit application");
 
         String option = ClientInteractor.getStringFromUser();
 

@@ -33,7 +33,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movies;
     }
 
-    public Movie getMoviebyName(String inputTitle) throws DAOException{
+    public Movie getMovieByName(String inputTitle) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -78,7 +78,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movie;
     }
 
-    public ArrayList<Movie> getMoviesbyGenre(String Genre) throws DAOException{
+    public ArrayList<Movie> getMoviesByGenre(String Genre) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -104,7 +104,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movies;
     }
 
-    public ArrayList<Movie> getMoviesbyDirector(String dirname) throws DAOException{
+    public ArrayList<Movie> getMoviesByDirector(String dirname) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;

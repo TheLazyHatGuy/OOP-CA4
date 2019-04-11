@@ -189,27 +189,32 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         }
     }
 
-    public void updateMovie(int id, String title, String genres, String director,
-                            String runtime, String plot, String rating, String format,
-                            String Year, String starring) throws DAOException{
+    @SuppressWarnings("Duplicates")
+    public void updateMovie(Movie movieToUpdate) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
         try{
             con = this.getConnection();
-            String query = "UPDATE movie SET title = ?, genres = ?, director = ?, runtime = ?," +
-                    " plot = ?, rating = ?, format = ?, year = ?, starring = ? where id = ?";
+            String query = "UPDATE movie SET title = ?, genre = ?, director = ?, runtime = ?," +
+                    " plot = ?, location = ?, poster = ?, rating = ?, format = ?, year = ?, " +
+                    "starring = ?, copies = ?, barcode = ?, user_rating = ? where id = ?";
             ps = con.prepareStatement(query);
-            ps.setString(1, title);
-            ps.setString(2, genres);
-            ps.setString(3, director);
-            ps.setString(4, runtime);
-            ps.setString(5, plot);
-            ps.setString(6, rating);
-            ps.setString(7, format);
-            ps.setString(8, Year);
-            ps.setString(9, starring);
-            ps.setInt(10, id);
+            ps.setString(1, movieToUpdate.getTitle());
+            ps.setString(2, movieToUpdate.getGenre());
+            ps.setString(3, movieToUpdate.getDirector());
+            ps.setString(4, movieToUpdate.getRuntime());
+            ps.setString(5, movieToUpdate.getPlot());
+            ps.setString(6, movieToUpdate.getLocation());
+            ps.setString(7, movieToUpdate.getPoster());
+            ps.setString(8, movieToUpdate.getRating());
+            ps.setString(9, movieToUpdate.getFormat());
+            ps.setString(10, movieToUpdate.getYear());
+            ps.setString(11, movieToUpdate.getStarring());
+            ps.setInt(12, movieToUpdate.getCopies());
+            ps.setString(13, movieToUpdate.getBarcode());
+            ps.setString(14, movieToUpdate.getUserRating());
+            ps.setInt(15, movieToUpdate.getId());
             ps.execute();
 
         }catch (SQLException e) {

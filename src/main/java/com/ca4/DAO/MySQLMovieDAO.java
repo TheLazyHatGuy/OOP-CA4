@@ -67,12 +67,12 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
                         poster, rating, format, year, starring, copies, barcode, user_rating);
             }
         } catch (SQLException e) {
-            throw new DAOException("getMoviebyName() " + e.getMessage());
+            throw new DAOException("getMovieByName() " + e.getMessage());
         } finally {
             try {
                 closeConnection(con, rs, ps);
             } catch (SQLException e) {
-                throw new DAOException("getMoviebyName() " + e.getMessage());
+                throw new DAOException("getMovieByName() " + e.getMessage());
             }
         }
         return movie;
@@ -93,12 +93,12 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
             movies = fillArrayList(rs);
         }catch (SQLException e) {
-            throw new DAOException("getMoviebyGenre() " + e.getMessage());
+            throw new DAOException("getMovieByGenre() " + e.getMessage());
         } finally {
             try {
                 closeConnection(con, rs, ps);
             } catch (SQLException e) {
-                throw new DAOException("getMoviebyGenre() " + e.getMessage());
+                throw new DAOException("getMovieByGenre() " + e.getMessage());
             }
         }
         return movies;
@@ -119,12 +119,12 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
             movies = fillArrayList(rs);
         }catch (SQLException e) {
-            throw new DAOException("getMoviebyDirector() " + e.getMessage());
+            throw new DAOException("getMovieByDirector() " + e.getMessage());
         } finally {
             try {
                 closeConnection(con, rs, ps);
             } catch (SQLException e) {
-                throw new DAOException("getMoviebyDirector() " + e.getMessage());
+                throw new DAOException("getMovieByDirector() " + e.getMessage());
             }
         }
         return movies;

@@ -25,7 +25,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException("getAllMovies() " + e.getMessage());
         }finally {
             try{
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             }catch (SQLException e){
                 throw new DAOException("getAllMovies() " + e.getMessage());
             }
@@ -33,7 +33,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movies;
     }
 
-    public Movie getMoviebyName(String inputTitle) throws DAOException{
+    public Movie getMovieByName(String inputTitle) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -67,18 +67,18 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
                         poster, rating, format, year, starring, copies, barcode, user_rating);
             }
         } catch (SQLException e) {
-            throw new DAOException("getMoviebyName() " + e.getMessage());
+            throw new DAOException("getMovieByName() " + e.getMessage());
         } finally {
             try {
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             } catch (SQLException e) {
-                throw new DAOException("getMoviebyName() " + e.getMessage());
+                throw new DAOException("getMovieByName() " + e.getMessage());
             }
         }
         return movie;
     }
 
-    public ArrayList<Movie> getMoviesbyGenre(String Genre) throws DAOException{
+    public ArrayList<Movie> getMoviesByGenre(String Genre) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -93,18 +93,18 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
             movies = fillArrayList(rs);
         }catch (SQLException e) {
-            throw new DAOException("getMoviebyGenre() " + e.getMessage());
+            throw new DAOException("getMovieByGenre() " + e.getMessage());
         } finally {
             try {
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             } catch (SQLException e) {
-                throw new DAOException("getMoviebyGenre() " + e.getMessage());
+                throw new DAOException("getMovieByGenre() " + e.getMessage());
             }
         }
         return movies;
     }
 
-    public ArrayList<Movie> getMoviesbyDirector(String dirname) throws DAOException{
+    public ArrayList<Movie> getMoviesByDirector(String dirname) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -119,115 +119,115 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
             movies = fillArrayList(rs);
         }catch (SQLException e) {
-            throw new DAOException("getMoviebyDirector() " + e.getMessage());
+            throw new DAOException("getMovieByDirector() " + e.getMessage());
         } finally {
             try {
-                closeConnections(rs, con, ps);
+                closeConnection(con, rs, ps);
             } catch (SQLException e) {
-                throw new DAOException("getMoviebyDirector() " + e.getMessage());
+                throw new DAOException("getMovieByDirector() " + e.getMessage());
             }
         }
         return movies;
     }
 
-    public void addMovieToDatabase(String title, String genres, String director,
-                                               String runtime, String plot, String rating, String format,
-                                               String Year, String starring) throws  DAOException{
+    public boolean addMovieToDatabase(Movie movieToAdd) throws  DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
         try{
             con = this.getConnection();
-            String query = "INSERT INTO movie (title, genre, director, runtime, plot, rating, " +
-                    "format, year, starring) values (?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO movie (title, genre, director, runtime, plot, location, poster,"
+                    + "rating, format, year, starring, copies, barcode, user_rating) " +
+                    "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
-            ps.setString(1, title);
-            ps.setString(2, genres);
-            ps.setString(3, director);
-            ps.setString(4, runtime);
-            ps.setString(5, plot);
-            ps.setString(6, rating);
-            ps.setString(7, format);
-            ps.setString(8, Year);
-            ps.setString(9, starring);
-            ps.execute();
+            ps.setString(1, movieToAdd.getTitle());
+            ps.setString(2, movieToAdd.getGenre());
+            ps.setString(3, movieToAdd.getDirector());
+            ps.setString(4, movieToAdd.getRuntime());
+            ps.setString(5, movieToAdd.getPlot());
+            ps.setString(6, movieToAdd.getLocation());
+            ps.setString(7, movieToAdd.getPoster());
+            ps.setString(8, movieToAdd.getRating());
+            ps.setString(9, movieToAdd.getFormat());
+            ps.setString(10, movieToAdd.getYear());
+            ps.setString(11, movieToAdd.getStarring());
+            ps.setInt(12, movieToAdd.getCopies());
+            ps.setString(13, movieToAdd.getBarcode());
+            ps.setString(14, movieToAdd.getUserRating());
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
 
         }catch (SQLException e) {
             throw new DAOException("addMovieToDatabase() " + e.getMessage());
         } finally {
             try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    this.closeConnection(con);
-                }
+                closeConnection(con, ps);
             } catch (SQLException e) {
                 throw new DAOException("addMovieToDatabase() " + e.getMessage());
             }
         }
     }
 
-    public void deleteMovie(int movie_id) throws DAOException{
+    public boolean deleteMovie(int movie_id) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
         try{
             con = this.getConnection();
-            String query = "DELETE FROM MOVIES WHERE id = ?";
+            String query = "DELETE FROM movie WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1,movie_id);
-            ps.execute();
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
 
         }catch (SQLException e) {
             throw new DAOException("DeleteMovieInDatabase() " + e.getMessage());
         } finally {
             try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    this.closeConnection(con);
-                }
+                closeConnection(con, ps);
             } catch (SQLException e) {
                 throw new DAOException("DeleteMovieInDatabase() " + e.getMessage());
             }
         }
     }
 
-    public void updateMovie(int id, String title, String genres, String director,
-                            String runtime, String plot, String rating, String format,
-                            String Year, String starring) throws DAOException{
+    @SuppressWarnings("Duplicates")
+    public boolean updateMovie(Movie movieToUpdate) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
 
         try{
             con = this.getConnection();
-            String query = "UPDATE movie SET title = ?, genres = ?, director = ?, runtime = ?," +
-                    " plot = ?, rating = ?, format = ?, year = ?, starring = ? where id = ?";
+            String query = "UPDATE movie SET title = ?, genre = ?, director = ?, runtime = ?," +
+                    " plot = ?, location = ?, poster = ?, rating = ?, format = ?, year = ?, " +
+                    "starring = ?, copies = ?, barcode = ?, user_rating = ? where id = ?";
             ps = con.prepareStatement(query);
-            ps.setString(1, title);
-            ps.setString(2, genres);
-            ps.setString(3, director);
-            ps.setString(4, runtime);
-            ps.setString(5, plot);
-            ps.setString(6, rating);
-            ps.setString(7, format);
-            ps.setString(8, Year);
-            ps.setString(9, starring);
-            ps.setInt(10, id);
-            ps.execute();
+            ps.setString(1, movieToUpdate.getTitle());
+            ps.setString(2, movieToUpdate.getGenre());
+            ps.setString(3, movieToUpdate.getDirector());
+            ps.setString(4, movieToUpdate.getRuntime());
+            ps.setString(5, movieToUpdate.getPlot());
+            ps.setString(6, movieToUpdate.getLocation());
+            ps.setString(7, movieToUpdate.getPoster());
+            ps.setString(8, movieToUpdate.getRating());
+            ps.setString(9, movieToUpdate.getFormat());
+            ps.setString(10, movieToUpdate.getYear());
+            ps.setString(11, movieToUpdate.getStarring());
+            ps.setInt(12, movieToUpdate.getCopies());
+            ps.setString(13, movieToUpdate.getBarcode());
+            ps.setString(14, movieToUpdate.getUserRating());
+            ps.setInt(15, movieToUpdate.getId());
+
+            int rowCount = ps.executeUpdate();
+            return rowCount >= 1;
 
         }catch (SQLException e) {
             throw new DAOException("addMovieToDatabase() " + e.getMessage());
         } finally {
             try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    this.closeConnection(con);
-                }
+                closeConnection(con, ps);
             } catch (SQLException e) {
                 throw new DAOException("addMovieToDatabase() " + e.getMessage());
             }
@@ -263,21 +263,5 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             throw new DAOException(e.getMessage());
         }
         return ListToReturn;
-    }
-
-    private void closeConnections(ResultSet rs, Connection con, PreparedStatement ps) throws DAOException{
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if (ps != null) {
-                ps.close();
-            }
-            if (con != null) {
-                this.closeConnection(con);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage());
-        }
     }
 }

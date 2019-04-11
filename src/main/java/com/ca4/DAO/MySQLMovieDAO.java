@@ -173,7 +173,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "DELETE FROM MOVIES WHERE id = ?";
+            String query = "DELETE FROM movie WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1,movie_id);
             ps.execute();

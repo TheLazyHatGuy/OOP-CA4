@@ -165,6 +165,7 @@ class MovieRequestHandler
 
         return response;
     }
+
     static String removeMovie(int idOfMovieToRemove)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
@@ -189,6 +190,35 @@ class MovieRequestHandler
         return response;
     }
 
+    /**
+     * Converts a movie JSON String to the movie class and updates it in the database
+     * @param movieJSONString A full movie JSON String
+     * @return Server response message
+     */
+    static String updateMovie(String movieJSONString)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            Movie movieToUpdate = convertJSONStringToMovie(movieJSONString);
+            boolean isUpdated = movieDAO.updateMovie(movieToUpdate);
+
+            if (isUpdated)
+            {
+                response = MovieServiceDetails.UPDATE_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
 
     /**
      * Converts a Movie ArrayList to a JSON string

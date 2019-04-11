@@ -145,7 +145,11 @@ public class MovieConnectionHandler implements Runnable {
                     }
                     break;
                 case MovieServiceDetails.UPDATE_MOVIE:
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 1) {
+                        response = MovieRequestHandler.updateMovie(components[1]);
+                    } else {
+                        response = MovieServiceDetails.FAIL;
+                    }
                     break;
                 case MovieServiceDetails.WATCH_MOVIE:
                     response = "NOT IMPLEMENTED";

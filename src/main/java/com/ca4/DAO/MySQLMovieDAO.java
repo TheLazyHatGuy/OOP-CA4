@@ -33,6 +33,34 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         return movies;
     }
 
+    public Movie getMovieByID(int movieID) throws DAOException{
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Movie movie = new Movie();
+
+        try {
+            con = this.getConnection();
+            String query = "SELECT * FROM movie WHERE id = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, movieID);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                movie = resultSetToMovie(rs);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("getMovieByName() " + e.getMessage());
+        } finally {
+            try {
+                closeConnection(con, rs, ps);
+            } catch (SQLException e) {
+                throw new DAOException("getMovieByName() " + e.getMessage());
+            }
+        }
+        return movie;
+    }
+
     public Movie getMovieByName(String inputTitle) throws DAOException{
         Connection con = null;
         PreparedStatement ps = null;
@@ -47,24 +75,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                int movieId = rs.getInt("ID");
-                String title = rs.getString("title");
-                String genre = rs.getString("genre");
-                String director = rs.getString("director");
-                String runtime = rs.getString("runtime");
-                String plot = rs.getString("plot");
-                String location = rs.getString("location");
-                String poster = rs.getString("poster");
-                String rating = rs.getString("rating");
-                String format = rs.getString("format");
-                String year = rs.getString("year");
-                String starring = rs.getString("starring");
-                int copies = rs.getInt("copies");
-                String barcode = rs.getString("barcode");
-                String user_rating = rs.getString("user_rating");
-
-                movie = new Movie(movieId, title, genre, director, runtime, plot, location,
-                        poster, rating, format, year, starring, copies, barcode, user_rating);
+                movie = resultSetToMovie(rs);
             }
         } catch (SQLException e) {
             throw new DAOException("getMovieByName() " + e.getMessage());
@@ -239,29 +250,34 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
         ArrayList<Movie> ListToReturn = new ArrayList<>();
         try {
             while (rs.next()) {
-                int movieId = rs.getInt("ID");
-                String title = rs.getString("title");
-                String genre = rs.getString("genre");
-                String director = rs.getString("director");
-                String runtime = rs.getString("runtime");
-                String plot = rs.getString("plot");
-                String location = rs.getString("location");
-                String poster = rs.getString("poster");
-                String rating = rs.getString("rating");
-                String format = rs.getString("format");
-                String year = rs.getString("year");
-                String starring = rs.getString("starring");
-                int copies = rs.getInt("copies");
-                String barcode = rs.getString("barcode");
-                String user_rating = rs.getString("user_rating");
-
-                Movie m = new Movie(movieId, title, genre, director, runtime, plot, location,
-                        poster, rating, format, year, starring, copies, barcode, user_rating);
+                Movie m = resultSetToMovie(rs);
                 ListToReturn.add(m);
             }
         }catch (SQLException e) {
             throw new DAOException(e.getMessage());
         }
         return ListToReturn;
+    }
+
+    private Movie resultSetToMovie(ResultSet resultSetToConvert) throws SQLException
+    {
+        int movieId = resultSetToConvert.getInt("ID");
+        String title = resultSetToConvert.getString("title");
+        String genre = resultSetToConvert.getString("genre");
+        String director = resultSetToConvert.getString("director");
+        String runtime = resultSetToConvert.getString("runtime");
+        String plot = resultSetToConvert.getString("plot");
+        String location = resultSetToConvert.getString("location");
+        String poster = resultSetToConvert.getString("poster");
+        String rating = resultSetToConvert.getString("rating");
+        String format = resultSetToConvert.getString("format");
+        String year = resultSetToConvert.getString("year");
+        String starring = resultSetToConvert.getString("starring");
+        int copies = resultSetToConvert.getInt("copies");
+        String barcode = resultSetToConvert.getString("barcode");
+        String user_rating = resultSetToConvert.getString("user_rating");
+
+        return new Movie(movieId, title, genre, director, runtime, plot, location,
+                poster, rating, format, year, starring, copies, barcode, user_rating);
     }
 }

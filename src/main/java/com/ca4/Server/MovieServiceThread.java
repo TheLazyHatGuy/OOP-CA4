@@ -296,7 +296,12 @@ public class MovieServiceThread implements Runnable
         try
         {
             Movie movieToAdd = convertJSONStringToMovie(movieJSONString);
-            movieDAO.addMovieToDatabase(movieToAdd);
+            boolean isAdded = movieDAO.addMovieToDatabase(movieToAdd);
+
+            if (isAdded)
+            {
+                response = MovieServiceDetails.ADD_SUCCESS;
+            }
         }
         catch (DAOException e)
         {

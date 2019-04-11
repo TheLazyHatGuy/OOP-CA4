@@ -164,7 +164,15 @@ public class MovieConnectionHandler implements Runnable {
                     }
                     break;
                 case MovieServiceDetails.RECOMMEND_MOVIE:
-                    response = "NOT IMPLEMENTED";
+                    if (components.length > 1) {
+                        int userID = Integer.parseInt(components[1]);
+
+                        if (userID >= 1) {
+                            response = MovieRequestHandler.recommendMovie(userID);
+                        }
+                    } else {
+                        response = MovieServiceDetails.FAIL;
+                    }
                     break;
                 default:
                     response = MovieServiceDetails.UNRECOGNISED_COMMAND;

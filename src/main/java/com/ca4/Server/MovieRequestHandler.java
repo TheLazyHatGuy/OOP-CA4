@@ -12,6 +12,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 class MovieRequestHandler
 {
@@ -242,6 +243,32 @@ class MovieRequestHandler
 
         return response;
     }
+    static String recommendMovie(int userID)
+    {
+        Random random = new Random();
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            int min = 14;
+            int max = 1052;
+            //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
+            int randomMovieID = random.nextInt((max - min) + 1) + min;
+            Movie randomMovie = movieDAO.getMovieByID(randomMovieID);
+
+            response = randomMovie.toJSONString();
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
 
     /**
      * Converts a Movie ArrayList to a JSON string

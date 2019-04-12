@@ -35,4 +35,9 @@ public class MovieServiceDetails
     // ending characters
     public static final CharSequence JSONOBJECT_ENDINGCHAR = "}";
     public static final CharSequence JSONARRAY_ENDINGCHAR = "]";
+
+    //Terminal Colours
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_BLUE = "\u001B[34m";
 }

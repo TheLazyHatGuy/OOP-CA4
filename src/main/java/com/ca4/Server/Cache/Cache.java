@@ -3,9 +3,9 @@ package com.ca4.Server.Cache;
 import java.util.HashMap;
 
 public class Cache {
-    private static HashMap<CacheObject, String> movieTitleCache;
-    private static HashMap<CacheObject, String> movieDirectorrCache;
-    private static HashMap<CacheObject, String> movieGenreCache;
+    private static HashMap<String, CacheObject> movieTitleCache;
+    private static HashMap<String, CacheObject> movieDirectorrCache;
+    private static HashMap<String, CacheObject> movieGenreCache;
 
     public Cache() {
         movieTitleCache = new HashMap<>();
@@ -14,16 +14,16 @@ public class Cache {
     }
 
     public void addToMovieTitleCache(String searchString, String jsonStringToCache) {
-        CacheObject cacheObject = new CacheObject(CacheType.MOVIE_TITLE, searchString);
-        movieTitleCache.put(cacheObject, jsonStringToCache);
+        CacheObject cacheObject = new CacheObject(jsonStringToCache);
+        movieTitleCache.put(searchString.toLowerCase(), cacheObject);
     }
 
     public String queryMovieTitleCache(String searchString) {
-        CacheObject cacheObject = new CacheObject(CacheType.MOVIE_TITLE, searchString);
-
-        if (movieTitleCache.containsKey(cacheObject)) {
+        if (movieTitleCache.containsKey(searchString.toLowerCase())) {
             System.out.println("Object has been cached");
-            return movieTitleCache.get(cacheObject);
+            CacheObject cacheObject = movieTitleCache.get(searchString.toLowerCase());
+            cacheObject.setTimestamp();
+            return cacheObject.getJsonString();
         } else {
             return "";
         }

@@ -1,5 +1,9 @@
 package com.ca4.Client;
 
+import com.ca4.DTO.Movie;
+
+import java.sql.SQLOutput;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ClientInteractor {
@@ -8,6 +12,7 @@ public class ClientInteractor {
     public static String getMenuOption_NotLoggedIn(){
         System.out.println("A) Login");
         System.out.println("B) Register");
+        System.out.println("C) Exit application");
 
         String option = getStringFromUser();
 
@@ -23,7 +28,7 @@ public class ClientInteractor {
         System.out.println("F) Delete a movie");
         System.out.println("G) Update your profile");
         System.out.println("H) Delete your profile");
-        System.out.println("G) Exit application");
+        System.out.println("I) Logout and exit application");
 
         String option = ClientInteractor.getStringFromUser();
 
@@ -62,6 +67,34 @@ public class ClientInteractor {
         return directorName;
     }
 
+    public static Movie getMovieDetails(){
+        System.out.print("PLease enter the name of the movie: ");
+        String name = scan.nextLine();
+        System.out.print("Please enter the genres of the movie: ");
+        String genre = scan.nextLine();
+        System.out.print("Please enter the name of the director of the movie: ");
+        String director = scan.nextLine();
+        System.out.print("Please enter the runtime of the movie: ");
+        String runtime = scan.nextLine();
+        System.out.print("Please enter the plot of the movie: ");
+        String plot = scan.nextLine();
+        System.out.print("Please enter the rating of the movie: ");
+        String rating = scan.nextLine();
+        System.out.print("Please enter the disc format of the movie: ");
+        String format = scan.nextLine();
+        System.out.print("Please enter the year the movie was released: ");
+        String year = scan.nextLine();
+        System.out.print("Please enter the actor/actress list of the movie: ");
+        String starring = scan.nextLine();
+        System.out.print("Please enter the critical rating of the movie: ");
+        String userRating = scan.nextLine();
+        System.out.print("Please enter the number of available copies of the movie: ");
+        int copies = scan.nextInt();
+
+        return new Movie(0, name, genre, director, runtime, plot, "", "", rating,
+                format, year, starring, copies, generateRandomBarcode(), userRating);
+    }
+
     public static String getStringFromUser(){
         String stringFromUser = scan.nextLine();
         //TODO add input validation
@@ -81,5 +114,19 @@ public class ClientInteractor {
         //TODO add input validation and password validation
 
         return password;
+    }
+
+    public static String generateRandomBarcode(){
+        Random rand = new Random();
+
+        Long randNum = -1l;
+
+        while(randNum < 0){
+            randNum = rand.nextLong();
+        }
+
+        String stringNum = String.valueOf(randNum);
+
+        return stringNum;
     }
 }

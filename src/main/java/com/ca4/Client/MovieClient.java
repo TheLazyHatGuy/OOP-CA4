@@ -1,6 +1,7 @@
 package com.ca4.Client;
 
 import com.ca4.Core.MovieServiceDetails;
+import com.ca4.DTO.Movie;
 import com.ca4.DTO.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,7 +22,7 @@ public class MovieClient
     private static Scanner socketInput;
     private static StringBuilder stringBuilder;
     private static User localUser;
-    private static boolean loggedIn = false;
+    private static boolean loggedIn = true;
 
     public static void main(String[] args)
     {
@@ -46,6 +47,10 @@ public class MovieClient
                         case "B":
                             String[] userDetails = ClientInteractor.loginRegister();
                             sendUsersDetails(MovieServiceDetails.REGISTER, userDetails);
+                            break;
+                        case "C":
+                            closeConnectionToServer();
+                            continueRunning = false;
                             break;
                     }
 
@@ -73,7 +78,8 @@ public class MovieClient
                             //TODO add update movie logic
                             break;
                         case "E":
-                            //TODO add insert movies logic
+                            Movie movieToAdd = ClientInteractor.getMovieDetails();
+                            sendMovieJSON(movieToAdd);
                             break;
                         case "F":
                             //TODO add delete movie logic
@@ -83,6 +89,11 @@ public class MovieClient
                             break;
                         case "H":
                             //TODO add delete user logic
+                            break;
+                        case "I":
+                            closeConnectionToServer();
+                            loggedIn = false;
+                            continueRunning = false;
                             break;
                     }
                 }
@@ -153,8 +164,8 @@ public class MovieClient
 
         if(serverAnswer[0].equals(MovieServiceDetails.LOGIN_SUCCESS)){
             localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
-            loggedIn = true;
             localUser.toString();
+            loggedIn = true;
         }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
             sendUsersDetails(MovieServiceDetails.LOGIN, userDetails);
         }else{
@@ -163,20 +174,57 @@ public class MovieClient
     }
 
     public static void receiveJSONObject(CharSequence endingChar){
-            Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
+        Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
-            String currentline = "";
+        String currentline = "";
 
-            while(!(currentline.contains(endingChar))){
-                currentline += input.nextLine();
-            }
-
-            if(endingChar.equals(MovieServiceDetails.JSONARRAY_ENDINGCHAR)){
-                JSONArray jsArray = new JSONArray(currentline);
-                System.out.println(jsArray.toString(4));
-            }else if(endingChar.equals(MovieServiceDetails.JSONOBJECT_ENDINGCHAR)){
-                JSONObject jsObj = new JSONObject(currentline);
-                System.out.println(jsObj.toString(4));
-            }
+        while(!(currentline.contains(endingChar))){
+            currentline += input.nextLine();
         }
+
+        if(endingChar.equals(MovieServiceDetails.JSONARRAY_ENDINGCHAR)){
+            JSONArray jsArray = new JSONArray(currentline);
+            System.out.println(jsArray.toString(4));
+        }else if(endingChar.equals(MovieServiceDetails.JSONOBJECT_ENDINGCHAR)){
+            JSONObject jsObj = new JSONObject(currentline);
+            System.out.println(jsObj.toString(4));
+        }
+    }
+
+    public static void closeConnectionToServer(){
+        try{
+            inputFromSocket = client.getInputStream();
+
+            streamWriter = new PrintWriter(client.getOutputStream());
+            streamWriter.println(MovieServiceDetails.CLOSE_CONNECTION);
+            streamWriter.flush();
+            recceiveCommandCodeFromServer();
+        }catch (IOException io){
+            io.printStackTrace();
+        }
+    }
+
+    public static void recceiveCommandCodeFromServer(){
+        Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
+
+        String answer;
+
+        answer = input.nextLine();
+
+        System.out.println(answer);
+    }
+
+    public static void sendMovieJSON(Movie movieToSend){
+        try{
+            String sendableMovie = MovieServiceDetails.ADD_MOVIE + MovieServiceDetails.BREAKING_CHARACTER
+                    + movieToSend.toJSONString();
+
+            streamWriter = new PrintWriter(client.getOutputStream());
+            streamWriter.println(sendableMovie);
+            streamWriter.flush();
+            recceiveCommandCodeFromServer();
+        }catch (IOException io){
+            io.printStackTrace();
+        }
+    }
 }

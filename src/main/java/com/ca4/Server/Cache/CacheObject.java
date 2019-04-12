@@ -1,14 +1,13 @@
 package com.ca4.Server.Cache;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class CacheObject {
     private CacheType cacheType;
     private Date timestamp;
     private String searchString;
 
-    public CacheObject(CacheType cacheType, String searchString) {
+    CacheObject(CacheType cacheType, String searchString) {
         this.cacheType = cacheType;
         this.timestamp = new Date();
         this.searchString = searchString;
@@ -44,9 +43,7 @@ public class CacheObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CacheObject that = (CacheObject) o;
-        return cacheType == that.cacheType &&
-                Objects.equals(timestamp, that.timestamp) &&
-                Objects.equals(searchString, that.searchString);
+        return searchString.equals(that.searchString);
     }
 
     @Override

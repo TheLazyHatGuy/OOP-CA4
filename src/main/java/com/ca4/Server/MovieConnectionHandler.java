@@ -20,6 +20,8 @@ public class MovieConnectionHandler implements Runnable {
     //Crate a list to store the clients that haven't been processed yet
     private static List pool = new LinkedList();
 
+    MovieConnectionHandler() {}
+
     static void processRequest(Socket incomingClient) {
         synchronized (pool) {
             pool.add(pool.size(), incomingClient);

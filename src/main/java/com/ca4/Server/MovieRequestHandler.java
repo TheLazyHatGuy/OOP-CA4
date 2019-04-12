@@ -231,7 +231,7 @@ class MovieRequestHandler
 
             if (isWatched)
             {
-                response = MovieServiceDetails.WATCH_MOVIE;
+                response = MovieServiceDetails.WATCH_SUCCESS;
             }
         }
         catch (DAOException e)

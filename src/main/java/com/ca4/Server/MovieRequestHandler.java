@@ -6,16 +6,21 @@ import com.ca4.DTO.Movie;
 import com.ca4.DTO.User;
 import com.ca4.DTO.WatchedMovie;
 import com.ca4.Exceptions.DAOException;
+import com.ca4.Server.Cache.Cache;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
 class MovieRequestHandler
 {
+    private static Cache cache = new Cache();
+
     static String registerUser(String email, String password)
     {
         UserDAOInterface userDAO = new MySQLUserDAO();
@@ -74,8 +79,19 @@ class MovieRequestHandler
 
         try
         {
-            Movie movie = movieDAO.getMovieByName(searchString);
-            response = movie.toJSONString();
+            String cacheResult = cache.queryMovieTitleCache(searchString);
+
+            if (cacheResult.equals("")) {
+                System.out.println("Object wasn't in cache");
+
+                Movie movie = movieDAO.getMovieByName(searchString);
+                response = movie.toJSONString();
+
+                cache.addToMovieTitleCache(searchString, response);
+            } else {
+                System.out.println("Object is in cache");
+                response = cacheResult;
+            }
         }
         catch (DAOException e)
         {

@@ -3,19 +3,14 @@ package com.ca4.Server.Cache;
 import java.util.Date;
 
 public class CacheObject {
-    private CacheType cacheType;
     private Date timestamp;
     private String searchString;
 
-    CacheObject(CacheType cacheType, String searchString) {
-        this.cacheType = cacheType;
+    CacheObject(String searchString) {
         this.timestamp = new Date();
         this.searchString = searchString;
     }
 
-    public CacheType getCacheType() {
-        return cacheType;
-    }
 
     public Date getTimestamp() {
         return timestamp;
@@ -32,7 +27,6 @@ public class CacheObject {
     @Override
     public String toString() {
         return "CacheObject{" +
-                "cacheType=" + cacheType +
                 ", timestamp=" + timestamp +
                 ", searchString='" + searchString + '\'' +
                 '}';

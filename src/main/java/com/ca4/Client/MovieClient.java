@@ -272,6 +272,7 @@ public class MovieClient
     {
         JSONObject movieJSON = new JSONObject(jsonStringToConvert);
 
+        int id = movieJSON.getInt("id");
         String title = movieJSON.getString("title");
         String genre = movieJSON.getString("genre");
         String director = movieJSON.getString("director");
@@ -287,7 +288,7 @@ public class MovieClient
         //String barcode = movieJSON.getString("barcode");
         //String userRating = movieJSON.getString("user-rating");
 
-        return new Movie(0, title, genre, director, runtime, plot, location, "", rating,
+        return new Movie(id, title, genre, director, runtime, plot, location, "", rating,
                 format, year, starring, copies, "", "");
     }
 

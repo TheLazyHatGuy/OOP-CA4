@@ -11,15 +11,15 @@ public class CacheObject {
         this.jsonString = jsonString;
     }
 
-    public Date getTimestamp() {
+    Date getTimestamp() {
         return timestamp;
     }
 
-    public String getJsonString() {
+    String getJsonString() {
         return jsonString;
     }
 
-    public void setTimestamp() {
+    void setTimestamp() {
         this.timestamp = new Date();
     }
 

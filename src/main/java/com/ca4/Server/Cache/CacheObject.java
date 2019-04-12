@@ -30,17 +30,4 @@ public class CacheObject {
                 ", jsonString='" + jsonString + '\'' +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CacheObject that = (CacheObject) o;
-        return jsonString.equals(that.jsonString);
-    }
-
-    @Override
-    public int hashCode() {
-        return jsonString.hashCode() + 64;
-    }
 }

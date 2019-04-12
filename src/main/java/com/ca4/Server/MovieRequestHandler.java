@@ -1,173 +1,22 @@
 package com.ca4.Server;
 
 import com.ca4.Core.MovieServiceDetails;
-import com.ca4.DAO.MovieDAOInterface;
-import com.ca4.DAO.MySQLMovieDAO;
-import com.ca4.DAO.MySQLUserDAO;
-import com.ca4.DAO.UserDAOInterface;
+import com.ca4.DAO.*;
 import com.ca4.DTO.Movie;
 import com.ca4.DTO.User;
+import com.ca4.DTO.WatchedMovie;
 import com.ca4.Exceptions.DAOException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Scanner;
+import java.util.Random;
 
-public class MovieServiceThread implements Runnable
+class MovieRequestHandler
 {
-    private Thread thread;
-    private Socket dataSocket;
-    private Scanner input;
-    private PrintWriter output;
-    private int threadNumber;
-
-    public MovieServiceThread(ThreadGroup group, String threadName, Socket dataSocket, int threadNumber)
-    {
-        thread              = new Thread(group, threadName);
-        this.dataSocket     = dataSocket;
-        this.threadNumber   = threadNumber;
-
-        try
-        {
-            input = new Scanner(new InputStreamReader(this.dataSocket.getInputStream()));
-            output = new PrintWriter(this.dataSocket.getOutputStream(), true);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void run()
-    {
-        //Setup some variables for communication
-        String incomingMessage = "";
-        String response;
-
-        try
-        {
-            //While the client doesn't want to end the session
-            while (!incomingMessage.equals(MovieServiceDetails.CLOSE_CONNECTION))
-            {
-                //Take the input information from the client
-                incomingMessage = input.nextLine();
-                System.out.println(threadNumber + ": Received a message: " + incomingMessage);
-                writeToLogFile(threadNumber + ": Received a message: " + incomingMessage);
-
-                //Tokenize the input
-                String[] components = incomingMessage.split(MovieServiceDetails.BREAKING_CHARACTER);
-
-                //Process the information
-                switch (components[0]) {
-                    case MovieServiceDetails.LOGIN:
-                        if (components.length > 2)
-                        {
-                            response = loginUser(components[1], components[2]);
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
-                        break;
-                    case MovieServiceDetails.REGISTER:
-                        if (components.length > 2)
-                        {
-                            response = registerUser(components[1], components[2]);
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
-                        break;
-                    case MovieServiceDetails.SEARCH_MOVIE_TITLE:
-                        if (components.length > 1)
-                        {
-                            response = searchForMovieByTitle(components[1]);
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
-                        break;
-                    case MovieServiceDetails.SEARCH_MOVIE_DIRECTOR:
-                        if (components.length > 1)
-                        {
-                            response = searchForMovieByDirector(components[1]);
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
-                        break;
-                    case MovieServiceDetails.SEARCH_MOVIE_GENRE:
-                        if (components.length > 1)
-                        {
-                            response = searchForMovieByGenre(components[1]);
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
-                        break;
-                    case MovieServiceDetails.ADD_MOVIE:
-                        if (components.length > 1)
-                        {
-                            response = addMovie(components[1]);
-                        }
-                        else
-                        {
-                            response = MovieServiceDetails.FAIL;
-                        }
-                        break;
-                    case MovieServiceDetails.REMOVE_MOVIE:
-                        response = "NOT IMPLEMENTED";
-                        break;
-                    case MovieServiceDetails.UPDATE_MOVIE:
-                        response = "NOT IMPLEMENTED";
-                        break;
-                    case MovieServiceDetails.WATCH_MOVIE:
-                        response = "NOT IMPLEMENTED";
-                        break;
-                    case MovieServiceDetails.RECOMMEND_MOVIE:
-                        response = "NOT IMPLEMENTED";
-                        break;
-                    case MovieServiceDetails.CLOSE_CONNECTION:
-                        response = MovieServiceDetails.CLOSE_CONNECTION;
-                        break;
-                    default:
-                        response = MovieServiceDetails.UNRECOGNISED_COMMAND;
-                        break;
-                }
-
-                output.println(response);
-                System.out.println("*****START RESPONSE*****");
-                System.out.println(response);
-                System.out.println("*****END RESPONSE*****");
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                dataSocket.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private String registerUser(String email, String password)
+    static String registerUser(String email, String password)
     {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String hashedPassword = hash(password);
@@ -193,7 +42,7 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
-    private String loginUser(String email, String password)
+    static String loginUser(String email, String password)
     {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String response = MovieServiceDetails.FAIL;
@@ -218,7 +67,7 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
-    private String searchForMovieByTitle(String searchString)
+    static String searchForMovieByTitle(String searchString)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -238,7 +87,7 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
-    private String searchForMovieByDirector(String searchString)
+    static String searchForMovieByDirector(String searchString)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -262,7 +111,7 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
-    private String searchForMovieByGenre(String searchString)
+    static String searchForMovieByGenre(String searchString)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -291,7 +140,7 @@ public class MovieServiceThread implements Runnable
      * @param movieJSONString A full movie JSON String
      * @return Server response message
      */
-    private String addMovie(String movieJSONString)
+    static String addMovie(String movieJSONString)
     {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -316,12 +165,117 @@ public class MovieServiceThread implements Runnable
         return response;
     }
 
+    static String removeMovie(int idOfMovieToRemove)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            boolean isDeleted = movieDAO.deleteMovie(idOfMovieToRemove);
+
+            if (isDeleted)
+            {
+                response = MovieServiceDetails.REMOVE_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * Converts a movie JSON String to the movie class and updates it in the database
+     * @param movieJSONString A full movie JSON String
+     * @return Server response message
+     */
+    static String updateMovie(String movieJSONString)
+    {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            Movie movieToUpdate = convertJSONStringToMovie(movieJSONString);
+            boolean isUpdated = movieDAO.updateMovie(movieToUpdate);
+
+            if (isUpdated)
+            {
+                response = MovieServiceDetails.UPDATE_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+    static String watchMovie(int userID, int movieID)
+    {
+        WatchedMovieDAOInterface watchedMovieDAO = new MySQLWatchedMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            WatchedMovie watchedMovie = new WatchedMovie(userID, movieID);
+            boolean isWatched = watchedMovieDAO.addWatchedMovie(watchedMovie);
+
+            if (isWatched)
+            {
+                response = MovieServiceDetails.UPDATE_SUCCESS;
+            }
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+    static String recommendMovie(int userID)
+    {
+        Random random = new Random();
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try
+        {
+            int min = 14;
+            int max = 1052;
+            //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
+            int randomMovieID = random.nextInt((max - min) + 1) + min;
+            Movie randomMovie = movieDAO.getMovieByID(randomMovieID);
+
+            response = randomMovie.toJSONString();
+        }
+        catch (DAOException e)
+        {
+            e.printStackTrace();
+            writeToLogFile(e.getMessage());
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
+
     /**
      * Converts a Movie ArrayList to a JSON string
      * @param movies An ArrayList of movie
      * @return A JSON string
      */
-    private String buildMovieJSONString(ArrayList<Movie> movies)
+    private static String buildMovieJSONString(ArrayList<Movie> movies)
     {
         // '[' is added to start a JSON array
         StringBuilder movieString = new StringBuilder("[");
@@ -349,7 +303,7 @@ public class MovieServiceThread implements Runnable
      */
     //This is added to avoid the warnings related to similar SQL code
     @SuppressWarnings("Duplicates")
-    private Movie convertJSONStringToMovie(String jsonStringToConvert)
+    private static Movie convertJSONStringToMovie(String jsonStringToConvert)
     {
         JSONObject movieJSON = new JSONObject(jsonStringToConvert);
 
@@ -377,7 +331,7 @@ public class MovieServiceThread implements Runnable
      * @param password Raw password to hash
      * @return Hashed password
      */
-    private String hash(String password)
+    private static String hash(String password)
     {
         //Applies 12 rounds of salting to password
         return BCrypt.hashpw(password, BCrypt.gensalt(12));
@@ -389,12 +343,12 @@ public class MovieServiceThread implements Runnable
      * @param hash The hash taken from the database
      * @return True if the hashes match
      */
-    private boolean verifyHash(String password, String hash)
+    private static boolean verifyHash(String password, String hash)
     {
         return BCrypt.checkpw(password, hash);
     }
 
-    private static void writeToLogFile(String stringToWrite)
+    static void writeToLogFile(String stringToWrite)
     {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
         try
@@ -411,7 +365,7 @@ public class MovieServiceThread implements Runnable
         }
     }
 
-    private static void writeToErrorLogFile(String stringToWrite)
+    static void writeToErrorLogFile(String stringToWrite)
     {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
         try

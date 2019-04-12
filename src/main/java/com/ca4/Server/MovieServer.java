@@ -8,38 +8,71 @@ import java.net.Socket;
 
 public class MovieServer
 {
+    private ServerSocket listenSocket;
+    private int listenPort;
+    private int maxConnections;
+
+    public MovieServer(int listenPort, int maxConnections)
+    {
+        this.listenPort = listenPort;
+        this.maxConnections = maxConnections;
+    }
+
     public static void main(String[] args)
+    {
+        //Set up the server
+        MovieServer server = new MovieServer(MovieServiceDetails.SERVER_PORT, MovieServiceDetails.MAX_CONNECTIONS);
+
+        //Set up the handler threads in a pool
+        server.setUpHandlers();
+        //Start accepting connections
+        server.acceptConnections();
+    }
+
+    /*
+    Set up the connection pool
+    Create all the threads that will be reused during the lifetime of the server
+     */
+    private void setUpHandlers()
+    {
+        for (int i = 0; i < this.maxConnections; ++i)
+        {
+            MovieConnectionHandler currentHandler = new MovieConnectionHandler();
+            Thread t = new Thread(currentHandler);
+            t.start();
+        }
+    }
+
+    private void acceptConnections()
     {
         try
         {
-            boolean continueRunning = true;
-            int threadCount = 0;
+            //Open a listening socket
+            //Backlog is the length of the queue before it stops listening
+            //Allows up to 5 connections to wait for connection
+            ServerSocket server = new ServerSocket(this.listenPort, this.maxConnections);
+            Socket incomingConnection = null;
 
-            //Create the listening socket
-            ServerSocket listenSocket = new ServerSocket(MovieServiceDetails.SERVER_PORT);
-
-            //Create a Thread Group to store all clients together
-            ThreadGroup group = new ThreadGroup("Client Threads");
-            //Place more emphasis on accepting threads than on processing threads
-            group.setMaxPriority(Thread.currentThread().getPriority() - 1);
-
-            System.out.println("Ready to accept connections");
-
-            while (continueRunning)
+            while (true)
             {
-                //Wait for incoming connections
-                Socket dataSocket = listenSocket.accept();
-                threadCount ++;
-
-                MovieServiceThread serviceThread = new MovieServiceThread(group, dataSocket.getInetAddress().toString(),
-                                                                            dataSocket, threadCount);
-                serviceThread.run();
+                //Accept the next client
+                incomingConnection = server.accept();
+                /*
+                Handle the client
+                Either with one of our service threads or else out in a queue
+                 */
+                handleConnection(incomingConnection);
             }
-            listenSocket.close();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+    }
+
+    private void handleConnection(Socket connectionToHandle)
+    {
+        //Process the client's request to connect to the server
+        MovieConnectionHandler.processRequest(connectionToHandle);
     }
 }

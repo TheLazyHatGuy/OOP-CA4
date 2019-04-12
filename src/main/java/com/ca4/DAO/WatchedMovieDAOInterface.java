@@ -9,9 +9,9 @@ public interface WatchedMovieDAOInterface
 {
     List<WatchedMovie> getAllUsersWatchedMovies(int userID) throws DAOException;
 
-    void addWatchedMovie (WatchedMovie watchedMovie) throws DAOException;
+    boolean addWatchedMovie (WatchedMovie watchedMovie) throws DAOException;
 
-    void deleteWatchedMovie (WatchedMovie watchedMovie) throws DAOException;
+    boolean deleteWatchedMovie (WatchedMovie watchedMovie) throws DAOException;
 
-    void deleteAllUsersWatchedMovies (int userID) throws DAOException;
+    boolean deleteAllUsersWatchedMovies (int userID) throws DAOException;
 }

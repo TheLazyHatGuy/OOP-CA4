@@ -4,20 +4,19 @@ import java.util.Date;
 
 public class CacheObject {
     private Date timestamp;
-    private String searchString;
+    private String jsonString;
 
-    CacheObject(String searchString) {
+    CacheObject(String jsonString) {
         this.timestamp = new Date();
-        this.searchString = searchString;
+        this.jsonString = jsonString;
     }
-
 
     public Date getTimestamp() {
         return timestamp;
     }
 
-    public String getSearchString() {
-        return searchString;
+    public String getJsonString() {
+        return jsonString;
     }
 
     public void setTimestamp(Date timestamp) {
@@ -28,7 +27,7 @@ public class CacheObject {
     public String toString() {
         return "CacheObject{" +
                 ", timestamp=" + timestamp +
-                ", searchString='" + searchString + '\'' +
+                ", jsonString='" + jsonString + '\'' +
                 '}';
     }
 
@@ -37,11 +36,11 @@ public class CacheObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CacheObject that = (CacheObject) o;
-        return searchString.equals(that.searchString);
+        return jsonString.equals(that.jsonString);
     }
 
     @Override
     public int hashCode() {
-        return searchString.hashCode() + 64;
+        return jsonString.hashCode() + 64;
     }
 }

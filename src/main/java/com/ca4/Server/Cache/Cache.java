@@ -1,5 +1,9 @@
 package com.ca4.Server.Cache;
 
+import com.ca4.Core.MovieServiceDetails;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Cache {
@@ -26,6 +30,34 @@ public class Cache {
             return cacheObject.getJsonString();
         } else {
             return "";
+        }
+    }
+
+    public void checkCacheTTL() {
+        checkMovieTitleCacheTTL();
+    }
+
+    /**
+     * This function will compare the time stamps of all searched in the cache and the defined TTL for the cache.
+     * If the timestamp is passed the TTL for the cache, the cached item will be removed
+     */
+    private void checkMovieTitleCacheTTL() {
+        //Method for adding time taken from - https://www.tutorialspoint.com/javaexamples/date_add_time.htm
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        for (String cacheKey : movieTitleCache.keySet()) {
+            CacheObject cacheObject = movieTitleCache.get(cacheKey);
+
+            Calendar objectCalendar = Calendar.getInstance();
+            objectCalendar.setTime(cacheObject.getTimestamp());
+            objectCalendar.add(Calendar.SECOND, MovieServiceDetails.CACHE_TTL);
+
+            //If the timestamp + TTL is before the current time, the cached item must be deleted
+            if (objectCalendar.before(calendar)) {
+                System.out.println("Removing from cache: " + cacheObject);
+                movieTitleCache.remove(cacheKey);
+            }
         }
     }
 }

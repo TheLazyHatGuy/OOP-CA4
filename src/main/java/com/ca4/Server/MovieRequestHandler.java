@@ -100,7 +100,7 @@ class MovieRequestHandler
             writeToErrorLogFile(e.getMessage());
         }
 
-        cache.checkCacheTTL();
+        cache.checkAllCaches();
         return response;
     }
 

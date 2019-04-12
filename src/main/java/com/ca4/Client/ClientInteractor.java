@@ -26,20 +26,129 @@ public class ClientInteractor {
         System.out.println("D) Update a movie");
         System.out.println("E) Add a movie");
         System.out.println("F) Delete a movie");
-        System.out.println("G) Update your profile");
-        System.out.println("H) Delete your profile");
-        System.out.println("I) Logout and exit application");
+        System.out.println("G) Logout and exit application");
 
-        String option = ClientInteractor.getStringFromUser();
+        String option = getStringFromUser();
 
         return option;
     }
 
+    public static String getUpdateOption(){
+        System.out.println("A) Update movie name");
+        System.out.println("B) Update movie genre list");
+        System.out.println("C) Update movie director");
+        System.out.println("D) Update movie runtime");
+        System.out.println("E) Update movie plot");
+        System.out.println("F) Update movie rating");
+        System.out.println("G) Update movie format");
+        System.out.println("H) Update movie year");
+        System.out.println("I) Update movie actor/actress list");
+        System.out.println("J) Update number of available copies of the movies");
+        System.out.println("K) Run update and exit");
+        System.out.println("L) Exit without updating");
+
+        String option = getStringFromUser();
+
+        option.toUpperCase();
+
+        return option;
+    }
+
+    public static Movie UpdateMovie(Movie movieToUpdate){
+        boolean keepUpdating = true;
+        String updatedParam;
+        String option;
+
+        Movie updatedMovie = new Movie(movieToUpdate.getId(), movieToUpdate.getTitle(), movieToUpdate.getGenre(),
+                movieToUpdate.getDirector(), movieToUpdate.getRuntime(), movieToUpdate.getPlot(), movieToUpdate.getLocation(),
+                movieToUpdate.getPoster(), movieToUpdate.getRating(), movieToUpdate.getFormat(), movieToUpdate.getYear(),
+                movieToUpdate.getStarring(), movieToUpdate.getCopies(), movieToUpdate.getBarcode(), movieToUpdate.getUserRating());
+        while(keepUpdating){
+            option = getUpdateOption();
+
+            switch (option) {
+                case "A":
+                    System.out.print("Please enter the updated name of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setTitle(updatedParam);
+                    break;
+
+                case "B":
+                    System.out.print("Please enter the updated genre list of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setGenre(updatedParam);
+                    break;
+
+                case "C":
+                    System.out.print("Please enter the updated director name of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setDirector(updatedParam);
+                    break;
+
+                case "D":
+                    System.out.print("Please enter the updated runtime of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setRuntime(updatedParam);
+                    break;
+
+                case "E":
+                    System.out.print("Please enter the updated plot of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setPlot(updatedParam);
+                    break;
+
+                case "F":
+                    System.out.print("Please enter the updated rating of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setRating(updatedParam);
+                    break;
+
+                case "G":
+                    System.out.print("Please enter the updated format of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setFormat(updatedParam);
+                    break;
+
+                case "H":
+                    System.out.print("Please enter the updated year of release of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setYear(updatedParam);
+                    break;
+
+                case "I":
+                    System.out.print("Please enter the updated actor/actress list of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setStarring(updatedParam);
+                    break;
+
+                case "J":
+                    System.out.print("Please enter the updated amount of available copies of the movie:");
+                    int updatedCopies = scan.nextInt();
+                    updatedMovie.setCopies(updatedCopies);
+                    break;
+
+                case "K":
+                    boolean answer = getYesorNofromuser();
+
+                    if(answer){
+                        return updatedMovie;
+                    }
+                    break;
+
+                case "L":
+                    keepUpdating = false;
+                    break;
+            }
+        }
+
+        return movieToUpdate;
+    }
+
     public static String[] loginRegister(){
         System.out.println("Please enter your email: ");
-        String email = ClientInteractor.getEmail();
+        String email = getEmail();
         System.out.println("Please enter your password: ");
-        String password = ClientInteractor.getPassword();
+        String password = getPassword();
 
         String[] userDetails = {email, password};
 
@@ -47,27 +156,27 @@ public class ClientInteractor {
     }
 
     public static String getMovieName(){
-        String movieName = ClientInteractor.getStringFromUser();
+        String movieName = getStringFromUser();
 
         return movieName;
     }
 
     public static String getMovieGenre(){
         System.out.println("What movie genre would you like to search by: ");
-        String movieGenre = ClientInteractor.getStringFromUser();
+        String movieGenre = getStringFromUser();
 
         return movieGenre;
     }
 
     public static String getMovieDirector(){
         System.out.println("What movie director would you like to search by: ");
-        String directorName = ClientInteractor.getStringFromUser();
+        String directorName = getStringFromUser();
 
         return directorName;
     }
 
     public static boolean getYesorNofromuser(){
-        System.out.println("Would you like to delete this movie [Y]es or [N]o: ");
+        System.out.print("Would you like to continue with the action on this movie [Y]es or [N]o: ");
         String answer = scan.nextLine();
 
         answer.toUpperCase();

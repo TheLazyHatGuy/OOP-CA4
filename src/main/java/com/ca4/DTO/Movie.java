@@ -60,6 +60,46 @@ public class Movie
         this.userRating = "";
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setStarring(String starring) {
+        this.starring = starring;
+    }
+
+    public void setCopies(int copies) {
+        this.copies = copies;
+    }
+
     public int getId()
     {
         return id;

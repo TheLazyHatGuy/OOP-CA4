@@ -66,46 +66,68 @@ public class MovieClient
                             sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName);
                             jsonMovie = receiveJSONObject();
                             Movie movie = convertJSONStringToMovie(jsonMovie.toString());
-                            System.out.println(movie.toString());
+
+                            printMovie(movie);
+
                             break;
+
                         case "B":
                             String[] movieDirector = {ClientInteractor.getMovieDirector()};
                             sendStringArray(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, movieDirector);
                             jsMovieArray = receiveJSONArray();
                             movieArray = splitJSONMovieArray(jsMovieArray);
+
                             printMovieArray(movieArray);
+
                             break;
+
                         case "C":
                             String[] movieGenre = {ClientInteractor.getMovieGenre()};
                             sendStringArray(MovieServiceDetails.SEARCH_MOVIE_GENRE, movieGenre);
                             jsMovieArray = receiveJSONArray();
                             movieArray = splitJSONMovieArray(jsMovieArray);
+
                             printMovieArray(movieArray);
+
                             break;
+
                         case "D":
-                            //TODO add update movie logic
+                            System.out.println("What is the name of the movie you are looking to update: ");
+                            String[] movieToUpdate = {ClientInteractor.getMovieName()};
+                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToUpdate);
+
+                            jsonMovie = receiveJSONObject();
+                            Movie movieForUpdate = convertJSONStringToMovie(jsonMovie.toString());
+
+                            printMovie(movieForUpdate);
+
+                            Movie updatedMovie = ClientInteractor.UpdateMovie(movieForUpdate);
+
+                            sendMovieJSON(updatedMovie, MovieServiceDetails.UPDATE_MOVIE);
+
                             break;
+
                         case "E":
                             Movie movieToAdd = ClientInteractor.getMovieDetails();
-                            sendMovieJSON(movieToAdd);
+                            sendMovieJSON(movieToAdd, MovieServiceDetails.ADD_MOVIE);
                             break;
+
                         case "F":
                             System.out.println("What is the name of the movie you are looking to delete: ");
                             String[] movieToDelete = {ClientInteractor.getMovieName()};
+
                             sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToDelete);
                             jsonMovie = receiveJSONObject();
                             Movie movieForDelete = convertJSONStringToMovie(jsonMovie.toString());
+
+                            printMovie(movieForDelete);
+
                             if(ClientInteractor.getYesorNofromuser()){
                                 sendMovieToDelete(movieForDelete.getId());
                             }
                             break;
+
                         case "G":
-                            //TODO add update user logic
-                            break;
-                        case "H":
-                            //TODO add delete user logic
-                            break;
-                        case "I":
                             closeConnectionToServer();
                             loggedIn = false;
                             continueRunning = false;
@@ -195,7 +217,8 @@ public class MovieClient
         while(!(currentline.contains(MovieServiceDetails.JSONOBJECT_ENDINGCHAR))){
             currentline += input.nextLine();
         }
-            JSONObject jsObj = new JSONObject(currentline);
+
+        JSONObject jsObj = new JSONObject(currentline);
 
         return jsObj;
     }
@@ -236,10 +259,9 @@ public class MovieClient
         System.out.println(answer);
     }
 
-    public static void sendMovieJSON(Movie movieToSend){
+    public static void sendMovieJSON(Movie movieToSend, String serverCode){
         try{
-            String sendableMovie = MovieServiceDetails.ADD_MOVIE + MovieServiceDetails.BREAKING_CHARACTER
-                    + movieToSend.toJSONString();
+            String sendableMovie = serverCode + MovieServiceDetails.BREAKING_CHARACTER + movieToSend.toJSONString();
 
             streamWriter = new PrintWriter(client.getOutputStream());
             streamWriter.println(sendableMovie);
@@ -293,9 +315,127 @@ public class MovieClient
     }
 
     public static void printMovieArray(ArrayList<Movie> movies){
-        for(int i = 0;i < movies.size(); ++i){
-            System.out.println(movies.get(i).toString());
+        int longestID = 5;
+        int longestTitle = 10;
+        int maxGenrelengthBeforeNewLIne = 50;
+        int longestDirector = 10;
+        int longestRuntime = 5;
+        int maxPlotlengthBeforeNewLIne = 50;
+        int longestRating = 4;
+        int longestFormat = 5;
+        int longestYear = 4;
+        int maxStarringListlengthBeforeNewLIne = 50;
+        int longestCopies = 4;
+
+        for(int i = 0; i < movies.size(); ++i){
+            int movieTitleLength = movies.get(i).getTitle().length();
+            int movieDirectorLength = movies.get(i).getDirector().length();
+            int movieRuntimeLength = movies.get(i).getRuntime().length();
+            int movieRatingLength = movies.get(i).getRating().length();
+            int movieFormatLength = movies.get(i).getFormat().length();
+            int movieYearLength = movies.get(i).getYear().length();
+
+            if(movieTitleLength > longestTitle){
+                longestTitle = movieTitleLength;
+            }
+
+            if(movieDirectorLength > longestDirector){
+                longestDirector = movieDirectorLength;
+            }
+
+            if(movieRuntimeLength > longestRuntime){
+                longestRuntime = movieRuntimeLength;
+            }
+
+            if(movieRatingLength > longestRating){
+                longestRating = movieRatingLength;
+            }
+
+            if(movieFormatLength > longestFormat){
+                longestFormat = movieFormatLength;
+            }
+
+            if(movieYearLength > longestYear){
+                longestYear = movieYearLength;
+            }
         }
+
+        for(Movie movie : movies){
+            System.out.println("||" + pad("ID", longestID) + "||" + pad("Title", longestTitle) +
+                    "||" + pad("Genre", maxGenrelengthBeforeNewLIne) + "||" + pad("Director", longestDirector) +
+                    "||" + pad("RunTime", longestRuntime) + "||" + pad("Rating", longestRating) + "||"
+                    + pad("Format", longestFormat) + "||" + pad("Year", longestYear) + "||" +
+                    pad("Starring", maxStarringListlengthBeforeNewLIne) + "||" + pad("Copies", longestCopies) + "||");
+
+            System.out.println("||" + pad(Integer.toString(movie.getId()), longestID) + "||" + pad(movie.getTitle(), longestTitle) +
+                    "||" + pad(movie.getGenre(), maxGenrelengthBeforeNewLIne) + "||" + pad(movie.getGenre(), longestDirector) +
+                    "||" + pad(movie.getRuntime(), longestRuntime) + "||" + pad(movie.getRating(), longestRating) + "||"
+                    + pad(movie.getFormat(), longestFormat) + "||" + pad(movie.getYear(), longestYear) + "||" +
+                    pad(movie.getStarring(), maxStarringListlengthBeforeNewLIne) + "||" +
+                    pad(Integer.toString(movie.getCopies()), longestCopies) + "||");
+
+            System.out.println("\n" + movie.getPlot() + "\n");
+        }
+    }
+
+    public static void printMovie(Movie movie){
+        int longestID = 5;
+        int longestTitle = 10;
+        int maxGenrelengthBeforeNewLIne = 50;
+        int longestDirector = 10;
+        int longestRuntime = 5;
+        int maxPlotlengthBeforeNewLIne = 50;
+        int longestRating = 4;
+        int longestFormat = 5;
+        int longestYear = 4;
+        int maxStarringListlengthBeforeNewLIne = 50;
+        int longestCopies = 4;
+
+        int movieTitleLength = movie.getTitle().length();
+        int movieDirectorLength = movie.getDirector().length();
+        int movieRuntimeLength = movie.getRuntime().length();
+        int movieRatingLength = movie.getRating().length();
+        int movieFormatLength = movie.getFormat().length();
+        int movieYearLength = movie.getYear().length();
+
+        if(movieTitleLength > longestTitle){
+            longestTitle = movieTitleLength;
+        }
+
+        if(movieDirectorLength > longestDirector){
+            longestDirector = movieDirectorLength;
+        }
+
+        if(movieRuntimeLength > longestRuntime){
+            longestRuntime = movieRuntimeLength;
+        }
+
+        if(movieRatingLength > longestRating){
+            longestRating = movieRatingLength;
+        }
+
+        if(movieFormatLength > longestFormat){
+            longestFormat = movieFormatLength;
+        }
+
+        if(movieYearLength > longestYear){
+            longestYear = movieYearLength;
+        }
+
+        System.out.println("||" + pad("ID", longestID) + "||" + pad("Title", longestTitle) +
+                "||" + pad("Genre", maxGenrelengthBeforeNewLIne) + "||" + pad("Director", longestDirector) +
+                "||" + pad("RunTime", longestRuntime) + "||" + pad("Rating", longestRating) + "||"
+                + pad("Format", longestFormat) + "||" + pad("Year", longestYear) + "||" +
+                pad("Starring", maxStarringListlengthBeforeNewLIne) + "||" + pad("Copies", longestCopies) + "||");
+
+        System.out.println("||" + pad(Integer.toString(movie.getId()), longestID) + "||" + pad(movie.getTitle(), longestTitle) +
+                "||" + pad(movie.getGenre(), maxGenrelengthBeforeNewLIne) + "||" + pad(movie.getGenre(), longestDirector) +
+                "||" + pad(movie.getRuntime(), longestRuntime) + "||" + pad(movie.getRating(), longestRating) + "||"
+                + pad(movie.getFormat(), longestFormat) + "||" + pad(movie.getYear(), longestYear) + "||" +
+                pad(movie.getStarring(), maxStarringListlengthBeforeNewLIne) + "||" +
+                pad(Integer.toString(movie.getCopies()), longestCopies) + "||");
+
+        System.out.println("\n" + movie.getPlot() + "\n");
     }
 
     public static void sendMovieToDelete(int id){
@@ -312,5 +452,13 @@ public class MovieClient
         }catch (IOException io){
             io.printStackTrace();
         }
+    }
+
+    private static String pad(String string, int stringLength){
+        while (string.length() < stringLength){
+            string += " ";
+        }
+
+        return string;
     }
 }

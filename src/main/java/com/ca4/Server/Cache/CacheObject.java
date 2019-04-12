@@ -7,9 +7,9 @@ public class CacheObject {
     private Date timestamp;
     private String searchString;
 
-    public CacheObject(CacheType cacheType, Date timestamp, String searchString) {
+    public CacheObject(CacheType cacheType, String searchString) {
         this.cacheType = cacheType;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
         this.searchString = searchString;
     }
 

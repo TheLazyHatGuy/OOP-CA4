@@ -47,7 +47,6 @@ public class ClientInteractor {
     }
 
     public static String getMovieName(){
-        System.out.println("What is the name of the movie you are looking for: ");
         String movieName = ClientInteractor.getStringFromUser();
 
         return movieName;
@@ -65,6 +64,21 @@ public class ClientInteractor {
         String directorName = ClientInteractor.getStringFromUser();
 
         return directorName;
+    }
+
+    public static boolean getYesorNofromuser(){
+        System.out.println("Would you like to delete this movie [Y]es or [N]o: ");
+        String answer = scan.nextLine();
+
+        answer.toUpperCase();
+
+        if(answer.equals("Y")){
+            return true;
+        }else if(answer.equals("N")){
+            return false;
+        }
+
+        return false;
     }
 
     public static Movie getMovieDetails(){

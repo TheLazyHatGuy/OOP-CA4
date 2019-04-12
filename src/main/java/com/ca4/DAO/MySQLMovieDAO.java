@@ -47,7 +47,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                int movieId = rs.getInt("ID");
+                int movieId = rs.getInt("id");
                 String title = rs.getString("title");
                 String genre = rs.getString("genre");
                 String director = rs.getString("director");

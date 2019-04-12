@@ -17,11 +17,22 @@ public class Cache {
         movieGenreCache = new HashMap<>();
     }
 
+    /**
+     * Adds a search and JSON string to the HashMap cache
+     *
+     * @param searchString      String the user has searched for
+     * @param jsonStringToCache The JSON object string taken from the Movie DTO
+     */
     public void addToMovieTitleCache(String searchString, String jsonStringToCache) {
         CacheObject cacheObject = new CacheObject(jsonStringToCache);
         movieTitleCache.put(searchString.toLowerCase(), cacheObject);
     }
 
+    /**
+     * Checks if a tit;e search has been cached previously
+     * @param searchString String the user has searched for
+     * @return A JSON Object string if the search has been cached previously
+     */
     public String queryMovieTitleCache(String searchString) {
         if (movieTitleCache.containsKey(searchString.toLowerCase())) {
             System.out.println("Object has been cached");
@@ -33,11 +44,21 @@ public class Cache {
         }
     }
 
+    /**
+     * Adds a search and JSON string to the HashMap cache
+     * @param searchString String the user has searched for
+     * @param jsonStringToCache The JSON array string taken from the Movie DTO
+     */
     public void addToMovieDirectorCache(String searchString, String jsonStringToCache) {
         CacheObject cacheObject = new CacheObject(jsonStringToCache);
         movieDirectorCache.put(searchString.toLowerCase(), cacheObject);
     }
 
+    /**
+     * Checks if a director search has been cached previously
+     * @param searchString String the user has searched for
+     * @return A JSON Array string if the search has been cached previously
+     */
     public String queryMovieDirectorCache(String searchString) {
         if (movieDirectorCache.containsKey(searchString.toLowerCase())) {
             System.out.println("Object has been cached");
@@ -49,11 +70,21 @@ public class Cache {
         }
     }
 
+    /**
+     * Adds a search and JSON string to the HashMap cache
+     * @param searchString String the user has searched for
+     * @param jsonStringToCache The JSON array string taken from the Movie DTO
+     */
     public void addToMovieGenreCache(String searchString, String jsonStringToCache) {
         CacheObject cacheObject = new CacheObject(jsonStringToCache);
         movieGenreCache.put(searchString.toLowerCase(), cacheObject);
     }
 
+    /**
+     * Checks if a genre search has been cached previously
+     * @param searchString String the user has searched for
+     * @return A JSON Array string if the search has been cached previously
+     */
     public String queryMovieGenreCache(String searchString) {
         if (movieGenreCache.containsKey(searchString.toLowerCase())) {
             System.out.println("Object has been cached");
@@ -65,6 +96,9 @@ public class Cache {
         }
     }
 
+    /**
+     * Runs the cache TLL check for all of the HashMap caches
+     */
     public void checkAllCaches() {
         checkCacheTTL(movieTitleCache);
         checkCacheTTL(movieDirectorCache);

@@ -33,8 +33,6 @@ class MovieRequestHandler {
                 response = MovieServiceDetails.REGISTER_SUCCESS;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -53,8 +51,6 @@ class MovieRequestHandler {
                 response = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + toLogin.getId();
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -79,8 +75,6 @@ class MovieRequestHandler {
                 response = cacheResult;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -109,8 +103,6 @@ class MovieRequestHandler {
                 response = cacheResult;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -129,8 +121,6 @@ class MovieRequestHandler {
                 response = buildMovieJSONString(movies);
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -155,8 +145,6 @@ class MovieRequestHandler {
                 response = MovieServiceDetails.ADD_SUCCESS;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -174,8 +162,6 @@ class MovieRequestHandler {
                 response = MovieServiceDetails.REMOVE_SUCCESS;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -200,8 +186,6 @@ class MovieRequestHandler {
                 response = MovieServiceDetails.UPDATE_SUCCESS;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -220,8 +204,6 @@ class MovieRequestHandler {
                 response = MovieServiceDetails.WATCH_SUCCESS;
             }
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -242,8 +224,6 @@ class MovieRequestHandler {
 
             response = randomMovie.toJSONString();
         } catch (DAOException e) {
-            e.printStackTrace();
-            writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
@@ -330,6 +310,9 @@ class MovieRequestHandler {
 
     static void writeToLogFile(String stringToWrite) {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
+
+        System.out.println(stringToWrite);
+
         try {
             Date date = new Date();
             BufferedWriter log = new BufferedWriter(new FileWriter("log.txt", true));
@@ -343,6 +326,9 @@ class MovieRequestHandler {
 
     static void writeToErrorLogFile(String stringToWrite) {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
+
+        writeToLogFile(MovieServiceDetails.ANSI_RED + stringToWrite + MovieServiceDetails.ANSI_RESET);
+
         try {
             Date date = new Date();
             BufferedWriter log = new BufferedWriter(new FileWriter("error.txt", true));

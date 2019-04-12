@@ -17,28 +17,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-class MovieRequestHandler
-{
+class MovieRequestHandler {
     private static Cache cache = new Cache();
 
-    static String registerUser(String email, String password)
-    {
+    static String registerUser(String email, String password) {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String hashedPassword = hash(password);
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             boolean isRegistered = userDAO.registerUser(email, hashedPassword);
 
-            if (isRegistered)
-            {
+            if (isRegistered) {
                 //TODO - Redesign protocol with better responses
                 response = MovieServiceDetails.REGISTER_SUCCESS;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -47,23 +41,18 @@ class MovieRequestHandler
         return response;
     }
 
-    static String loginUser(String email, String password)
-    {
+    static String loginUser(String email, String password) {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             User toLogin = userDAO.loginUser(email);
             boolean isLoggedIn = verifyHash(password, toLogin.getPassword());
 
-            if (isLoggedIn)
-            {
+            if (isLoggedIn) {
                 response = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + toLogin.getId();
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -72,29 +61,24 @@ class MovieRequestHandler
         return response;
     }
 
-    static String searchForMovieByTitle(String searchString)
-    {
+    static String searchForMovieByTitle(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             String cacheResult = cache.queryMovieTitleCache(searchString);
 
             if (cacheResult.equals("")) {
-                System.out.println("Object wasn't in cache");
+                System.out.println("Adding object to cache");
 
                 Movie movie = movieDAO.getMovieByName(searchString);
                 response = movie.toJSONString();
-
                 cache.addToMovieTitleCache(searchString, response);
             } else {
-                System.out.println("Object is in cache");
+                System.out.println("Retrieving object from cache");
                 response = cacheResult;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -104,46 +88,47 @@ class MovieRequestHandler
         return response;
     }
 
-    static String searchForMovieByDirector(String searchString)
-    {
+    static String searchForMovieByDirector(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
-            ArrayList<Movie> movies = movieDAO.getMoviesByDirector(searchString);
+        try {
+            String cacheResult = cache.queryMovieDirectorCache(searchString);
 
-            if (movies.size() >= 1)
-            {
-                response = buildMovieJSONString(movies);
+            if (cacheResult.equals("")) {
+                ArrayList<Movie> movies = movieDAO.getMoviesByDirector(searchString);
+
+                if (movies.size() >= 1) {
+                    System.out.println("Adding object to cache");
+
+                    response = buildMovieJSONString(movies);
+                    cache.addToMovieDirectorCache(searchString, response);
+                }
+            } else {
+                System.out.println("Retrieving object from cache");
+                response = cacheResult;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
         }
 
+        cache.checkAllCaches();
         return response;
     }
 
-    static String searchForMovieByGenre(String searchString)
-    {
+    static String searchForMovieByGenre(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             ArrayList<Movie> movies = movieDAO.getMoviesByGenre(searchString);
 
-            if (movies.size() >= 1)
-            {
+            if (movies.size() >= 1) {
                 response = buildMovieJSONString(movies);
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -154,26 +139,22 @@ class MovieRequestHandler
 
     /**
      * Converts a movie JSON String to the movie class and adds it to the database
+     *
      * @param movieJSONString A full movie JSON String
      * @return Server response message
      */
-    static String addMovie(String movieJSONString)
-    {
+    static String addMovie(String movieJSONString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             Movie movieToAdd = convertJSONStringToMovie(movieJSONString);
             boolean isAdded = movieDAO.addMovieToDatabase(movieToAdd);
 
-            if (isAdded)
-            {
+            if (isAdded) {
                 response = MovieServiceDetails.ADD_SUCCESS;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -182,22 +163,17 @@ class MovieRequestHandler
         return response;
     }
 
-    static String removeMovie(int idOfMovieToRemove)
-    {
+    static String removeMovie(int idOfMovieToRemove) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             boolean isDeleted = movieDAO.deleteMovie(idOfMovieToRemove);
 
-            if (isDeleted)
-            {
+            if (isDeleted) {
                 response = MovieServiceDetails.REMOVE_SUCCESS;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -208,26 +184,22 @@ class MovieRequestHandler
 
     /**
      * Converts a movie JSON String to the movie class and updates it in the database
+     *
      * @param movieJSONString A full movie JSON String
      * @return Server response message
      */
-    static String updateMovie(String movieJSONString)
-    {
+    static String updateMovie(String movieJSONString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             Movie movieToUpdate = convertJSONStringToMovie(movieJSONString);
             boolean isUpdated = movieDAO.updateMovie(movieToUpdate);
 
-            if (isUpdated)
-            {
+            if (isUpdated) {
                 response = MovieServiceDetails.UPDATE_SUCCESS;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -236,23 +208,18 @@ class MovieRequestHandler
         return response;
     }
 
-    static String watchMovie(int userID, int movieID)
-    {
+    static String watchMovie(int userID, int movieID) {
         WatchedMovieDAOInterface watchedMovieDAO = new MySQLWatchedMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             WatchedMovie watchedMovie = new WatchedMovie(userID, movieID);
             boolean isWatched = watchedMovieDAO.addWatchedMovie(watchedMovie);
 
-            if (isWatched)
-            {
+            if (isWatched) {
                 response = MovieServiceDetails.WATCH_SUCCESS;
             }
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -260,14 +227,13 @@ class MovieRequestHandler
 
         return response;
     }
-    static String recommendMovie(int userID)
-    {
+
+    static String recommendMovie(int userID) {
         Random random = new Random();
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
-        try
-        {
+        try {
             int min = 14;
             int max = 1052;
             //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
@@ -275,9 +241,7 @@ class MovieRequestHandler
             Movie randomMovie = movieDAO.getMovieByID(randomMovieID);
 
             response = randomMovie.toJSONString();
-        }
-        catch (DAOException e)
-        {
+        } catch (DAOException e) {
             e.printStackTrace();
             writeToLogFile(e.getMessage());
             writeToErrorLogFile(e.getMessage());
@@ -289,16 +253,15 @@ class MovieRequestHandler
 
     /**
      * Converts a Movie ArrayList to a JSON string
+     *
      * @param movies An ArrayList of movie
      * @return A JSON string
      */
-    private static String buildMovieJSONString(ArrayList<Movie> movies)
-    {
+    private static String buildMovieJSONString(ArrayList<Movie> movies) {
         // '[' is added to start a JSON array
         StringBuilder movieString = new StringBuilder("[");
 
-        for (Movie movie : movies)
-        {
+        for (Movie movie : movies) {
             movieString.append(movie.toJSONString());
             // Comma is added to denote a new object
             movieString.append(",\n");
@@ -315,13 +278,13 @@ class MovieRequestHandler
 
     /**
      * Converts a movie JSON String back to a Movie object
+     *
      * @param jsonStringToConvert Movie JSON String
      * @return Movie object
      */
     //This is added to avoid the warnings related to similar SQL code
     @SuppressWarnings("Duplicates")
-    private static Movie convertJSONStringToMovie(String jsonStringToConvert)
-    {
+    private static Movie convertJSONStringToMovie(String jsonStringToConvert) {
         JSONObject movieJSON = new JSONObject(jsonStringToConvert);
 
         String title = movieJSON.getString("title");
@@ -334,7 +297,7 @@ class MovieRequestHandler
         String rating = movieJSON.getString("rating");
         String format = movieJSON.getString("format");
         String year = movieJSON.getString("year");
-        String starring  = movieJSON.getString("staring");
+        String starring = movieJSON.getString("staring");
         int copies = movieJSON.getInt("copies");
         String barcode = movieJSON.getString("barcode");
         String userRating = movieJSON.getString("user-rating");
@@ -345,56 +308,48 @@ class MovieRequestHandler
 
     /**
      * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt
+     *
      * @param password Raw password to hash
      * @return Hashed password
      */
-    private static String hash(String password)
-    {
+    private static String hash(String password) {
         //Applies 12 rounds of salting to password
         return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 
     /**
      * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt
+     *
      * @param password Raw password to compare
-     * @param hash The hash taken from the database
+     * @param hash     The hash taken from the database
      * @return True if the hashes match
      */
-    private static boolean verifyHash(String password, String hash)
-    {
+    private static boolean verifyHash(String password, String hash) {
         return BCrypt.checkpw(password, hash);
     }
 
-    static void writeToLogFile(String stringToWrite)
-    {
+    static void writeToLogFile(String stringToWrite) {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
-        try
-        {
+        try {
             Date date = new Date();
             BufferedWriter log = new BufferedWriter(new FileWriter("log.txt", true));
 
             log.write(date + " " + stringToWrite + "\n");
             log.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    static void writeToErrorLogFile(String stringToWrite)
-    {
+    static void writeToErrorLogFile(String stringToWrite) {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
-        try
-        {
+        try {
             Date date = new Date();
             BufferedWriter log = new BufferedWriter(new FileWriter("error.txt", true));
 
             log.write(date + " " + stringToWrite + "\n\n");
             log.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

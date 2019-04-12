@@ -8,12 +8,12 @@ import java.util.HashMap;
 
 public class Cache {
     private static HashMap<String, CacheObject> movieTitleCache;
-    private static HashMap<String, CacheObject> movieDirectorrCache;
+    private static HashMap<String, CacheObject> movieDirectorCache;
     private static HashMap<String, CacheObject> movieGenreCache;
 
     public Cache() {
         movieTitleCache = new HashMap<>();
-        movieDirectorrCache = new HashMap<>();
+        movieDirectorCache = new HashMap<>();
         movieGenreCache = new HashMap<>();
     }
 
@@ -33,9 +33,25 @@ public class Cache {
         }
     }
 
+    public void addToMovieDirectorCache(String searchString, String jsonStringToCache) {
+        CacheObject cacheObject = new CacheObject(jsonStringToCache);
+        movieDirectorCache.put(searchString.toLowerCase(), cacheObject);
+    }
+
+    public String queryMovieDirectorCache(String searchString) {
+        if (movieDirectorCache.containsKey(searchString.toLowerCase())) {
+            System.out.println("Object has been cached");
+            CacheObject cacheObject = movieDirectorCache.get(searchString.toLowerCase());
+            cacheObject.setTimestamp();
+            return cacheObject.getJsonString();
+        } else {
+            return "";
+        }
+    }
+
     public void checkAllCaches() {
         checkCacheTTL(movieTitleCache);
-        checkCacheTTL(movieDirectorrCache);
+        checkCacheTTL(movieDirectorCache);
         checkCacheTTL(movieGenreCache);
     }
 

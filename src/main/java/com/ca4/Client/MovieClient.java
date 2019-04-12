@@ -13,13 +13,16 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * this is the main class the client will run to interact with the server
+ */
 public class MovieClient
 {
     private static Socket client;
     private static InputStream inputFromSocket;
     private static PrintWriter streamWriter;
     private static User localUser;
-    private static boolean loggedIn = true;
+    private static boolean loggedIn = false;
 
     private static JSONArray jsMovieArray;
     private static ArrayList<Movie> movieArray;
@@ -150,6 +153,11 @@ public class MovieClient
         }
     }
 
+    /**
+     * sends the login details of the user to the server
+     * @param messageCode
+     * @param details
+     */
     public static void sendUsersDetails(String messageCode, String[] details){
         try{
             String messageToSend;
@@ -170,6 +178,13 @@ public class MovieClient
         }
     }
 
+    /**
+     * sends an array of strings to the server
+     *
+     * used for search movies methods
+     * @param messageCode
+     * @param message
+     */
     public static void sendStringArray(String messageCode, String[] message){
         try{
             String messageToSend;
@@ -189,6 +204,12 @@ public class MovieClient
         }
     }
 
+    /**
+     * creates a new user object based on the id returned by the server and the users inputted details
+     * if the user just registered it sends the details again for a log in
+     * also sets the state of the user to logged in
+     * @param userDetails
+     */
     public static void createNewUser(String[] userDetails){
         Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
@@ -209,6 +230,10 @@ public class MovieClient
         }
     }
 
+    /**
+     * receives the json string from the server and returns it as a json object
+     * @return a json object
+     */
     public static JSONObject receiveJSONObject(){
         Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
@@ -223,6 +248,10 @@ public class MovieClient
         return jsObj;
     }
 
+    /**
+     * receives a json string and turns it into an json array
+     * @return json array
+     */
     public static JSONArray receiveJSONArray(){
         Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
@@ -236,6 +265,9 @@ public class MovieClient
         return jsArray;
     }
 
+    /**
+     * sends the close connection code to the server
+     */
     public static void closeConnectionToServer(){
         try{
             inputFromSocket = client.getInputStream();
@@ -243,13 +275,17 @@ public class MovieClient
             streamWriter = new PrintWriter(client.getOutputStream());
             streamWriter.println(MovieServiceDetails.CLOSE_CONNECTION);
             streamWriter.flush();
-            recceiveCommandCodeFromServer();
+            receiveCommandCodeFromServer();
         }catch (IOException io){
             io.printStackTrace();
         }
     }
 
-    public static void recceiveCommandCodeFromServer(){
+    /**
+     * receives command codes from the server
+     * such as success for add of movie or close connection
+     */
+    public static void receiveCommandCodeFromServer(){
         Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
         String answer;
@@ -259,6 +295,11 @@ public class MovieClient
         System.out.println(answer);
     }
 
+    /**
+     * sends a movie object as a json string to the server
+     * @param movieToSend
+     * @param serverCode
+     */
     public static void sendMovieJSON(Movie movieToSend, String serverCode){
         try{
             String sendableMovie = serverCode + MovieServiceDetails.BREAKING_CHARACTER + movieToSend.toJSONString();
@@ -266,14 +307,18 @@ public class MovieClient
             streamWriter = new PrintWriter(client.getOutputStream());
             streamWriter.println(sendableMovie);
             streamWriter.flush();
-            recceiveCommandCodeFromServer();
+            receiveCommandCodeFromServer();
         }catch (IOException io){
             io.printStackTrace();
         }
     }
 
-    /*
-    src: https://stackoverflow.com/questions/33754101/split-json-object-from-json-array-in-java
+    /**
+     * splits the json array into multiple movie objects
+     * solution found on stack overflow changed to suit these objects
+     * src: https://stackoverflow.com/questions/33754101/split-json-object-from-json-array-in-java
+     * @param movieArray
+     * @return
      */
     public static ArrayList<Movie> splitJSONMovieArray(JSONArray movieArray){
         ArrayList<Movie> movies = new ArrayList<>();
@@ -287,8 +332,11 @@ public class MovieClient
         return movies;
     }
 
-    /*
-    taken from camerons movieservicethread
+    /**
+     * converts a json movie object into an actual movie object
+     * taken from camerons movieservicethread
+     * @param jsonStringToConvert
+     * @return
      */
     public static Movie convertJSONStringToMovie(String jsonStringToConvert)
     {
@@ -314,6 +362,10 @@ public class MovieClient
                 format, year, starring, copies, "", "");
     }
 
+    /**
+     * prints an arraylist of movies into a clean format
+     * @param movies
+     */
     public static void printMovieArray(ArrayList<Movie> movies){
         int longestID = 5;
         int longestTitle = 10;
@@ -378,6 +430,10 @@ public class MovieClient
         }
     }
 
+    /**
+     * prints a single movie in a clean format
+     * @param movie
+     */
     public static void printMovie(Movie movie){
         int longestID = 5;
         int longestTitle = 10;
@@ -438,6 +494,10 @@ public class MovieClient
         System.out.println("\n" + movie.getPlot() + "\n");
     }
 
+    /**
+     * sends the id of a movie that the user has requested to be deleted
+     * @param id
+     */
     public static void sendMovieToDelete(int id){
         String message = MovieServiceDetails.REMOVE_MOVIE + MovieServiceDetails.BREAKING_CHARACTER
                 + Integer.toString(id);
@@ -448,12 +508,18 @@ public class MovieClient
             streamWriter = new PrintWriter(client.getOutputStream());
             streamWriter.println(message);
             streamWriter.flush();
-            recceiveCommandCodeFromServer();
+            receiveCommandCodeFromServer();
         }catch (IOException io){
             io.printStackTrace();
         }
     }
 
+    /**
+     * adds a specific amount of padding between strings
+     * @param string
+     * @param stringLength
+     * @return a padded string
+     */
     private static String pad(String string, int stringLength){
         while (string.length() < stringLength){
             string += " ";

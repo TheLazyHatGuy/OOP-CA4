@@ -6,9 +6,16 @@ import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * this class is the class the client class will call to whenever it needs user input
+ */
 public class ClientInteractor {
     private static Scanner scan = new Scanner(System.in);
 
+    /**
+     * this is the first menu a client will interact with giving them the option to register, login or exit
+     * @return user's menu option
+     */
     public static String getMenuOption_NotLoggedIn(){
         System.out.println("A) Login");
         System.out.println("B) Register");
@@ -19,6 +26,10 @@ public class ClientInteractor {
         return option;
     }
 
+    /**
+     * this is the menu an user will interact with if they are logged in
+     * @return
+     */
     public static String getMenuOption_LoggedIn(){
         System.out.println("A) Find movie by name");
         System.out.println("B) Find movies by director");
@@ -33,6 +44,10 @@ public class ClientInteractor {
         return option;
     }
 
+    /**
+     * return which variable about the movie the user would like to update
+     * @return user's menu option
+     */
     public static String getUpdateOption(){
         System.out.println("A) Update movie name");
         System.out.println("B) Update movie genre list");
@@ -54,6 +69,12 @@ public class ClientInteractor {
         return option;
     }
 
+    /**
+     * allows the user to choose what part of the movie the user would like to update
+     * keep running until the user is ready to update the movie
+     * @param movieToUpdate
+     * @return
+     */
     public static Movie UpdateMovie(Movie movieToUpdate){
         boolean keepUpdating = true;
         String updatedParam;
@@ -144,6 +165,10 @@ public class ClientInteractor {
         return movieToUpdate;
     }
 
+    /**
+     * allows the user to enter their account details or register for an account
+     * @return
+     */
     public static String[] loginRegister(){
         System.out.println("Please enter your email: ");
         String email = getEmail();
@@ -239,6 +264,10 @@ public class ClientInteractor {
         return password;
     }
 
+    /**
+     * generate a random barcode for the movie object
+     * @return barcode
+     */
     public static String generateRandomBarcode(){
         Random rand = new Random();
 

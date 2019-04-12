@@ -19,8 +19,8 @@ public class CacheObject {
         return jsonString;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp() {
+        this.timestamp = new Date();
     }
 
     @Override

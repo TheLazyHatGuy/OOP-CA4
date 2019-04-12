@@ -11,15 +11,18 @@ public class CacheObject {
         this.jsonString = jsonString;
     }
 
-    public Date getTimestamp() {
+    Date getTimestamp() {
         return timestamp;
     }
 
-    public String getJsonString() {
+    String getJsonString() {
         return jsonString;
     }
 
-    public void setTimestamp() {
+    /**
+     * Updates the timestamp to the current date and time
+     */
+    void setTimestamp() {
         this.timestamp = new Date();
     }
 

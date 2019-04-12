@@ -115,15 +115,27 @@ class MovieRequestHandler {
         String response = MovieServiceDetails.FAIL;
 
         try {
-            ArrayList<Movie> movies = movieDAO.getMoviesByGenre(searchString);
+            String cacheResult = cache.queryMovieGenreCache(searchString);
 
-            if (movies.size() >= 1) {
-                response = buildMovieJSONString(movies);
+            if (cacheResult.equals("")) {
+                ArrayList<Movie> movies = movieDAO.getMoviesByGenre(searchString);
+
+                if (movies.size() >= 1) {
+                    System.out.println("Adding object to cache");
+
+                    response = buildMovieJSONString(movies);
+                    cache.addToMovieGenreCache(searchString, response);
+                }
+            } else {
+                System.out.println("Retrieving object from cache");
+                response = cacheResult;
             }
+
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());
         }
 
+        cache.checkAllCaches();
         return response;
     }
 

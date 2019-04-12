@@ -49,6 +49,22 @@ public class Cache {
         }
     }
 
+    public void addToMovieGenreCache(String searchString, String jsonStringToCache) {
+        CacheObject cacheObject = new CacheObject(jsonStringToCache);
+        movieGenreCache.put(searchString.toLowerCase(), cacheObject);
+    }
+
+    public String queryMovieGenreCache(String searchString) {
+        if (movieGenreCache.containsKey(searchString.toLowerCase())) {
+            System.out.println("Object has been cached");
+            CacheObject cacheObject = movieGenreCache.get(searchString.toLowerCase());
+            cacheObject.setTimestamp();
+            return cacheObject.getJsonString();
+        } else {
+            return "";
+        }
+    }
+
     public void checkAllCaches() {
         checkCacheTTL(movieTitleCache);
         checkCacheTTL(movieDirectorCache);

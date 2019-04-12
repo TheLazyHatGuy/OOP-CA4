@@ -1,5 +1,9 @@
 package com.ca4.Client;
 
+import com.ca4.DTO.Movie;
+
+import java.sql.SQLOutput;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ClientInteractor {
@@ -8,6 +12,7 @@ public class ClientInteractor {
     public static String getMenuOption_NotLoggedIn(){
         System.out.println("A) Login");
         System.out.println("B) Register");
+        System.out.println("C) Exit application");
 
         String option = getStringFromUser();
 
@@ -21,20 +26,129 @@ public class ClientInteractor {
         System.out.println("D) Update a movie");
         System.out.println("E) Add a movie");
         System.out.println("F) Delete a movie");
-        System.out.println("G) Update your profile");
-        System.out.println("H) Delete your profile");
-        System.out.println("G) Exit application");
+        System.out.println("G) Logout and exit application");
 
-        String option = ClientInteractor.getStringFromUser();
+        String option = getStringFromUser();
 
         return option;
     }
 
+    public static String getUpdateOption(){
+        System.out.println("A) Update movie name");
+        System.out.println("B) Update movie genre list");
+        System.out.println("C) Update movie director");
+        System.out.println("D) Update movie runtime");
+        System.out.println("E) Update movie plot");
+        System.out.println("F) Update movie rating");
+        System.out.println("G) Update movie format");
+        System.out.println("H) Update movie year");
+        System.out.println("I) Update movie actor/actress list");
+        System.out.println("J) Update number of available copies of the movies");
+        System.out.println("K) Run update and exit");
+        System.out.println("L) Exit without updating");
+
+        String option = getStringFromUser();
+
+        option.toUpperCase();
+
+        return option;
+    }
+
+    public static Movie UpdateMovie(Movie movieToUpdate){
+        boolean keepUpdating = true;
+        String updatedParam;
+        String option;
+
+        Movie updatedMovie = new Movie(movieToUpdate.getId(), movieToUpdate.getTitle(), movieToUpdate.getGenre(),
+                movieToUpdate.getDirector(), movieToUpdate.getRuntime(), movieToUpdate.getPlot(), movieToUpdate.getLocation(),
+                movieToUpdate.getPoster(), movieToUpdate.getRating(), movieToUpdate.getFormat(), movieToUpdate.getYear(),
+                movieToUpdate.getStarring(), movieToUpdate.getCopies(), movieToUpdate.getBarcode(), movieToUpdate.getUserRating());
+        while(keepUpdating){
+            option = getUpdateOption();
+
+            switch (option) {
+                case "A":
+                    System.out.print("Please enter the updated name of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setTitle(updatedParam);
+                    break;
+
+                case "B":
+                    System.out.print("Please enter the updated genre list of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setGenre(updatedParam);
+                    break;
+
+                case "C":
+                    System.out.print("Please enter the updated director name of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setDirector(updatedParam);
+                    break;
+
+                case "D":
+                    System.out.print("Please enter the updated runtime of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setRuntime(updatedParam);
+                    break;
+
+                case "E":
+                    System.out.print("Please enter the updated plot of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setPlot(updatedParam);
+                    break;
+
+                case "F":
+                    System.out.print("Please enter the updated rating of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setRating(updatedParam);
+                    break;
+
+                case "G":
+                    System.out.print("Please enter the updated format of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setFormat(updatedParam);
+                    break;
+
+                case "H":
+                    System.out.print("Please enter the updated year of release of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setYear(updatedParam);
+                    break;
+
+                case "I":
+                    System.out.print("Please enter the updated actor/actress list of the movie:");
+                    updatedParam = getStringFromUser();
+                    updatedMovie.setStarring(updatedParam);
+                    break;
+
+                case "J":
+                    System.out.print("Please enter the updated amount of available copies of the movie:");
+                    int updatedCopies = scan.nextInt();
+                    updatedMovie.setCopies(updatedCopies);
+                    break;
+
+                case "K":
+                    boolean answer = getYesorNofromuser();
+
+                    if(answer){
+                        return updatedMovie;
+                    }
+                    break;
+
+                case "L":
+                    keepUpdating = false;
+                    break;
+            }
+        }
+
+        return movieToUpdate;
+    }
+
     public static String[] loginRegister(){
         System.out.println("Please enter your email: ");
-        String email = ClientInteractor.getEmail();
+        String email = getEmail();
         System.out.println("Please enter your password: ");
-        String password = ClientInteractor.getPassword();
+        String password = getPassword();
 
         String[] userDetails = {email, password};
 
@@ -42,24 +156,66 @@ public class ClientInteractor {
     }
 
     public static String getMovieName(){
-        System.out.println("What is the name of the movie you are looking for: ");
-        String movieName = ClientInteractor.getStringFromUser();
+        String movieName = getStringFromUser();
 
         return movieName;
     }
 
     public static String getMovieGenre(){
         System.out.println("What movie genre would you like to search by: ");
-        String movieGenre = ClientInteractor.getStringFromUser();
+        String movieGenre = getStringFromUser();
 
         return movieGenre;
     }
 
     public static String getMovieDirector(){
         System.out.println("What movie director would you like to search by: ");
-        String directorName = ClientInteractor.getStringFromUser();
+        String directorName = getStringFromUser();
 
         return directorName;
+    }
+
+    public static boolean getYesorNofromuser(){
+        System.out.print("Would you like to continue with the action on this movie [Y]es or [N]o: ");
+        String answer = scan.nextLine();
+
+        answer.toUpperCase();
+
+        if(answer.equals("Y")){
+            return true;
+        }else if(answer.equals("N")){
+            return false;
+        }
+
+        return false;
+    }
+
+    public static Movie getMovieDetails(){
+        System.out.print("PLease enter the name of the movie: ");
+        String name = scan.nextLine();
+        System.out.print("Please enter the genres of the movie: ");
+        String genre = scan.nextLine();
+        System.out.print("Please enter the name of the director of the movie: ");
+        String director = scan.nextLine();
+        System.out.print("Please enter the runtime of the movie: ");
+        String runtime = scan.nextLine();
+        System.out.print("Please enter the plot of the movie: ");
+        String plot = scan.nextLine();
+        System.out.print("Please enter the rating of the movie: ");
+        String rating = scan.nextLine();
+        System.out.print("Please enter the disc format of the movie: ");
+        String format = scan.nextLine();
+        System.out.print("Please enter the year the movie was released: ");
+        String year = scan.nextLine();
+        System.out.print("Please enter the actor/actress list of the movie: ");
+        String starring = scan.nextLine();
+        System.out.print("Please enter the critical rating of the movie: ");
+        String userRating = scan.nextLine();
+        System.out.print("Please enter the number of available copies of the movie: ");
+        int copies = scan.nextInt();
+
+        return new Movie(0, name, genre, director, runtime, plot, "", "", rating,
+                format, year, starring, copies, generateRandomBarcode(), userRating);
     }
 
     public static String getStringFromUser(){
@@ -81,5 +237,19 @@ public class ClientInteractor {
         //TODO add input validation and password validation
 
         return password;
+    }
+
+    public static String generateRandomBarcode(){
+        Random rand = new Random();
+
+        Long randNum = -1l;
+
+        while(randNum < 0){
+            randNum = rand.nextLong();
+        }
+
+        String stringNum = String.valueOf(randNum);
+
+        return stringNum;
     }
 }

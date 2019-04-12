@@ -19,6 +19,9 @@ public class CacheObject {
         return jsonString;
     }
 
+    /**
+     * Updates the timestamp to the current date and time
+     */
     void setTimestamp() {
         this.timestamp = new Date();
     }

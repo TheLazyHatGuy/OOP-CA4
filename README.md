@@ -1,6 +1,7 @@
 # OOP CA4
 
 [![CircleCI](https://circleci.com/gh/TheLazyHatGuy/OOP-CA4.svg?style=svg&circle-token=c0211011755c3a5cb073b8f5ad4f2bdffebcdc10)](https://circleci.com/gh/TheLazyHatGuy/OOP-CA4)
+[![Build Status](https://travis-ci.com/TheLazyHatGuy/OOP-CA4.svg?token=BQERceMxGCg14WSa1ns6&branch=master)](https://travis-ci.com/TheLazyHatGuy/OOP-CA4)
 
 Old Repo - [Bitbucket](https://bitbucket.org/TheLazyHatGuy/oop-ca4/src/master/)
 

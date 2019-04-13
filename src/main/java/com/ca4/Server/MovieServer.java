@@ -55,6 +55,7 @@ public class MovieServer
 
             while (true)
             {
+                System.out.println("Accepting a connection....");
                 //Accept the next client
                 incomingConnection = server.accept();
                 /*

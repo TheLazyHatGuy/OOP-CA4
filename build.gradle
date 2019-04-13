@@ -23,6 +23,17 @@ task serverJar(type: Jar){
     with jar
 }
 
+task clientJar(type: Jar){
+    manifest {
+        attributes  'Implementation-Title'  : 'Client for Movie Database',
+                'Implementation-Version'    : version,
+                'Main-Class'                : 'com.ca4.Client.MovieClient'
+    }
+    baseName = 'Client'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 dependencies {
     testCompileOnly(
             'junit:junit:4.12'

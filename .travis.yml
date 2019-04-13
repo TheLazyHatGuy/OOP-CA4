@@ -22,7 +22,7 @@ before_cache:
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - export GIT_TAG=$TRAVIS_BRANCH-v0.1.$TRAVIS_BUILD_NUMBER
+  - export GIT_TAG=$TRAVIS_BRANCH-v0.5.$TRAVIS_BUILD_NUMBER
   - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
   - git push -q https://feb7e831900d14398a93305512ce3a4c98b4d254@github.com/TheLazyHatGuy/OOP-CA4 --tags
 
@@ -35,6 +35,7 @@ script:
 - gradle assemble
 - gradle test
 - gradle serverJar
+- gradle clientJar
 
 deploy:
   skip_cleanup: true
@@ -43,6 +44,7 @@ deploy:
     secure: 'feb7e831900d14398a93305512ce3a4c98b4d254'
   file:
     - "./build/libs/Server-0.5.jar"
+    - "./build/libs/Client-0.5.jar"
   on:
     tags: false
     all_branches: true

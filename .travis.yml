@@ -2,11 +2,6 @@ language: java
 install: true
 
 jdk:
-- oraclejdk8
-- oraclejdk9
-- openjdk8
-- openjdk9
-- openjdk10
 - openjdk11
 
 before_install:
@@ -47,7 +42,7 @@ deploy:
   api_key:
     secure: 'feb7e831900d14398a93305512ce3a4c98b4d254'
   file:
-    - '.\build\libs\Server.jar'
+    - '.\OOP-CA4\build\libs\Server.jar'
   on:
     tags: false
     all_branches: true

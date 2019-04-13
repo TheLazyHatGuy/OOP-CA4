@@ -1,7 +1,10 @@
-#OOP CA4
-[![CircleCI](https://circleci.com/bb/TheLazyHatGuy/oop-ca4.svg?style=svg&circle-token=1c06da666e5409f99be3d4a9cced46b8785e696c)](https://circleci.com/bb/TheLazyHatGuy/oop-ca4)
+# OOP CA4
 
-[Bitbucket](https://bitbucket.org/TheLazyHatGuy/oop-ca4/src/master/)
+[![CircleCI](https://circleci.com/gh/TheLazyHatGuy/OOP-CA4.svg?style=svg&circle-token=c0211011755c3a5cb073b8f5ad4f2bdffebcdc10)](https://circleci.com/gh/TheLazyHatGuy/OOP-CA4)
+
+Old Repo - [Bitbucket](https://bitbucket.org/TheLazyHatGuy/oop-ca4/src/master/)
+
+New Repo - [GitHub](https://github.com/TheLazyHatGuy/OOP-CA4/)
 
 ## Authors 
 * Andrew Carolan

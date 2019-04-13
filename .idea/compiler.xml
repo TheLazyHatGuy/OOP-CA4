@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="co.uk.flyingtoilet.OOP-CA4.main" target="1.8" />
       <module name="co.uk.flyingtoilet.OOP-CA4.test" target="1.8" />
+      <module name="OOP-CA4.main" target="1.8" />
+      <module name="OOP-CA4.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -278,7 +278,7 @@ public class ClientInteractor {
          * will allow:
          * A-Z, a-z, 0-9, ".", "-", and "_"
          */
-        if(!username.matches("^[A-Za-z0-9+_.-]+@(.+)$")){
+        if(!username.matches("^[A-Za-z0-9+_.-]{7,}+@(.+)$")){
             return null;
         }
 
@@ -287,7 +287,16 @@ public class ClientInteractor {
 
     public static String getPassword(){
         String password = scan.nextLine();
-        //TODO add input validation and password validation
+
+        /**
+         * regex from:
+         * https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation
+         *
+         * modified so special chars are not needed
+         */
+        if(!password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{10,}$")){
+            return null;
+        }
 
         return password;
     }

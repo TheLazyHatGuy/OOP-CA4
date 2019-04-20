@@ -68,6 +68,8 @@ public class MovieServer
         catch (IOException e)
         {
             e.printStackTrace();
+            System.out.println("Failed to bind port");
+            System.exit(1);
         }
     }
 

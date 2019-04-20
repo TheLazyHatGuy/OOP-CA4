@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Client JAR" type="JarApplication">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/build/libs/Client-0.5.jar" />
+    <option name="WORKING_DIRECTORY" value="F:\Git\OOP-CA4-GitHub" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="11" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build Client Jar" run_configuration_type="GradleRunConfiguration" />
+    </method>
+  </configuration>
+</component>

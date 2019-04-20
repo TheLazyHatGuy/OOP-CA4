@@ -22,7 +22,7 @@ public class MovieClient
     private static InputStream inputFromSocket;
     private static PrintWriter streamWriter;
     private static User localUser;
-    private static boolean loggedIn = false;
+    private static boolean loggedIn = true;
 
     private static JSONArray jsMovieArray;
     private static ArrayList<Movie> movieArray;
@@ -48,13 +48,19 @@ public class MovieClient
                             String[] loginDetails = ClientInteractor.loginRegister();
                             sendUsersDetails(MovieServiceDetails.LOGIN, loginDetails);
                             break;
+
                         case "B":
                             String[] userDetails = ClientInteractor.loginRegister();
                             sendUsersDetails(MovieServiceDetails.REGISTER, userDetails);
                             break;
+
                         case "C":
                             closeConnectionToServer();
                             continueRunning = false;
+                            break;
+
+                        default:
+                            System.out.println("Invalid input");
                             break;
                     }
 
@@ -135,6 +141,9 @@ public class MovieClient
                             loggedIn = false;
                             continueRunning = false;
                             break;
+
+                        default:
+                            System.out.println("Invalid input");
                     }
                 }
             }
@@ -275,7 +284,6 @@ public class MovieClient
             streamWriter = new PrintWriter(client.getOutputStream());
             streamWriter.println(MovieServiceDetails.CLOSE_CONNECTION);
             streamWriter.flush();
-            receiveCommandCodeFromServer();
         }catch (IOException io){
             io.printStackTrace();
         }

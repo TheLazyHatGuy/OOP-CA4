@@ -158,6 +158,10 @@ public class ClientInteractor {
                 case "L":
                     keepUpdating = false;
                     break;
+
+                default:
+                    System.out.println("Invalid input");
+                    break;
             }
         }
 
@@ -246,7 +250,7 @@ public class ClientInteractor {
         int valueOfA = 65;
         String userInput = getStringFromUser();
 
-        userInput.toUpperCase();
+        userInput = userInput.toUpperCase();
 
         char[] inputtedChar = userInput.toCharArray();
 

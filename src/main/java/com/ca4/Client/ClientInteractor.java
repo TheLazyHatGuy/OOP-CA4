@@ -2,7 +2,6 @@ package com.ca4.Client;
 
 import com.ca4.DTO.Movie;
 
-import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,7 +20,7 @@ public class ClientInteractor {
         System.out.println("B) Register");
         System.out.println("C) Exit application");
 
-        String option = getStringFromUser();
+        String option = getMenuOptionFromUser(3);
 
         return option;
     }
@@ -39,7 +38,7 @@ public class ClientInteractor {
         System.out.println("F) Delete a movie");
         System.out.println("G) Logout and exit application");
 
-        String option = getStringFromUser();
+        String option = getMenuOptionFromUser(7);
 
         return option;
     }
@@ -62,7 +61,7 @@ public class ClientInteractor {
         System.out.println("K) Run update and exit");
         System.out.println("L) Exit without updating");
 
-        String option = getStringFromUser();
+        String option = getMenuOptionFromUser(12);
 
         option.toUpperCase();
 
@@ -243,16 +242,45 @@ public class ClientInteractor {
                 format, year, starring, copies, generateRandomBarcode(), userRating);
     }
 
+    public static String getMenuOptionFromUser(int lastCharIntValue){
+        int valueOfA = 65;
+        String userInput = getStringFromUser();
+
+        userInput.toUpperCase();
+
+        char[] inputtedChar = userInput.toCharArray();
+
+        if(inputtedChar.length > 1){
+            return null;
+        }
+
+        for(int i = valueOfA; i < valueOfA+lastCharIntValue; ++i){
+            if(inputtedChar[0] == (char)i){
+                return userInput;
+            }
+        }
+
+        return null;
+    }
+
     public static String getStringFromUser(){
         String stringFromUser = scan.nextLine();
-        //TODO add input validation
 
         return stringFromUser;
     }
 
     public static String getEmail(){
         String username = scan.nextLine();
-        //TODO add input and username validation
+
+        /**
+         * regex from:
+         * https://howtodoinjava.com/regex/java-regex-validate-email-address/
+         * will allow:
+         * A-Z, a-z, 0-9, ".", "-", and "_"
+         */
+        if(!username.matches("^[A-Za-z0-9+_.-]+@(.+)$")){
+            return null;
+        }
 
         return username;
     }

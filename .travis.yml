@@ -47,7 +47,7 @@ deploy:
     - "./build/libs/Client-0.5.jar"
   on:
     tags: false
-    all_branches: true
+    branch: master
 
 branches:
   except:

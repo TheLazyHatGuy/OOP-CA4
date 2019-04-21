@@ -41,13 +41,13 @@ public class MovieClient
                     switch (option){
                         case "A":
                             String[] loginDetails = ClientInteractor.loginRegister();
-                            MessageSender.sendUsersDetails(client, MovieServiceDetails.LOGIN, loginDetails);
+                            MessageSender.sendStringArray(client, MovieServiceDetails.LOGIN, loginDetails);
                             loggedIn = MessageSender.createNewUser(client, loginDetails);
                             break;
 
                         case "B":
                             String[] userDetails = ClientInteractor.loginRegister();
-                            MessageSender.sendUsersDetails(client, MovieServiceDetails.REGISTER, userDetails);
+                            MessageSender.sendStringArray(client, MovieServiceDetails.REGISTER, userDetails);
                             loggedIn = MessageSender.createNewUser(client, userDetails);
                             break;
 
@@ -145,9 +145,11 @@ public class MovieClient
                 }
             }
         }catch (UnknownHostException ue){
-            ue.printStackTrace();
+            System.out.println("Server not found on " + MovieServiceDetails.SERVER_IP);
+            System.exit(1);
         }catch (IOException io){
-            io.printStackTrace();
+            System.out.println("Server not found on " + MovieServiceDetails.SERVER_IP);
+            System.exit(1);
         }finally {
             try {
                 if (client != null) {

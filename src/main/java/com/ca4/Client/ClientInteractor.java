@@ -170,7 +170,7 @@ public class ClientInteractor {
 
     /**
      * allows the user to enter their account details or register for an account
-     * @return
+     * @return sting array with user login details
      */
     public static String[] loginRegister(){
         System.out.println("Please enter your email: ");

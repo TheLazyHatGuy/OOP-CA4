@@ -20,30 +20,6 @@ public class MessageSender {
     private static User localUser;
 
     /**
-     * sends the login details of the user to the server
-     * @param messageCode
-     * @param details
-     */
-    public static void sendUsersDetails(Socket clientSocket, String messageCode, String[] details){
-        try{
-            String messageToSend;
-            inputFromSocket = clientSocket.getInputStream();
-
-            messageToSend = messageCode;
-
-            for(int i = 0; i < details.length; ++i){
-                messageToSend += MovieServiceDetails.BREAKING_CHARACTER + details[i];
-            }
-
-            streamWriter = new PrintWriter(clientSocket.getOutputStream());
-            streamWriter.println(messageToSend);
-            streamWriter.flush();
-        }catch (IOException io){
-            io.printStackTrace();
-        }
-    }
-
-    /**
      * sends an array of strings to the server
      *
      * used for search movies methods
@@ -65,7 +41,7 @@ public class MessageSender {
             streamWriter.println(messageToSend);
             streamWriter.flush();
         }catch (IOException io) {
-            io.printStackTrace();
+            System.out.println("Unable to send message to server\n");
         }
     }
 
@@ -89,7 +65,7 @@ public class MessageSender {
             localUser.toString();
             return true;
         }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
-            sendUsersDetails(clientSocket, MovieServiceDetails.LOGIN, userDetails);
+            sendStringArray(clientSocket, MovieServiceDetails.LOGIN, userDetails);
             createNewUser(clientSocket, userDetails);
             return true;
         }else{
@@ -145,7 +121,7 @@ public class MessageSender {
             streamWriter.println(MovieServiceDetails.CLOSE_CONNECTION);
             streamWriter.flush();
         }catch (IOException io){
-            io.printStackTrace();
+            System.out.println("Error on closing application");
         }
     }
 
@@ -177,7 +153,7 @@ public class MessageSender {
             streamWriter.flush();
             receiveCommandCodeFromServer();
         }catch (IOException io){
-            io.printStackTrace();
+            System.out.println("Unable to send movie data to server\n");
         }
     }
 
@@ -246,7 +222,8 @@ public class MessageSender {
             streamWriter.flush();
             receiveCommandCodeFromServer();
         }catch (IOException io){
-            io.printStackTrace();
+            System.out.println("Unable to send movie data to server");
+            System.out.println("Movie with id: " + id + " was not deleted from database\n");
         }
     }
 }

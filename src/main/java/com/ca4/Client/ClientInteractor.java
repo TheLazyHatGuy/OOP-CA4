@@ -273,6 +273,10 @@ public class ClientInteractor {
         return stringFromUser;
     }
 
+    /**
+     * gets the user's email and checks to see if the email is valid
+     * @return null if not valid or the user's email if it is valid
+     */
     public static String getEmail(){
         String username = scan.nextLine();
 
@@ -289,6 +293,10 @@ public class ClientInteractor {
         return username;
     }
 
+    /**
+     * get the users password and checks if it is valid
+     * @return null if not valid or the user's password if valid
+     */
     public static String getPassword(){
         String password = scan.nextLine();
 

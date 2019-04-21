@@ -2,7 +2,6 @@ package com.ca4.Client;
 
 import com.ca4.Core.MovieServiceDetails;
 import com.ca4.DTO.Movie;
-import com.ca4.DTO.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,7 +10,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * this is the main class the client will run to interact with the server
@@ -19,17 +17,14 @@ import java.util.Scanner;
 public class MovieClient
 {
     private static Socket client;
-    private static InputStream inputFromSocket;
-    private static PrintWriter streamWriter;
-    private static User localUser;
-    private static boolean loggedIn = true;
-
-    private static JSONArray jsMovieArray;
-    private static ArrayList<Movie> movieArray;
-    private static JSONObject jsonMovie;
+    private static boolean loggedIn = false;
 
     public static void main(String[] args)
     {
+        JSONArray jsMovieArray;
+        ArrayList<Movie> movieArray;
+        JSONObject jsonMovie;
+
         boolean continueRunning = true;
         String option;
 
@@ -46,16 +41,18 @@ public class MovieClient
                     switch (option){
                         case "A":
                             String[] loginDetails = ClientInteractor.loginRegister();
-                            sendUsersDetails(MovieServiceDetails.LOGIN, loginDetails);
+                            MessageSender.sendUsersDetails(client, MovieServiceDetails.LOGIN, loginDetails);
+                            loggedIn = MessageSender.createNewUser(client, loginDetails);
                             break;
 
                         case "B":
                             String[] userDetails = ClientInteractor.loginRegister();
-                            sendUsersDetails(MovieServiceDetails.REGISTER, userDetails);
+                            MessageSender.sendUsersDetails(client, MovieServiceDetails.REGISTER, userDetails);
+                            loggedIn = MessageSender.createNewUser(client, userDetails);
                             break;
 
                         case "C":
-                            closeConnectionToServer();
+                            MessageSender.closeConnectionToServer(client);
                             continueRunning = false;
                             break;
 
@@ -72,9 +69,9 @@ public class MovieClient
                         case "A":
                             System.out.println("What is the name of the movie you are looking for: ");
                             String[] movieName = {ClientInteractor.getMovieName()};
-                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName);
-                            jsonMovie = receiveJSONObject();
-                            Movie movie = convertJSONStringToMovie(jsonMovie.toString());
+                            MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName);
+                            jsonMovie = MessageSender.receiveJSONObject();
+                            Movie movie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
                             printMovie(movie);
 
@@ -82,9 +79,9 @@ public class MovieClient
 
                         case "B":
                             String[] movieDirector = {ClientInteractor.getMovieDirector()};
-                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, movieDirector);
-                            jsMovieArray = receiveJSONArray();
-                            movieArray = splitJSONMovieArray(jsMovieArray);
+                            MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, movieDirector);
+                            jsMovieArray = MessageSender.receiveJSONArray();
+                            movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
 
                             printMovieArray(movieArray);
 
@@ -92,9 +89,9 @@ public class MovieClient
 
                         case "C":
                             String[] movieGenre = {ClientInteractor.getMovieGenre()};
-                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_GENRE, movieGenre);
-                            jsMovieArray = receiveJSONArray();
-                            movieArray = splitJSONMovieArray(jsMovieArray);
+                            MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_GENRE, movieGenre);
+                            jsMovieArray = MessageSender.receiveJSONArray();
+                            movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
 
                             printMovieArray(movieArray);
 
@@ -103,41 +100,41 @@ public class MovieClient
                         case "D":
                             System.out.println("What is the name of the movie you are looking to update: ");
                             String[] movieToUpdate = {ClientInteractor.getMovieName()};
-                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToUpdate);
+                            MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToUpdate);
 
-                            jsonMovie = receiveJSONObject();
-                            Movie movieForUpdate = convertJSONStringToMovie(jsonMovie.toString());
+                            jsonMovie = MessageSender.receiveJSONObject();
+                            Movie movieForUpdate = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
                             printMovie(movieForUpdate);
 
                             Movie updatedMovie = ClientInteractor.UpdateMovie(movieForUpdate);
 
-                            sendMovieJSON(updatedMovie, MovieServiceDetails.UPDATE_MOVIE);
+                            MessageSender.sendMovieJSON(client, updatedMovie, MovieServiceDetails.UPDATE_MOVIE);
 
                             break;
 
                         case "E":
                             Movie movieToAdd = ClientInteractor.getMovieDetails();
-                            sendMovieJSON(movieToAdd, MovieServiceDetails.ADD_MOVIE);
+                            MessageSender.sendMovieJSON(client, movieToAdd, MovieServiceDetails.ADD_MOVIE);
                             break;
 
                         case "F":
                             System.out.println("What is the name of the movie you are looking to delete: ");
                             String[] movieToDelete = {ClientInteractor.getMovieName()};
 
-                            sendStringArray(MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToDelete);
-                            jsonMovie = receiveJSONObject();
-                            Movie movieForDelete = convertJSONStringToMovie(jsonMovie.toString());
+                            MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToDelete);
+                            jsonMovie = MessageSender.receiveJSONObject();
+                            Movie movieForDelete = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
                             printMovie(movieForDelete);
 
                             if(ClientInteractor.getYesorNofromuser()){
-                                sendMovieToDelete(movieForDelete.getId());
+                                MessageSender.sendMovieToDelete(client, movieForDelete.getId());
                             }
                             break;
 
                         case "G":
-                            closeConnectionToServer();
+                            MessageSender.closeConnectionToServer(client);
                             loggedIn = false;
                             continueRunning = false;
                             break;
@@ -163,224 +160,15 @@ public class MovieClient
     }
 
     /**
-     * sends the login details of the user to the server
-     * @param messageCode
-     * @param details
-     */
-    public static void sendUsersDetails(String messageCode, String[] details){
-        try{
-            String messageToSend;
-            inputFromSocket = client.getInputStream();
-
-            messageToSend = messageCode;
-
-            for(int i = 0; i < details.length; ++i){
-                messageToSend += MovieServiceDetails.BREAKING_CHARACTER + details[i];
-            }
-
-            streamWriter = new PrintWriter(client.getOutputStream());
-            streamWriter.println(messageToSend);
-            streamWriter.flush();
-            createNewUser(details);
-        }catch (IOException io){
-            io.printStackTrace();
-        }
-    }
-
-    /**
-     * sends an array of strings to the server
-     *
-     * used for search movies methods
-     * @param messageCode
-     * @param message
-     */
-    public static void sendStringArray(String messageCode, String[] message){
-        try{
-            String messageToSend;
-            inputFromSocket = client.getInputStream();
-
-            messageToSend = messageCode;
-
-            for(int i = 0; i < message.length; ++i){
-                messageToSend += MovieServiceDetails.BREAKING_CHARACTER + message[i];
-            }
-
-            streamWriter = new PrintWriter(client.getOutputStream());
-            streamWriter.println(messageToSend);
-            streamWriter.flush();
-        }catch (IOException io) {
-            io.printStackTrace();
-        }
-    }
-
-    /**
-     * creates a new user object based on the id returned by the server and the users inputted details
-     * if the user just registered it sends the details again for a log in
-     * also sets the state of the user to logged in
-     * @param userDetails
-     */
-    public static void createNewUser(String[] userDetails){
-        Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
-
-        String currentline = "";
-
-        currentline = input.nextLine();
-
-        String[] serverAnswer = currentline.split(MovieServiceDetails.BREAKING_CHARACTER);
-
-        if(serverAnswer[0].equals(MovieServiceDetails.LOGIN_SUCCESS)){
-            localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
-            localUser.toString();
-            loggedIn = true;
-        }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
-            sendUsersDetails(MovieServiceDetails.LOGIN, userDetails);
-        }else{
-            System.out.println("Cannot find user on server.");
-        }
-    }
-
-    /**
-     * receives the json string from the server and returns it as a json object
-     * @return a json object
-     */
-    public static JSONObject receiveJSONObject(){
-        Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
-
-        String currentline = "";
-
-        while(!(currentline.contains(MovieServiceDetails.JSONOBJECT_ENDINGCHAR))){
-            currentline += input.nextLine();
-        }
-
-        JSONObject jsObj = new JSONObject(currentline);
-
-        return jsObj;
-    }
-
-    /**
-     * receives a json string and turns it into an json array
-     * @return json array
-     */
-    public static JSONArray receiveJSONArray(){
-        Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
-
-        String currentline = "";
-
-        while(!(currentline.contains(MovieServiceDetails.JSONARRAY_ENDINGCHAR))){
-            currentline += input.nextLine();
-        }
-        JSONArray jsArray = new JSONArray(currentline);
-
-        return jsArray;
-    }
-
-    /**
-     * sends the close connection code to the server
-     */
-    public static void closeConnectionToServer(){
-        try{
-            inputFromSocket = client.getInputStream();
-
-            streamWriter = new PrintWriter(client.getOutputStream());
-            streamWriter.println(MovieServiceDetails.CLOSE_CONNECTION);
-            streamWriter.flush();
-        }catch (IOException io){
-            io.printStackTrace();
-        }
-    }
-
-    /**
-     * receives command codes from the server
-     * such as success for add of movie or close connection
-     */
-    public static void receiveCommandCodeFromServer(){
-        Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
-
-        String answer;
-
-        answer = input.nextLine();
-
-        System.out.println(answer);
-    }
-
-    /**
-     * sends a movie object as a json string to the server
-     * @param movieToSend
-     * @param serverCode
-     */
-    public static void sendMovieJSON(Movie movieToSend, String serverCode){
-        try{
-            String sendableMovie = serverCode + MovieServiceDetails.BREAKING_CHARACTER + movieToSend.toJSONString();
-
-            streamWriter = new PrintWriter(client.getOutputStream());
-            streamWriter.println(sendableMovie);
-            streamWriter.flush();
-            receiveCommandCodeFromServer();
-        }catch (IOException io){
-            io.printStackTrace();
-        }
-    }
-
-    /**
-     * splits the json array into multiple movie objects
-     * solution found on stack overflow changed to suit these objects
-     * src: https://stackoverflow.com/questions/33754101/split-json-object-from-json-array-in-java
-     * @param movieArray
-     * @return
-     */
-    public static ArrayList<Movie> splitJSONMovieArray(JSONArray movieArray){
-        ArrayList<Movie> movies = new ArrayList<>();
-        JSONObject jsonObj;
-
-        for(int i = 0; i < movieArray.length(); ++i){
-            jsonObj = movieArray.getJSONObject(i);
-            movies.add(convertJSONStringToMovie(jsonObj.toString()));
-        }
-
-        return movies;
-    }
-
-    /**
-     * converts a json movie object into an actual movie object
-     * taken from camerons movieservicethread
-     * @param jsonStringToConvert
-     * @return
-     */
-    public static Movie convertJSONStringToMovie(String jsonStringToConvert)
-    {
-        JSONObject movieJSON = new JSONObject(jsonStringToConvert);
-
-        int id = movieJSON.getInt("id");
-        String title = movieJSON.getString("title");
-        String genre = movieJSON.getString("genre");
-        String director = movieJSON.getString("director");
-        String runtime = movieJSON.getString("runtime");
-        String plot = movieJSON.getString("plot");
-        String location = movieJSON.getString("location");
-        //String poster = movieJSON.getString("poster");
-        String rating = movieJSON.getString("rating");
-        String format = movieJSON.getString("format");
-        String year = movieJSON.getString("year");
-        String starring  = movieJSON.getString("staring");
-        int copies = movieJSON.getInt("copies");
-        //String barcode = movieJSON.getString("barcode");
-        //String userRating = movieJSON.getString("user-rating");
-
-        return new Movie(id, title, genre, director, runtime, plot, location, "", rating,
-                format, year, starring, copies, "", "");
-    }
-
-    /**
      * prints an arraylist of movies into a clean format
-     * @param movies
+     * @param movies arraylist that has been returned from the server per client request
      */
-    public static void printMovieArray(ArrayList<Movie> movies){
+    private static void printMovieArray(ArrayList<Movie> movies){
         int longestID = 5;
         int longestTitle = 10;
         int maxGenrelengthBeforeNewLIne = 50;
         int longestDirector = 10;
         int longestRuntime = 5;
-        int maxPlotlengthBeforeNewLIne = 50;
         int longestRating = 4;
         int longestFormat = 5;
         int longestYear = 4;
@@ -440,15 +228,14 @@ public class MovieClient
 
     /**
      * prints a single movie in a clean format
-     * @param movie
+     * @param movie movie object that is gotten from the server via client request
      */
-    public static void printMovie(Movie movie){
+    private static void printMovie(Movie movie){
         int longestID = 5;
         int longestTitle = 10;
         int maxGenrelengthBeforeNewLIne = 50;
         int longestDirector = 10;
         int longestRuntime = 5;
-        int maxPlotlengthBeforeNewLIne = 50;
         int longestRating = 4;
         int longestFormat = 5;
         int longestYear = 4;
@@ -503,29 +290,9 @@ public class MovieClient
     }
 
     /**
-     * sends the id of a movie that the user has requested to be deleted
-     * @param id
-     */
-    public static void sendMovieToDelete(int id){
-        String message = MovieServiceDetails.REMOVE_MOVIE + MovieServiceDetails.BREAKING_CHARACTER
-                + Integer.toString(id);
-
-        try{
-            inputFromSocket = client.getInputStream();
-
-            streamWriter = new PrintWriter(client.getOutputStream());
-            streamWriter.println(message);
-            streamWriter.flush();
-            receiveCommandCodeFromServer();
-        }catch (IOException io){
-            io.printStackTrace();
-        }
-    }
-
-    /**
      * adds a specific amount of padding between strings
-     * @param string
-     * @param stringLength
+     * @param string string that extra spacing is to be added to
+     * @param stringLength length of string that requires spacing
      * @return a padded string
      */
     private static String pad(String string, int stringLength){

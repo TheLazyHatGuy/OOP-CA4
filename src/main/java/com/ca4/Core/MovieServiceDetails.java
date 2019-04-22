@@ -5,7 +5,7 @@ public class MovieServiceDetails
     public static final int SERVER_PORT = 50000;
     public static final int MAX_CONNECTIONS = 3;
     public static final int CACHE_TTL = 60; //Cache Time To Live is done in seconds
-    public static final String SERVER_IP = "10.102.23.82";
+    public static final String SERVER_IP = "127.0.0.1";
     public static final String BREAKING_CHARACTER = "%%";
 
     //Commands
@@ -23,7 +23,7 @@ public class MovieServiceDetails
 
     //Responses
     public static final String LOGIN_SUCCESS        = "WLKM";
-    public static final String REGISTER_SUCCESS     = "WLKM";
+    public static final String REGISTER_SUCCESS     = "WLKMRJST";
     public static final String ADD_SUCCESS          = "SKSS";
     public static final String REMOVE_SUCCESS       = "SKSS";
     public static final String UPDATE_SUCCESS       = "SKSS";

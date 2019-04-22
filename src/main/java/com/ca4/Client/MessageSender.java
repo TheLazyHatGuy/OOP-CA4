@@ -17,7 +17,6 @@ import java.net.Socket;
 public class MessageSender {
     private static InputStream inputFromSocket;
     private static PrintWriter streamWriter;
-    private static User localUser;
 
     /**
      * sends an array of strings to the server
@@ -61,8 +60,8 @@ public class MessageSender {
         String[] serverAnswer = currentline.split(MovieServiceDetails.BREAKING_CHARACTER);
 
         if(serverAnswer[0].equals(MovieServiceDetails.LOGIN_SUCCESS)){
-            localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
-            localUser.toString();
+            MovieClient.localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
+            MovieClient.localUser.toString();
             return true;
         }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
             sendStringArray(clientSocket, MovieServiceDetails.LOGIN, userDetails);

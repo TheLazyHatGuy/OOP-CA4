@@ -36,7 +36,9 @@ public class ClientInteractor {
         System.out.println("D) Update a movie");
         System.out.println("E) Add a movie");
         System.out.println("F) Delete a movie");
-        System.out.println("G) Logout and exit application");
+        System.out.println("G) Get your recommended movies");
+        System.out.println("H) Add a movie to your list of watched movies");
+        System.out.println("I) Logout and exit application");
 
         String option = getMenuOptionFromUser(7);
 
@@ -87,67 +89,67 @@ public class ClientInteractor {
             option = getUpdateOption();
 
             switch (option) {
-                case "A":
+                case MenuDetails.UPDATETITLE:
                     System.out.print("Please enter the updated name of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setTitle(updatedParam);
                     break;
 
-                case "B":
+                case MenuDetails.UPDATEGENRE:
                     System.out.print("Please enter the updated genre list of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setGenre(updatedParam);
                     break;
 
-                case "C":
+                case MenuDetails.UPDATEDIRECTOR:
                     System.out.print("Please enter the updated director name of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setDirector(updatedParam);
                     break;
 
-                case "D":
+                case MenuDetails.UPDATERUNTIME:
                     System.out.print("Please enter the updated runtime of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setRuntime(updatedParam);
                     break;
 
-                case "E":
+                case MenuDetails.UPDATEPLOT:
                     System.out.print("Please enter the updated plot of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setPlot(updatedParam);
                     break;
 
-                case "F":
+                case MenuDetails.UPDATERATING:
                     System.out.print("Please enter the updated rating of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setRating(updatedParam);
                     break;
 
-                case "G":
+                case MenuDetails.UPDATEFORMAT:
                     System.out.print("Please enter the updated format of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setFormat(updatedParam);
                     break;
 
-                case "H":
+                case MenuDetails.UPDATEYEAR:
                     System.out.print("Please enter the updated year of release of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setYear(updatedParam);
                     break;
 
-                case "I":
+                case MenuDetails.UPDATEACTORS:
                     System.out.print("Please enter the updated actor/actress list of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setStarring(updatedParam);
                     break;
 
-                case "J":
+                case MenuDetails.UPDATECOPIES:
                     System.out.print("Please enter the updated amount of available copies of the movie:");
                     int updatedCopies = scan.nextInt();
                     updatedMovie.setCopies(updatedCopies);
                     break;
 
-                case "K":
+                case MenuDetails.UPDATEEXIT:
                     boolean answer = getYesorNofromuser();
 
                     if(answer){
@@ -155,7 +157,7 @@ public class ClientInteractor {
                     }
                     break;
 
-                case "L":
+                case MenuDetails.EXITNOUPDATE:
                     keepUpdating = false;
                     break;
 

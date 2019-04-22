@@ -2,6 +2,7 @@ package com.ca4.Client;
 
 import com.ca4.Core.MovieServiceDetails;
 import com.ca4.DTO.Movie;
+import com.ca4.DTO.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,6 +19,7 @@ public class MovieClient
 {
     private static Socket client;
     private static boolean loggedIn = false;
+    public static User localUser;
 
     public static void main(String[] args)
     {
@@ -39,19 +41,19 @@ public class MovieClient
                     option = ClientInteractor.getMenuOption_NotLoggedIn();
 
                     switch (option){
-                        case "A":
+                        case MenuDetails.LOGIN:
                             String[] loginDetails = ClientInteractor.loginRegister();
                             MessageSender.sendStringArray(client, MovieServiceDetails.LOGIN, loginDetails);
                             loggedIn = MessageSender.createNewUser(client, loginDetails);
                             break;
 
-                        case "B":
+                        case MenuDetails.REGISTER:
                             String[] userDetails = ClientInteractor.loginRegister();
                             MessageSender.sendStringArray(client, MovieServiceDetails.REGISTER, userDetails);
                             loggedIn = MessageSender.createNewUser(client, userDetails);
                             break;
 
-                        case "C":
+                        case MenuDetails.EXIT:
                             MessageSender.closeConnectionToServer(client);
                             continueRunning = false;
                             break;
@@ -66,7 +68,7 @@ public class MovieClient
                     option = ClientInteractor.getMenuOption_LoggedIn();
 
                     switch (option){
-                        case "A":
+                        case MenuDetails.FINDBYTITLE:
                             System.out.println("What is the name of the movie you are looking for: ");
                             String[] movieName = {ClientInteractor.getMovieName()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName);
@@ -77,7 +79,7 @@ public class MovieClient
 
                             break;
 
-                        case "B":
+                        case MenuDetails.FINDBYDIRECTOR:
                             String[] movieDirector = {ClientInteractor.getMovieDirector()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, movieDirector);
                             jsMovieArray = MessageSender.receiveJSONArray();
@@ -87,7 +89,7 @@ public class MovieClient
 
                             break;
 
-                        case "C":
+                        case MenuDetails.FINDBYGENRE:
                             String[] movieGenre = {ClientInteractor.getMovieGenre()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_GENRE, movieGenre);
                             jsMovieArray = MessageSender.receiveJSONArray();
@@ -97,7 +99,7 @@ public class MovieClient
 
                             break;
 
-                        case "D":
+                        case MenuDetails.UPDATEMOVIE:
                             System.out.println("What is the name of the movie you are looking to update: ");
                             String[] movieToUpdate = {ClientInteractor.getMovieName()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToUpdate);
@@ -113,12 +115,12 @@ public class MovieClient
 
                             break;
 
-                        case "E":
+                        case MenuDetails.ADDMOVIE:
                             Movie movieToAdd = ClientInteractor.getMovieDetails();
                             MessageSender.sendMovieJSON(client, movieToAdd, MovieServiceDetails.ADD_MOVIE);
                             break;
 
-                        case "F":
+                        case MenuDetails.DELETEMOVIE:
                             System.out.println("What is the name of the movie you are looking to delete: ");
                             String[] movieToDelete = {ClientInteractor.getMovieName()};
 
@@ -130,10 +132,39 @@ public class MovieClient
 
                             if(ClientInteractor.getYesorNofromuser()){
                                 MessageSender.sendMovieToDelete(client, movieForDelete.getId());
+                                MessageSender.receiveCommandCodeFromServer();
                             }
                             break;
 
-                        case "G":
+                        case MenuDetails.RECOMMENDED:
+                            String[] userID = {Integer.toString(localUser.getId())};
+                            MessageSender.sendStringArray(client, MovieServiceDetails.RECOMMEND_MOVIE, userID);
+                            jsonMovie = MessageSender.receiveJSONObject();
+                            Movie recommendedMovie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
+
+                            printMovie(recommendedMovie);
+
+                            break;
+
+                        case MenuDetails.SETWATCHED:
+                            System.out.println("What is the name of the movie you have watched: ");
+                            String[] watchedMovie = {ClientInteractor.getMovieName()};
+
+                            MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, watchedMovie);
+                            jsonMovie = MessageSender.receiveJSONObject();
+                            Movie watched = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
+
+                            printMovie(watched);
+
+                            String[] IDofUserandMovie = {Integer.toString(localUser.getId()),
+                                    Integer.toString(watched.getId())};
+
+                            if(ClientInteractor.getYesorNofromuser()){
+                                MessageSender.sendStringArray(client, MovieServiceDetails.WATCH_MOVIE, IDofUserandMovie);
+                                MessageSender.receiveCommandCodeFromServer();
+                            }
+
+                        case MenuDetails.LOGOUTEXIT:
                             MessageSender.closeConnectionToServer(client);
                             loggedIn = false;
                             continueRunning = false;

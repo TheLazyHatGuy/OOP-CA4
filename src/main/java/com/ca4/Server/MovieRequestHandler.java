@@ -7,6 +7,7 @@ import com.ca4.DTO.User;
 import com.ca4.DTO.WatchedMovie;
 import com.ca4.Exceptions.DAOException;
 import com.ca4.Server.Cache.Cache;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -15,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 class MovieRequestHandler {
@@ -223,12 +225,16 @@ class MovieRequestHandler {
     }
 
     static String recommendMovie(int userID) {
-        MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
         try {
-            Movie randomMovie = getRandomMovie();
-            response = randomMovie.toJSONString();
+            ArrayList<Movie> recommendations = getRandomMovieBasedOnGenre(userID);
+
+            while (recommendations.size() < 3) {
+                recommendations.add(getRandomMovie());
+            }
+
+            response = buildMovieJSONString(recommendations);
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());
         }
@@ -236,17 +242,71 @@ class MovieRequestHandler {
         return response;
     }
 
-    private static Movie getRandomMovie() throws DAOException {
-        Random random = new Random();
+    private static ArrayList<Movie> getRandomMovieBasedOnGenre(int userID) throws DAOException {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        WatchedMovieDAOInterface watchedMovieDAO = new MySQLWatchedMovieDAO();
+        List<WatchedMovie> usersWatchedMovies = watchedMovieDAO.getAllUsersWatchedMovies(userID);
+        ArrayList<String> watchedGenres = new ArrayList<>();
+        ArrayList<Movie> recommendations = new ArrayList<>();
 
-        int min = 14;
-        int max = 1052;
-        //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
-        int randomMovieID = random.nextInt((max - min) + 1) + min;
+        //Find all the genres the user has watched
+        for (WatchedMovie watchedMovie : usersWatchedMovies) {
+            Movie movie = movieDAO.getMovieByID(watchedMovie.getMovieID());
+
+            if (!watchedGenres.contains(movie.getGenre())) {
+                watchedGenres.add(movie.getGenre());
+            }
+        }
+
+        if (watchedGenres.size() > 0) {
+            for (String genre : watchedGenres) {
+                String cachedResult = cache.queryMovieGenreCache(genre);
+                ArrayList<Movie> movies;
+
+                if (cachedResult.equals("")) {
+                    //Search for all movies in given genre
+                    movies = movieDAO.getMoviesByGenre(genre);
+
+                    if (movies.size() >= 1) {
+                        System.out.println("Adding object to cache");
+                        cache.addToMovieGenreCache(genre, buildMovieJSONString(movies));
+                    }
+                } else {
+                    //Rebuild the cache object into movies
+                    movies = new ArrayList<>();
+                    JSONArray cachedGenre = new JSONArray(cachedResult);
+
+                    for (Object o : cachedGenre) {
+                        Movie movie = convertJSONStringToMovie(o.toString());
+                        movies.add(movie);
+                    }
+                }
+
+                if (movies.size() >= 1) {
+                    //Pick a random movie from the list to recommend
+                    int randomMovieID = getRandomInt(0, movies.size());
+                    recommendations.add(movies.get(randomMovieID));
+                }
+            }
+
+            cache.checkAllCaches();
+        }
+
+        return recommendations;
+    }
+
+    private static Movie getRandomMovie() throws DAOException {
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+        int randomMovieID = getRandomInt(14, 1052);
+
         return movieDAO.getMovieByID(randomMovieID);
     }
 
+    private static int getRandomInt(int min, int max) {
+        Random random = new Random();
+        //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
+        return random.nextInt((max - min) + 1) + min;
+    }
 
     /**
      * Converts a Movie ArrayList to a JSON string

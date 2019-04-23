@@ -223,23 +223,28 @@ class MovieRequestHandler {
     }
 
     static String recommendMovie(int userID) {
-        Random random = new Random();
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
 
         try {
-            int min = 14;
-            int max = 1052;
-            //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
-            int randomMovieID = random.nextInt((max - min) + 1) + min;
-            Movie randomMovie = movieDAO.getMovieByID(randomMovieID);
-
+            Movie randomMovie = getRandomMovie();
             response = randomMovie.toJSONString();
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());
         }
 
         return response;
+    }
+
+    private static Movie getRandomMovie() throws DAOException {
+        Random random = new Random();
+        MovieDAOInterface movieDAO = new MySQLMovieDAO();
+
+        int min = 14;
+        int max = 1052;
+        //Taken from - https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
+        int randomMovieID = random.nextInt((max - min) + 1) + min;
+        return movieDAO.getMovieByID(randomMovieID);
     }
 
 

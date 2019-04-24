@@ -16,7 +16,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
 
         try{
             con = this.getConnection();
-            String query = "INSERT INTO user (email, password) values(?,?)";
+            String query = "INSERT INTO users (email, password) values(?,?)";
             ps = con.prepareStatement(query);
             ps.setString(1, email);
             ps.setString(2, password);
@@ -44,7 +44,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
         try
         {
             con = this.getConnection();
-            String query = "SELECT * FROM user WHERE email = ? LIMIT 1";
+            String query = "SELECT * FROM users WHERE email = ? LIMIT 1";
             ps = con.prepareStatement(query);
             ps.setString(1, email);
             rs = ps.executeQuery();
@@ -80,7 +80,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
 
         try{
             con = this.getConnection();
-            String query = "DELETE FROM user WHERE id = ?";
+            String query = "DELETE FROM users WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1, user_id);
 
@@ -103,7 +103,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
 
         try{
             con = this.getConnection();
-            String query = "UPDATE user SET email = ?, password = ? where id = ?";
+            String query = "UPDATE users SET email = ?, password = ? where id = ?";
             ps = con.prepareStatement(query);
             ps.setString(1, email);
             ps.setString(2, password);

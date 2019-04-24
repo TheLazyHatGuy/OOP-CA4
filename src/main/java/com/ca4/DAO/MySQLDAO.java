@@ -27,9 +27,9 @@ public class MySQLDAO
             connection = DriverManager.getConnection(url, dbUser, dbPass);
         }
         catch(SQLException ex){
-            System.out.println("Connection failed " + ex.getMessage());
-            System.exit(1);
+            throw new DAOException("getConnection(): " + ex.getMessage());
         }
+
         return connection;
     }
 
@@ -61,8 +61,7 @@ public class MySQLDAO
             }
         }
         catch(SQLException e){
-            System.out.println("Failed to free the connection: " + e.getMessage());
-            System.exit(1);
+            throw new DAOException("closeConnection(): " + e.getMessage());
         }
     }
 
@@ -82,8 +81,7 @@ public class MySQLDAO
         }
         catch(SQLException e)
         {
-            System.out.println("Failed to free the connection: " + e.getMessage());
-            System.exit(1);
+            throw new DAOException("closeConnection(): " + e.getMessage());
         }
     }
 
@@ -108,8 +106,7 @@ public class MySQLDAO
         }
         catch(SQLException e)
         {
-            System.out.println("Failed to free the connection: " + e.getMessage());
-            System.exit(1);
+            throw new DAOException("closeConnection(): " + e.getMessage());
         }
     }
 }

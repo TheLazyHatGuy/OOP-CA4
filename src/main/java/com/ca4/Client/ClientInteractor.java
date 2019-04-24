@@ -155,6 +155,8 @@ public class ClientInteractor {
                     if(answer){
                         return updatedMovie;
                     }
+
+                    keepUpdating = false;
                     break;
 
                 case MenuDetails.EXITNOUPDATE:

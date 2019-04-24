@@ -59,17 +59,21 @@ public class MessageSender {
 
         String[] serverAnswer = currentline.split(MovieServiceDetails.BREAKING_CHARACTER);
 
-        if(serverAnswer[0].equals(MovieServiceDetails.LOGIN_SUCCESS)){
-            MovieClient.localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
-            MovieClient.localUser.toString();
-            return true;
-        }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
-            sendStringArray(clientSocket, MovieServiceDetails.LOGIN, userDetails);
-            createNewUser(clientSocket, userDetails);
-            return true;
+        if(!checkResponseForErrors(currentline)){
+            if(serverAnswer[0].equals(MovieServiceDetails.LOGIN_SUCCESS)){
+                MovieClient.localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
+                MovieClient.localUser.toString();
+                return true;
+            }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
+                sendStringArray(clientSocket, MovieServiceDetails.LOGIN, userDetails);
+                createNewUser(clientSocket, userDetails);
+                return true;
+            }
         }else{
-            System.out.println("Cannot find user on server.");
+            System.out.println(MovieServiceDetails.ANSI_RED + "ERROR user can not be created" +
+                    MovieServiceDetails.ANSI_RESET);
         }
+
 
         return false;
     }
@@ -128,14 +132,14 @@ public class MessageSender {
      * receives command codes from the server
      * such as success for add of movie or close connection
      */
-    public static void receiveCommandCodeFromServer(){
+    public static String receiveCommandCodeFromServer(){
         Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
         String answer;
 
         answer = input.nextLine();
 
-        System.out.println(answer);
+        return answer;
     }
 
     /**
@@ -150,7 +154,6 @@ public class MessageSender {
             streamWriter = new PrintWriter(clientSocket.getOutputStream());
             streamWriter.println(sendableMovie);
             streamWriter.flush();
-            receiveCommandCodeFromServer();
         }catch (IOException io){
             System.out.println("Unable to send movie data to server\n");
         }
@@ -219,10 +222,26 @@ public class MessageSender {
             streamWriter = new PrintWriter(clientSocket.getOutputStream());
             streamWriter.println(message);
             streamWriter.flush();
-            receiveCommandCodeFromServer();
         }catch (IOException io){
             System.out.println("Unable to send movie data to server");
             System.out.println("Movie with id: " + id + " was not deleted from database\n");
+        }
+    }
+
+    /**
+     * checks the response string from the server to see if the response code is equal to ERR or ANKN
+     * if it is one of these two strings it returns true
+     * If the response code is not equals to the strings it returns false
+     * @param response string response from server
+     * @return true if there are errors or false if there is not errors
+     */
+    public static boolean checkResponseForErrors(String response){
+        String[] splitres = response.split(MovieServiceDetails.BREAKING_CHARACTER);
+
+        if(splitres[0].equals(MovieServiceDetails.FAIL) || splitres[0].equals(MovieServiceDetails.UNRECOGNISED_COMMAND)){
+            return true;
+        }else{
+            return false;
         }
     }
 }

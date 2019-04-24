@@ -29,7 +29,7 @@ public class MovieClient
 
         boolean continueRunning = true;
         String option;
-
+        String response;
 
         try{
             InetAddress serverIP = InetAddress.getByName(MovieServiceDetails.SERVER_IP);
@@ -73,9 +73,18 @@ public class MovieClient
                             String[] movieName = {ClientInteractor.getMovieName()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieName);
                             jsonMovie = MessageSender.receiveJSONObject();
-                            Movie movie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            printMovie(movie);
+                            //error checking
+                            if(!MessageSender.checkResponseForErrors(jsonMovie.toString())){
+                                Movie movie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
+
+                                printMovie(movie);
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR movie with title " +
+                                        movieName[0] + " not found" + MovieServiceDetails.ANSI_RESET);
+                            }
+
+
 
                             break;
 
@@ -83,9 +92,17 @@ public class MovieClient
                             String[] movieDirector = {ClientInteractor.getMovieDirector()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, movieDirector);
                             jsMovieArray = MessageSender.receiveJSONArray();
-                            movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
 
-                            printMovieArray(movieArray);
+                            //error checking
+                            if(!MessageSender.checkResponseForErrors(jsMovieArray.toString())){
+                                movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
+
+                                printMovieArray(movieArray);
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR movies with director " +
+                                        movieDirector[0] + " not found" + MovieServiceDetails.ANSI_RESET);
+                            }
+
 
                             break;
 
@@ -93,9 +110,16 @@ public class MovieClient
                             String[] movieGenre = {ClientInteractor.getMovieGenre()};
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_GENRE, movieGenre);
                             jsMovieArray = MessageSender.receiveJSONArray();
-                            movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
 
-                            printMovieArray(movieArray);
+                            //error checking
+                            if(!MessageSender.checkResponseForErrors(jsMovieArray.toString())){
+                                movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
+
+                                printMovieArray(movieArray);
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR movies with Genre " +
+                                        movieGenre[0] + " not found" + MovieServiceDetails.ANSI_RESET);
+                            }
 
                             break;
 
@@ -105,19 +129,44 @@ public class MovieClient
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToUpdate);
 
                             jsonMovie = MessageSender.receiveJSONObject();
-                            Movie movieForUpdate = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            printMovie(movieForUpdate);
+                            if(!MessageSender.checkResponseForErrors(jsonMovie.toString())){
+                                Movie movieForUpdate = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            Movie updatedMovie = ClientInteractor.UpdateMovie(movieForUpdate);
+                                printMovie(movieForUpdate);
 
-                            MessageSender.sendMovieJSON(client, updatedMovie, MovieServiceDetails.UPDATE_MOVIE);
+                                Movie updatedMovie = ClientInteractor.UpdateMovie(movieForUpdate);
+
+                                MessageSender.sendMovieJSON(client, updatedMovie, MovieServiceDetails.UPDATE_MOVIE);
+                                response = MessageSender.receiveCommandCodeFromServer();
+
+                                if(!MessageSender.checkResponseForErrors(response)){
+                                    System.out.println(MovieServiceDetails.ANSI_BLUE + movieToUpdate[0] +
+                                            " was successfully updated" + MovieServiceDetails.ANSI_RESET);
+                                }else{
+                                    System.out.println(MovieServiceDetails.ANSI_RED + movieToUpdate[0] +
+                                            " was not updated" + MovieServiceDetails.ANSI_RESET);
+                                }
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR movie with title " +
+                                        movieToUpdate[0] + " not found" + MovieServiceDetails.ANSI_RESET);
+                            }
 
                             break;
 
                         case MenuDetails.ADDMOVIE:
                             Movie movieToAdd = ClientInteractor.getMovieDetails();
                             MessageSender.sendMovieJSON(client, movieToAdd, MovieServiceDetails.ADD_MOVIE);
+                            response =  MessageSender.receiveCommandCodeFromServer();
+
+                            if(!MessageSender.checkResponseForErrors(response)){
+                                System.out.println(MovieServiceDetails.ANSI_BLUE + movieToAdd.getTitle() +
+                                        " was successfully added" + MovieServiceDetails.ANSI_RESET);
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + movieToAdd.getTitle() +
+                                        " was not added" + MovieServiceDetails.ANSI_RESET);
+                            }
+
                             break;
 
                         case MenuDetails.DELETEMOVIE:
@@ -126,23 +175,50 @@ public class MovieClient
 
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, movieToDelete);
                             jsonMovie = MessageSender.receiveJSONObject();
-                            Movie movieForDelete = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            printMovie(movieForDelete);
+                            if(!MessageSender.checkResponseForErrors(jsonMovie.toString())){
+                                Movie movieForDelete = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            if(ClientInteractor.getYesorNofromuser()){
-                                MessageSender.sendMovieToDelete(client, movieForDelete.getId());
-                                MessageSender.receiveCommandCodeFromServer();
+                                printMovie(movieForDelete);
+
+                                if(ClientInteractor.getYesorNofromuser()){
+                                    MessageSender.sendMovieToDelete(client, movieForDelete.getId());
+                                    response = MessageSender.receiveCommandCodeFromServer();
+
+                                    if(!MessageSender.checkResponseForErrors(response)){
+                                        System.out.println(MovieServiceDetails.ANSI_BLUE + movieToDelete[0] +
+                                                " was successfully deleted" + MovieServiceDetails.ANSI_RESET);
+                                    }else{
+                                        System.out.println(MovieServiceDetails.ANSI_RED + movieToDelete[0] +
+                                                " was not deleted" + MovieServiceDetails.ANSI_RESET);
+                                    }
+                                }else{
+                                    System.out.println(MovieServiceDetails.ANSI_RED + movieToDelete[0] +
+                                            " was not deleted" + MovieServiceDetails.ANSI_RESET);
+                                }
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR movie with title " +
+                                        movieToDelete[0] + " not found" + MovieServiceDetails.ANSI_RESET);
                             }
+
+
+
                             break;
 
                         case MenuDetails.RECOMMENDED:
                             String[] userID = {Integer.toString(localUser.getId())};
                             MessageSender.sendStringArray(client, MovieServiceDetails.RECOMMEND_MOVIE, userID);
                             jsonMovie = MessageSender.receiveJSONObject();
-                            Movie recommendedMovie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            printMovie(recommendedMovie);
+                            //error checking
+                            if(!MessageSender.checkResponseForErrors(jsonMovie.toString())){
+                                Movie recommendedMovie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
+
+                                printMovie(recommendedMovie);
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR no recommended movie was found"
+                                        + MovieServiceDetails.ANSI_RESET);
+                            }
 
                             break;
 
@@ -152,17 +228,35 @@ public class MovieClient
 
                             MessageSender.sendStringArray(client, MovieServiceDetails.SEARCH_MOVIE_TITLE, watchedMovie);
                             jsonMovie = MessageSender.receiveJSONObject();
-                            Movie watched = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            printMovie(watched);
+                            if(!MessageSender.checkResponseForErrors(jsonMovie.toString())){
+                                Movie watched = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
 
-                            String[] IDofUserandMovie = {Integer.toString(localUser.getId()),
-                                    Integer.toString(watched.getId())};
+                                printMovie(watched);
 
-                            if(ClientInteractor.getYesorNofromuser()){
-                                MessageSender.sendStringArray(client, MovieServiceDetails.WATCH_MOVIE, IDofUserandMovie);
-                                MessageSender.receiveCommandCodeFromServer();
+                                String[] IDofUserandMovie = {Integer.toString(localUser.getId()),
+                                        Integer.toString(watched.getId())};
+
+                                if(ClientInteractor.getYesorNofromuser()){
+                                    MessageSender.sendStringArray(client, MovieServiceDetails.WATCH_MOVIE, IDofUserandMovie);
+                                    response = MessageSender.receiveCommandCodeFromServer();
+
+                                    if(!MessageSender.checkResponseForErrors(response)){
+                                        System.out.println(MovieServiceDetails.ANSI_BLUE + watchedMovie[0] +
+                                                " was successfully added to your list of watched movies" +
+                                                MovieServiceDetails.ANSI_RESET);
+                                    }else{
+                                        System.out.println(MovieServiceDetails.ANSI_RED + watchedMovie[0] +
+                                                " was not added to your list of watched movies" +
+                                                MovieServiceDetails.ANSI_RESET);
+                                    }
+                                }
+                            }else{
+                                System.out.println(MovieServiceDetails.ANSI_RED + "ERROR movie with title " +
+                                        watchedMovie[0] + " not found" + MovieServiceDetails.ANSI_RESET);
                             }
+
+                            break;
 
                         case MenuDetails.LOGOUTEXIT:
                             MessageSender.closeConnectionToServer(client);

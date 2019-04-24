@@ -5,7 +5,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="11" />
     <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="OOP-CA4-GitHub [serverJar]" run_configuration_type="GradleRunConfiguration" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Build Server Jar" run_configuration_type="GradleRunConfiguration" />
     </method>
   </configuration>
 </component>

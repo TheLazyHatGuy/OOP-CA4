@@ -2,7 +2,6 @@ package com.ca4.Client;
 
 import com.ca4.DTO.Movie;
 
-import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,7 +20,7 @@ public class ClientInteractor {
         System.out.println("B) Register");
         System.out.println("C) Exit application");
 
-        String option = getStringFromUser();
+        String option = getMenuOptionFromUser(3);
 
         return option;
     }
@@ -37,9 +36,11 @@ public class ClientInteractor {
         System.out.println("D) Update a movie");
         System.out.println("E) Add a movie");
         System.out.println("F) Delete a movie");
-        System.out.println("G) Logout and exit application");
+        System.out.println("G) Get your recommended movies");
+        System.out.println("H) Add a movie to your list of watched movies");
+        System.out.println("I) Logout and exit application");
 
-        String option = getStringFromUser();
+        String option = getMenuOptionFromUser(7);
 
         return option;
     }
@@ -62,7 +63,7 @@ public class ClientInteractor {
         System.out.println("K) Run update and exit");
         System.out.println("L) Exit without updating");
 
-        String option = getStringFromUser();
+        String option = getMenuOptionFromUser(12);
 
         option.toUpperCase();
 
@@ -88,76 +89,82 @@ public class ClientInteractor {
             option = getUpdateOption();
 
             switch (option) {
-                case "A":
+                case MenuDetails.UPDATETITLE:
                     System.out.print("Please enter the updated name of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setTitle(updatedParam);
                     break;
 
-                case "B":
+                case MenuDetails.UPDATEGENRE:
                     System.out.print("Please enter the updated genre list of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setGenre(updatedParam);
                     break;
 
-                case "C":
+                case MenuDetails.UPDATEDIRECTOR:
                     System.out.print("Please enter the updated director name of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setDirector(updatedParam);
                     break;
 
-                case "D":
+                case MenuDetails.UPDATERUNTIME:
                     System.out.print("Please enter the updated runtime of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setRuntime(updatedParam);
                     break;
 
-                case "E":
+                case MenuDetails.UPDATEPLOT:
                     System.out.print("Please enter the updated plot of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setPlot(updatedParam);
                     break;
 
-                case "F":
+                case MenuDetails.UPDATERATING:
                     System.out.print("Please enter the updated rating of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setRating(updatedParam);
                     break;
 
-                case "G":
+                case MenuDetails.UPDATEFORMAT:
                     System.out.print("Please enter the updated format of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setFormat(updatedParam);
                     break;
 
-                case "H":
+                case MenuDetails.UPDATEYEAR:
                     System.out.print("Please enter the updated year of release of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setYear(updatedParam);
                     break;
 
-                case "I":
+                case MenuDetails.UPDATEACTORS:
                     System.out.print("Please enter the updated actor/actress list of the movie:");
                     updatedParam = getStringFromUser();
                     updatedMovie.setStarring(updatedParam);
                     break;
 
-                case "J":
+                case MenuDetails.UPDATECOPIES:
                     System.out.print("Please enter the updated amount of available copies of the movie:");
                     int updatedCopies = scan.nextInt();
                     updatedMovie.setCopies(updatedCopies);
                     break;
 
-                case "K":
+                case MenuDetails.UPDATEEXIT:
                     boolean answer = getYesorNofromuser();
 
                     if(answer){
                         return updatedMovie;
                     }
+
+                    keepUpdating = false;
                     break;
 
-                case "L":
+                case MenuDetails.EXITNOUPDATE:
                     keepUpdating = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid input");
                     break;
             }
         }
@@ -167,7 +174,7 @@ public class ClientInteractor {
 
     /**
      * allows the user to enter their account details or register for an account
-     * @return
+     * @return sting array with user login details
      */
     public static String[] loginRegister(){
         System.out.println("Please enter your email: ");
@@ -243,23 +250,69 @@ public class ClientInteractor {
                 format, year, starring, copies, generateRandomBarcode(), userRating);
     }
 
+    public static String getMenuOptionFromUser(int lastCharIntValue){
+        int valueOfA = 65;
+        String userInput = getStringFromUser();
+
+        userInput = userInput.toUpperCase();
+
+        char[] inputtedChar = userInput.toCharArray();
+
+        if(inputtedChar.length > 1){
+            return null;
+        }
+
+        for(int i = valueOfA; i < valueOfA+lastCharIntValue; ++i){
+            if(inputtedChar[0] == (char)i){
+                return userInput;
+            }
+        }
+
+        return null;
+    }
+
     public static String getStringFromUser(){
         String stringFromUser = scan.nextLine();
-        //TODO add input validation
 
         return stringFromUser;
     }
 
+    /**
+     * gets the user's email and checks to see if the email is valid
+     * @return null if not valid or the user's email if it is valid
+     */
     public static String getEmail(){
         String username = scan.nextLine();
-        //TODO add input and username validation
+
+        /**
+         * regex from:
+         * https://howtodoinjava.com/regex/java-regex-validate-email-address/
+         * will allow:
+         * A-Z, a-z, 0-9, ".", "-", and "_"
+         */
+        if(!username.matches("^[A-Za-z0-9+_.-]{7,}+@(.+)$")){
+            return null;
+        }
 
         return username;
     }
 
+    /**
+     * get the users password and checks if it is valid
+     * @return null if not valid or the user's password if valid
+     */
     public static String getPassword(){
         String password = scan.nextLine();
-        //TODO add input validation and password validation
+
+        /**
+         * regex from:
+         * https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation
+         *
+         * modified so special chars are not needed
+         */
+        if(!password.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{10,}$")){
+            return null;
+        }
 
         return password;
     }

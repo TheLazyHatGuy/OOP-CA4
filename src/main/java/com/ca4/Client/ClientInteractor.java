@@ -1,5 +1,6 @@
 package com.ca4.Client;
 
+import com.ca4.Core.MovieServiceDetails;
 import com.ca4.DTO.Movie;
 
 import java.util.Random;
@@ -22,7 +23,7 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(3);
 
-        return option;
+        return option.toUpperCase();
     }
 
     /**
@@ -42,7 +43,7 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(7);
 
-        return option;
+        return option.toUpperCase();
     }
 
     /**
@@ -65,9 +66,7 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(12);
 
-        option.toUpperCase();
-
-        return option;
+        return option.toUpperCase();
     }
 
     /**
@@ -177,12 +176,28 @@ public class ClientInteractor {
      * @return sting array with user login details
      */
     public static String[] loginRegister(){
-        System.out.println("Please enter your email: ");
-        String email = getEmail();
-        System.out.println("Please enter your password: ");
-        String password = getPassword();
+        boolean iscredentialsGood = false;
+        String email = null;
+        String password = null;
+        String[] userDetails = new String[2];
 
-        String[] userDetails = {email, password};
+        while(iscredentialsGood){
+            if(email == null){
+                System.out.println("Please enter your email: ");
+                email = getEmail();
+                System.out.println("Please enter your password: ");
+                password = getPassword();
+            }
+            if(password == null){
+                System.out.println("Please enter your password: ");
+                password = getPassword();
+            }
+            if(email == null && password == null){
+                userDetails[0] = email;
+                userDetails[1] = password;
+                iscredentialsGood = true;
+            }
+        }
 
         return userDetails;
     }

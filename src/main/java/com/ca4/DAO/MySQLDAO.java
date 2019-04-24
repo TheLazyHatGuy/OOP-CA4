@@ -8,7 +8,6 @@ public class MySQLDAO
 {
     public Connection getConnection() throws DAOException
     {
-        String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/oopca4";
         String userName = "root";
         String password = "";

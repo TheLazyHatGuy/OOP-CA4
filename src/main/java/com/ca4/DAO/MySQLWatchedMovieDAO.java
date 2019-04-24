@@ -20,7 +20,7 @@ public class MySQLWatchedMovieDAO extends MySQLDAO implements WatchedMovieDAOInt
 
         try {
             con = this.getConnection();
-            String query = "SELECT * FROM watched WHERE userID = ?";
+            String query = "SELECT * FROM watched_movies WHERE userID = ?";
             ps = con.prepareStatement(query);
 
             ps.setInt(1, userID);
@@ -52,7 +52,7 @@ public class MySQLWatchedMovieDAO extends MySQLDAO implements WatchedMovieDAOInt
 
         try {
             con = this.getConnection();
-            String query = "INSERT INTO watched (userID, movieID) VALUES(? ,?)";
+            String query = "INSERT INTO watched_movies (userID, movieID) VALUES(? ,?)";
             ps = con.prepareStatement(query);
 
             ps.setInt(1, watchedMovie.getUserID());
@@ -78,7 +78,7 @@ public class MySQLWatchedMovieDAO extends MySQLDAO implements WatchedMovieDAOInt
 
         try {
             con = this.getConnection();
-            String query = "DELETE FROM watched WHERE userID = ? AND movieID = ?";
+            String query = "DELETE FROM watched_movies WHERE userID = ? AND movieID = ?";
             ps = con.prepareStatement(query);
 
             ps.setInt(1, watchedMovie.getUserID());
@@ -104,7 +104,7 @@ public class MySQLWatchedMovieDAO extends MySQLDAO implements WatchedMovieDAOInt
 
         try {
             con = this.getConnection();
-            String query = "DELETE FROM watched WHERE userID = ?";
+            String query = "DELETE FROM watched_movies WHERE userID = ?";
             ps = con.prepareStatement(query);
 
             ps.setInt(1, userID);

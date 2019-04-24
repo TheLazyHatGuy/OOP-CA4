@@ -3,7 +3,10 @@ package com.ca4.DAO;
 import com.ca4.DTO.Movie;
 import com.ca4.Exceptions.DAOException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
@@ -15,7 +18,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "SELECT * FROM movie";
+            String query = "SELECT * FROM movies";
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -41,7 +44,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try {
             con = this.getConnection();
-            String query = "SELECT * FROM movie WHERE id = ?";
+            String query = "SELECT * FROM movies WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1, movieID);
             rs = ps.executeQuery();
@@ -69,7 +72,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try {
             con = this.getConnection();
-            String query = "SELECT * FROM movie WHERE title like ?";
+            String query = "SELECT * FROM movies WHERE title like ?";
             ps = con.prepareStatement(query);
             ps.setString(1, inputTitle);
             rs = ps.executeQuery();
@@ -97,7 +100,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "SELECT * FROM movie WHERE genre like ?";
+            String query = "SELECT * FROM movies WHERE genre like ?";
             ps = con.prepareStatement(query);
             ps.setString(1, Genre);
             rs = ps.executeQuery();
@@ -123,7 +126,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "SELECT * FROM movie WHERE director like ?";
+            String query = "SELECT * FROM movies WHERE director like ?";
             ps = con.prepareStatement(query);
             ps.setString(1, dirname);
             rs = ps.executeQuery();
@@ -147,7 +150,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "INSERT INTO movie (title, genre, director, runtime, plot, location, poster,"
+            String query = "INSERT INTO movies (title, genre, director, runtime, plot, location, poster,"
                     + "rating, format, year, starring, copies, barcode, user_rating) " +
                     "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
@@ -186,7 +189,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "DELETE FROM movie WHERE id = ?";
+            String query = "DELETE FROM movies WHERE id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1,movie_id);
 
@@ -211,7 +214,7 @@ public class MySQLMovieDAO extends MySQLDAO implements MovieDAOInterface{
 
         try{
             con = this.getConnection();
-            String query = "UPDATE movie SET title = ?, genre = ?, director = ?, runtime = ?," +
+            String query = "UPDATE movies SET title = ?, genre = ?, director = ?, runtime = ?," +
                     " plot = ?, location = ?, poster = ?, rating = ?, format = ?, year = ?, " +
                     "starring = ?, copies = ?, barcode = ?, user_rating = ? where id = ?";
             ps = con.prepareStatement(query);

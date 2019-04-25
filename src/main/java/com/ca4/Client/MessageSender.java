@@ -248,8 +248,8 @@ public class MessageSender {
         String[] splitres = response.split(MovieServiceDetails.BREAKING_CHARACTER);
 
         if(splitres[0].equals(MovieServiceDetails.LOGIN_NOT_REGISTERED) ||
-                splitres[0].equals(MovieServiceDetails.LOGIN_WRONG_INFO ||
-                        splitres[0].equals(MovieServiceDetails.REGISTER_ALREADY_REGISTERD))){
+                splitres[0].equals(MovieServiceDetails.LOGIN_WRONG_INFO) ||
+                        splitres[0].equals(MovieServiceDetails.REGISTER_ALREADY_REGISTERED)){
             return true;
         }else{
             return false;

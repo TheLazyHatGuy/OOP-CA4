@@ -11,6 +11,7 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
     public boolean isUserAlreadyRegistered(String email) throws DAOException {
         Connection con = null;
         PreparedStatement ps = null;
+        ResultSet rs = null;
 
         try {
             con = this.getConnection();
@@ -18,8 +19,10 @@ public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
             ps = con.prepareStatement(query);
             ps.setString(1, email);
 
-            int rowCount = ps.executeUpdate();
-            return rowCount >= 1;
+            rs = ps.executeQuery();
+
+            //If there is a result in ResultSet, user is already registered
+            return rs.next();
         } catch (SQLException e) {
             throw new DAOException("isUserAlreadyRegistered() " + e.getMessage());
         } finally {

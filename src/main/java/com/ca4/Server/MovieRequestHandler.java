@@ -28,11 +28,15 @@ class MovieRequestHandler {
         String response = MovieServiceDetails.FAIL;
 
         try {
-            boolean isRegistered = userDAO.registerUser(email, hashedPassword);
+            boolean isRegistered = userDAO.isUserAlreadyRegistered(email);
 
-            if (isRegistered) {
-                //TODO - Redesign protocol with better responses
-                response = MovieServiceDetails.REGISTER_SUCCESS;
+            if (!isRegistered) {
+                //The user isn't already registered, attempt to register them
+                int userID = userDAO.registerUser(email, hashedPassword);
+
+                response = MovieServiceDetails.REGISTER_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + userID;
+            } else {
+                response = MovieServiceDetails.REGISTER_ALREADY_REGISTERED;
             }
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());
@@ -46,11 +50,19 @@ class MovieRequestHandler {
         String response = MovieServiceDetails.FAIL;
 
         try {
-            User toLogin = userDAO.loginUser(email);
-            boolean isLoggedIn = verifyHash(password, toLogin.getPassword());
+            boolean isRegistered = userDAO.isUserAlreadyRegistered(email);
 
-            if (isLoggedIn) {
-                response = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + toLogin.getId();
+            if (isRegistered) {
+                User toLogin = userDAO.loginUser(email);
+                boolean isLoggedIn = verifyHash(password, toLogin.getPassword());
+
+                if (isLoggedIn) {
+                    response = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + toLogin.getId();
+                } else {
+                    response = MovieServiceDetails.LOGIN_WRONG_INFO;
+                }
+            } else {
+                response = MovieServiceDetails.LOGIN_NOT_REGISTERED;
             }
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());

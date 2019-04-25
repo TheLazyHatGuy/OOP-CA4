@@ -181,7 +181,7 @@ public class ClientInteractor {
         String password = null;
         String[] userDetails = new String[2];
 
-        while(iscredentialsGood){
+        while(!iscredentialsGood){
             if(email == null){
                 System.out.println("Please enter your email: ");
                 email = getEmail();
@@ -192,7 +192,7 @@ public class ClientInteractor {
                 System.out.println("Please enter your password: ");
                 password = getPassword();
             }
-            if(email == null && password == null){
+            if(email != null && password != null){
                 userDetails[0] = email;
                 userDetails[1] = password;
                 iscredentialsGood = true;

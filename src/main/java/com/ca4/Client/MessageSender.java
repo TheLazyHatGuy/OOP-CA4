@@ -50,7 +50,7 @@ public class MessageSender {
      * also sets the state of the user to logged in
      * @param userDetails
      */
-    public static boolean createNewUser(Socket clientSocket, String[] userDetails){
+    public static boolean createNewUser(String[] userDetails){
         Scanner input = new Scanner(new InputStreamReader(inputFromSocket));
 
         String currentline = "";
@@ -59,21 +59,20 @@ public class MessageSender {
 
         String[] serverAnswer = currentline.split(MovieServiceDetails.BREAKING_CHARACTER);
 
-        if(!checkResponseForErrors(currentline)){
-            if(serverAnswer[0].equals(MovieServiceDetails.LOGIN_SUCCESS)){
-                MovieClient.localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
-                MovieClient.localUser.toString();
-                return true;
-            }else if(serverAnswer[0].equals(MovieServiceDetails.REGISTER_SUCCESS)){
-                sendStringArray(clientSocket, MovieServiceDetails.LOGIN, userDetails);
-                createNewUser(clientSocket, userDetails);
-                return true;
-            }
-        }else{
-            System.out.println(MovieServiceDetails.ANSI_RED + "ERROR user can not be created" +
-                    MovieServiceDetails.ANSI_RESET);
+        if(!checkResponseForErrors(currentline) && !checkforLoginRegisterErrors(currentline)){
+            MovieClient.localUser = new User(Integer.parseInt(serverAnswer[1]), userDetails[0], userDetails[1]);
+            MovieClient.localUser.toString();
+            return true;
+        }else if(serverAnswer[0] == MovieServiceDetails.FAIL || serverAnswer[0] == MovieServiceDetails.UNRECOGNISED_COMMAND){
+            System.out.println(MovieServiceDetails.ANSI_RED + "There was an error with processing that command"
+                    + MovieServiceDetails.ANSI_RESET);
+        }else if(serverAnswer[0] == MovieServiceDetails.LOGIN_NOT_REGISTERED){
+            System.out.println("Sorry that user is not registered");
+        }else if(serverAnswer[0] == MovieServiceDetails.LOGIN_WRONG_INFO){
+            System.out.println("Email or password are incorrect");
+        }else if(serverAnswer[0] == MovieServiceDetails.REGISTER_ALREADY_REGISTERED){
+            System.out.println("Sorry that email is already registered");
         }
-
 
         return false;
     }
@@ -239,6 +238,18 @@ public class MessageSender {
         String[] splitres = response.split(MovieServiceDetails.BREAKING_CHARACTER);
 
         if(splitres[0].equals(MovieServiceDetails.FAIL) || splitres[0].equals(MovieServiceDetails.UNRECOGNISED_COMMAND)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static boolean checkforLoginRegisterErrors(String response){
+        String[] splitres = response.split(MovieServiceDetails.BREAKING_CHARACTER);
+
+        if(splitres[0].equals(MovieServiceDetails.LOGIN_NOT_REGISTERED) ||
+                splitres[0].equals(MovieServiceDetails.LOGIN_WRONG_INFO ||
+                        splitres[0].equals(MovieServiceDetails.REGISTER_ALREADY_REGISTERD))){
             return true;
         }else{
             return false;

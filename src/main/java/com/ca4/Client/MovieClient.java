@@ -44,13 +44,13 @@ public class MovieClient
                         case MenuDetails.LOGIN:
                             String[] loginDetails = ClientInteractor.loginRegister();
                             MessageSender.sendStringArray(client, MovieServiceDetails.LOGIN, loginDetails);
-                            loggedIn = MessageSender.createNewUser(client, loginDetails);
+                            loggedIn = MessageSender.createNewUser(loginDetails);
                             break;
 
                         case MenuDetails.REGISTER:
                             String[] userDetails = ClientInteractor.loginRegister();
                             MessageSender.sendStringArray(client, MovieServiceDetails.REGISTER, userDetails);
-                            loggedIn = MessageSender.createNewUser(client, userDetails);
+                            loggedIn = MessageSender.createNewUser(userDetails);
                             break;
 
                         case MenuDetails.EXIT:

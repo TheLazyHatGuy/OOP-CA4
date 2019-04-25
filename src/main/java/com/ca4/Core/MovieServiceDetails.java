@@ -22,14 +22,17 @@ public class MovieServiceDetails
     public static final String CLOSE_CONNECTION         = "BYE";
 
     //Responses
-    public static final String LOGIN_SUCCESS        = "WLKM";
-    public static final String REGISTER_SUCCESS     = "WLKMRJST";
-    public static final String ADD_SUCCESS          = "SKSS";
-    public static final String REMOVE_SUCCESS       = "SKSS";
-    public static final String UPDATE_SUCCESS       = "SKSS";
-    public static final String WATCH_SUCCESS        = "SKSS";
+    public static final String LOGIN_SUCCESS = "WLKM";
+    public static final String LOGIN_NOT_REGISTERED = "ERR 404";
+    public static final String LOGIN_WRONG_INFO = "ERR 403";
+    public static final String REGISTER_SUCCESS = "RJST";
+    public static final String REGISTER_ALREADY_REGISTERED = "ERR ALRT RJST";
+    public static final String ADD_SUCCESS = "SKSS";
+    public static final String REMOVE_SUCCESS = "SKSS";
+    public static final String UPDATE_SUCCESS = "SKSS";
+    public static final String WATCH_SUCCESS = "SKSS";
 
-    public static final String FAIL                 = "ERR";
+    public static final String FAIL = "ERR";
     public static final String UNRECOGNISED_COMMAND = "ANKN";
 
     // ending characters

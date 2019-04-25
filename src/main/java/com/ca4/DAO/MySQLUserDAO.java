@@ -3,31 +3,68 @@ package com.ca4.DAO;
 import com.ca4.DTO.User;
 import com.ca4.Exceptions.DAOException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MySQLUserDAO extends MySQLDAO implements UserDAOInterface
 {
-    public boolean registerUser(String email, String password) throws DAOException{
+    @Override
+    public boolean isUserAlreadyRegistered(String email) throws DAOException {
         Connection con = null;
         PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = this.getConnection();
+            String query = "SELECT * FROM users WHERE email = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, email);
+
+            rs = ps.executeQuery();
+
+            //If there is a result in ResultSet, user is already registered
+            return rs.next();
+        } catch (SQLException e) {
+            throw new DAOException("isUserAlreadyRegistered() " + e.getMessage());
+        } finally {
+            try {
+                this.closeConnection(con, ps);
+            } catch (SQLException e) {
+                throw new DAOException("isUserAlreadyRegistered().finally " + e.getMessage());
+            }
+        }
+    }
+
+    public int registerUser(String email, String password) throws DAOException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
         try{
             con = this.getConnection();
             String query = "INSERT INTO users (email, password) values(?,?)";
-            ps = con.prepareStatement(query);
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, email);
             ps.setString(2, password);
 
             int rowCount = ps.executeUpdate();
-            return rowCount >= 1;
+
+            //Taken from - https://stackoverflow.com/questions/1915166/how-to-get-the-insert-id-in-jdbc
+            if (rowCount == 0) {
+                throw new DAOException("Creating user failed, no rows affected.");
+            } else {
+                rs = ps.getGeneratedKeys();
+
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new DAOException("Creating user failed, no ID obtained.");
+                }
+            }
         }catch (SQLException e){
             throw new DAOException("registerUser() " + e.getMessage());
         }finally{
             try{
-                this.closeConnection(con, ps);
+                this.closeConnection(con, rs, ps);
             }catch(SQLException e){
                 throw new DAOException("registerUser() " + e.getMessage());
             }

@@ -23,7 +23,11 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(3);
 
-        return option.toUpperCase();
+        if(option != null){
+            return option.toUpperCase();
+        }else{
+            return "z"; // will always hit the default of the switch
+        }
     }
 
     /**
@@ -41,9 +45,13 @@ public class ClientInteractor {
         System.out.println("H) Add a movie to your list of watched movies");
         System.out.println("I) Logout and exit application");
 
-        String option = getMenuOptionFromUser(7);
+        String option = getMenuOptionFromUser(9);
 
-        return option.toUpperCase();
+        if(option != null){
+            return option.toUpperCase();
+        }else{
+            return "z"; // will always hit the default of the switch
+        }
     }
 
     /**
@@ -66,7 +74,11 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(12);
 
-        return option.toUpperCase();
+        if(option != null){
+            return option.toUpperCase();
+        }else{
+            return "z"; // will always hit the default of the switch
+        }
     }
 
     /**

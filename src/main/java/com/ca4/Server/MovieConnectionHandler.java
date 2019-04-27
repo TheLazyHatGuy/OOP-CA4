@@ -1,19 +1,11 @@
 package com.ca4.Server;
 
 import com.ca4.Core.MovieServiceDetails;
-import com.ca4.DAO.MovieDAOInterface;
-import com.ca4.DAO.MySQLMovieDAO;
-import com.ca4.DAO.MySQLUserDAO;
-import com.ca4.DAO.UserDAOInterface;
-import com.ca4.DTO.Movie;
-import com.ca4.DTO.User;
-import com.ca4.Exceptions.DAOException;
-import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MovieConnectionHandler implements Runnable {
     private Socket clientSocket;
@@ -40,16 +32,18 @@ public class MovieConnectionHandler implements Runnable {
                 while (pool.isEmpty()) {
                     try {
                         //Wait until another client is added to the pool
+                        System.out.println("Waiting for connections");
                         pool.wait();
                     } catch (InterruptedException e) {
                         return;
                     }
                 }
                 //At this point we have the lock on the pool and it is not empty
+                System.out.println("Setting up a socket for the client");
                 clientSocket = (Socket) pool.remove(0);
-                //Interact with the client
-                handleConnection();
             }
+            //Interact with the client
+            handleConnection();
         }
     }
 
@@ -66,9 +60,9 @@ public class MovieConnectionHandler implements Runnable {
                 String response = processCommand(line);
 
                 output.println(response);
-                System.out.println("*****START RESPONSE*****");
+                System.out.println("*****START RESPONSE FOR " + clientSocket.getInetAddress() + "*****");
                 System.out.println(response);
-                System.out.println("*****END RESPONSE*****");
+                System.out.println("*****END RESPONSE FOR " + clientSocket.getInetAddress() + "*****");
             }
 
             output.close();
@@ -85,7 +79,6 @@ public class MovieConnectionHandler implements Runnable {
 
         //While the client doesn't want to end the session
         if (!commandToProcess.equals(MovieServiceDetails.CLOSE_CONNECTION)) {
-            System.out.println("Received a message: " + commandToProcess);
             MovieRequestHandler.writeToLogFile("Received a message: " + commandToProcess);
 
             //Tokenize the input

@@ -79,7 +79,6 @@ public class MovieConnectionHandler implements Runnable {
 
         //While the client doesn't want to end the session
         if (!commandToProcess.equals(MovieServiceDetails.CLOSE_CONNECTION)) {
-            System.out.println("Received a message: " + commandToProcess);
             MovieRequestHandler.writeToLogFile("Received a message: " + commandToProcess);
 
             //Tokenize the input

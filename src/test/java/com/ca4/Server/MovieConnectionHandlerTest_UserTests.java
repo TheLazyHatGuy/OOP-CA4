@@ -96,6 +96,20 @@ class MovieConnectionHandlerTest_UserTests {
 
     @Order(5)
     @Test
+    @DisplayName("Login")
+    void processCommand_Login() {
+        assertTimeout(ofMillis(50), () -> {
+            String response = handler.processCommand(MovieServiceDetails.LOGIN +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getEmail() +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getPassword());
+            String expectedResult = MovieServiceDetails.LOGIN_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + userID;
+
+            assertEquals(expectedResult, response);
+        });
+    }
+
+    @Order(6)
+    @Test
     @DisplayName("Delete User")
     void processCommand_2_DeleteUser() {
         assertTimeout(ofMillis(50), () -> {

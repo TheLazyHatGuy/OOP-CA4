@@ -98,7 +98,8 @@ class MovieConnectionHandlerTest_UserTests {
     @Test
     @DisplayName("Login")
     void processCommand_Login() {
-        assertTimeout(ofMillis(50), () -> {
+        //Login checks take a long time due to several database quarries
+        assertTimeout(ofMillis(300), () -> {
             String response = handler.processCommand(MovieServiceDetails.LOGIN +
                     MovieServiceDetails.BREAKING_CHARACTER + user.getEmail() +
                     MovieServiceDetails.BREAKING_CHARACTER + user.getPassword());
@@ -109,6 +110,32 @@ class MovieConnectionHandlerTest_UserTests {
     }
 
     @Order(6)
+    @Test
+    @DisplayName("Login with wrong password")
+    void processCommand_LoginWrongPassword() {
+        assertTimeout(ofMillis(300), () -> {
+            String response = handler.processCommand(MovieServiceDetails.LOGIN +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getEmail() +
+                    MovieServiceDetails.BREAKING_CHARACTER + "MyAssGlowsInTheDark");
+
+            assertEquals(MovieServiceDetails.LOGIN_WRONG_INFO, response);
+        });
+    }
+
+    @Order(7)
+    @Test
+    @DisplayName("Login with wrong email")
+    void processCommand_LoginWrongEmail() {
+        assertTimeout(ofMillis(300), () -> {
+            String response = handler.processCommand(MovieServiceDetails.LOGIN +
+                    MovieServiceDetails.BREAKING_CHARACTER + "BeProfessional@no.com" +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getPassword());
+
+            assertEquals(MovieServiceDetails.LOGIN_NOT_REGISTERED, response);
+        });
+    }
+
+    @Order(8)
     @Test
     @DisplayName("Delete User")
     void processCommand_2_DeleteUser() {

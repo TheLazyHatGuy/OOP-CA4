@@ -86,7 +86,9 @@ public class MessageSender {
 
         String currentline = "";
 
-        while(!(currentline.contains(MovieServiceDetails.JSONOBJECT_ENDINGCHAR))){
+        while(!(currentline.contains(MovieServiceDetails.JSONOBJECT_ENDINGCHAR)) ||
+                !(currentline.contains(MovieServiceDetails.FAIL)) ||
+                !(currentline.contains(MovieServiceDetails.UNRECOGNISED_COMMAND))){
             currentline += input.nextLine();
         }
 
@@ -104,7 +106,9 @@ public class MessageSender {
 
         String currentline = "";
 
-        while(!(currentline.contains(MovieServiceDetails.JSONARRAY_ENDINGCHAR))){
+        while(!(currentline.contains(MovieServiceDetails.JSONARRAY_ENDINGCHAR)) ||
+                !(currentline.contains(MovieServiceDetails.FAIL)) ||
+                !(currentline.contains(MovieServiceDetails.UNRECOGNISED_COMMAND))){
             currentline += input.nextLine();
         }
         JSONArray jsArray = new JSONArray(currentline);

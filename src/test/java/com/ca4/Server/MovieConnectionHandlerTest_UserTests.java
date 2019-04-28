@@ -60,6 +60,21 @@ class MovieConnectionHandlerTest_UserTests {
 
     @Order(2)
     @Test
+    @DisplayName("Register same user")
+    void processCommand_RegisterSameUser() {
+        //First test takes a while to initialise cache
+        //This test also takes a long time due to sending an email
+        assertTimeout(ofMillis(20), () -> {
+            String response = handler.processCommand(MovieServiceDetails.REGISTER +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getEmail() +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getPassword());
+
+            assertEquals(MovieServiceDetails.REGISTER_ALREADY_REGISTERED, response);
+        });
+    }
+
+    @Order(3)
+    @Test
     @DisplayName("Delete User")
     void processCommand_2_DeleteUser() {
         assertTimeout(ofMillis(50), () -> {

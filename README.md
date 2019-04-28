@@ -41,6 +41,25 @@ java -jar Server-X.X.jar
 5. Run the client file using the following command
 ```
 java -jar Client-X.X_localhost.jar
+
+```
+### Option 3 - Self Hosted - Source Code
+
+1. Clone the project and `cd` into the project folder
+2. Create a database in SQL and import `oop_ca4_andrew_cameron.sql`
+3. Rename `config.json.sample` to `config.json` and edit it to match your setup
+4. Run the following commands
+```
+gradle clientJar
+gradle serverJar
+```
+5. To start the server run the following command
+```
+java -jar build/libs/Server-0.5.jar
+```
+6. To start the client, in a seperate terminal run the following command
+```
+java -jar build/libs/Client-0.5.jar
 ```
 
 ## Project Description

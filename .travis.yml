@@ -39,6 +39,7 @@ script:
 deploy:
   skip_cleanup: true
   provider: releases
+  prerelease: true
   api_key:
     secure: 'feb7e831900d14398a93305512ce3a4c98b4d254'
   file:

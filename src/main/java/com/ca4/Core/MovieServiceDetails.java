@@ -4,7 +4,7 @@ public class MovieServiceDetails
 {
     public static final int SERVER_PORT = 50000;
     public static final int MAX_CONNECTIONS = 3;
-    public static final int CACHE_TTL = 60; //Cache Time To Live is done in seconds
+    public static final int CACHE_TTL = 1; //Cache Time To Live is done in hours
     public static final String SERVER_IP = "127.0.0.1";
     public static final String BREAKING_CHARACTER = "%%";
 

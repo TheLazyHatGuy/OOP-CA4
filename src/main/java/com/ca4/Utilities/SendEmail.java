@@ -8,26 +8,27 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class SendEmail
 {
-    public static void main(String[] args)
-    {
-        String[] to = {"admin@flyingtoilet.co.uk"};
-        String subject = "Your Car Booking";
-        String body = "Thanks for choosing GD2 cars";
+    public static void sendRegistrationConfimation(String email) throws MessagingException {
+        String[] to = {email};
+        String subject = "Thank you for registering to GD2a Movie DB";
+        String body = "<h1>" + subject + "</h1>\n" +
+                "<p>This is to confirm that you have successfully registered with GD2a Movie DB</p>\n" +
+                "<p>We hope you enjoy our service</p>\n";
+
         sendFromFTS(to, subject, body);
     }
 
-    private static void sendFromFTS(String[] to, String subject, String body)
+    private static void sendFromFTS(String[] to, String subject, String body) throws MessagingException
     {
         System.out.println("Sending email...");
 
-        String user = "teslaco@flyingtoilet.co.uk";
+        String user = "moviedb@flyingtoilet.co.uk";
         String password = "Pa$$w0rd";
         Properties props = System.getProperties();
         String host = "mail.flyingtoilet.co.uk";
@@ -44,36 +45,21 @@ public class SendEmail
         Session session = Session.getDefaultInstance(props);
         MimeMessage message = new MimeMessage(session);
 
-        try
-        {
-            message.setFrom(new InternetAddress(user));
-            InternetAddress[] toAddress = new InternetAddress[to.length];
+        message.setFrom(new InternetAddress(user));
+        InternetAddress[] toAddress = new InternetAddress[to.length];
 
-            for (int i = 0; i < toAddress.length; i++)
-            {
-                toAddress[i] = new InternetAddress(to[i]);
-                message.addRecipient(Message.RecipientType.TO, toAddress[i]);
-            }
-
-            message.setSubject(subject);
-            message.setContent(body, "text/html");
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, user, password);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-
-            System.out.println("Email sent");
+        for (int i = 0; i < toAddress.length; i++) {
+            toAddress[i] = new InternetAddress(to[i]);
+            message.addRecipient(Message.RecipientType.TO, toAddress[i]);
         }
-        catch (AddressException e)
-        {
-            System.out.println("SendEmail.sendFromFTS.AddressException");
-            e.printStackTrace();
 
-        }
-        catch (MessagingException e)
-        {
-            System.out.println("SendEmail.sendFromFTS.MessagingException");
-            e.printStackTrace();
-        }
+        message.setSubject(subject);
+        message.setContent(body, "text/html");
+        Transport transport = session.getTransport("smtp");
+        transport.connect(host, user, password);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+
+        System.out.println("Email sent");
     }
 }

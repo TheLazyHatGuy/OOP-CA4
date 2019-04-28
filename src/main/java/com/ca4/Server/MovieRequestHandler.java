@@ -24,6 +24,13 @@ import java.util.Random;
 class MovieRequestHandler {
     private static Cache cache = new Cache();
 
+    /**
+     * Attempt to register a user to the database
+     *
+     * @param email    User's email address to register
+     * @param password Raw user password
+     * @return Response message which may contain user ID if successful
+     */
     static String registerUser(String email, String password) {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String hashedPassword = hash(password);
@@ -48,6 +55,10 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Send a confirmation email to user
+     * @param email Address to send confirmation email to
+     */
     private static void sendRegistrationEmail(String email) {
         try {
             System.out.println("Attempt to send email...");
@@ -58,6 +69,12 @@ class MovieRequestHandler {
         }
     }
 
+    /**
+     * Attempt to retrieve a user's ID
+     * @param email User's email address
+     * @param password Raw user password
+     * @return Response message which may contain user ID if successful
+     */
     static String loginUser(String email, String password) {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String response = MovieServiceDetails.FAIL;
@@ -84,6 +101,11 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Attempt to delete a user's account
+     * @param userID ID of the user to delete
+     * @return Server response to indicate if delete was successful or not
+     */
     static String deleteUser(int userID) {
         UserDAOInterface userDAO = new MySQLUserDAO();
         String response = MovieServiceDetails.FAIL;
@@ -101,6 +123,11 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Search for a movie based on its title
+     * @param searchString The title of the movie to search for
+     * @return A JSON array string with the movie or a server fail message
+     */
     static String searchForMovieByTitle(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -126,6 +153,11 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Search for a movie based on director
+     * @param searchString The director to search for
+     * @return A JSON array string with the movie or a server fail message
+     */
     static String searchForMovieByDirector(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -154,6 +186,11 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Search for a movie based on genre
+     * @param searchString The genre to search for
+     * @return A JSON array string with the movie or a server fail message
+     */
     static String searchForMovieByGenre(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -185,7 +222,6 @@ class MovieRequestHandler {
 
     /**
      * Converts a movie JSON String to the movie class and adds it to the database
-     *
      * @param movieJSONString A full movie JSON String
      * @return Server response message
      */
@@ -209,6 +245,11 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Remove a movie from the database
+     * @param idOfMovieToRemove ID of movie to remove
+     * @return Server response that indicates if the delete was successful or not
+     */
     static String removeMovie(int idOfMovieToRemove) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -230,9 +271,8 @@ class MovieRequestHandler {
 
     /**
      * Converts a movie JSON String to the movie class and updates it in the database
-     *
      * @param movieJSONString A full movie JSON String
-     * @return Server response message
+     * @return Server response that indicates if the update was successful or not
      */
     static String updateMovie(String movieJSONString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
@@ -254,6 +294,12 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Adds the movie a user has watched to the database
+     * @param userID The user's ID
+     * @param movieID The ID of the movie the user wants to watch
+     * @return Server response that indicates if adding the watched movie was successful or not
+     */
     static String watchMovie(int userID, int movieID) {
         WatchedMovieDAOInterface watchedMovieDAO = new MySQLWatchedMovieDAO();
         String response = MovieServiceDetails.FAIL;
@@ -272,6 +318,11 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Gets a list of movies for a user based on what they have watched previously
+     * @param userID The ID of the user to get recommendations for
+     * @return A JSON array string with a list of movies or a server fail message
+     */
     static String recommendMovie(int userID) {
         String response = MovieServiceDetails.FAIL;
 
@@ -290,6 +341,12 @@ class MovieRequestHandler {
         return response;
     }
 
+    /**
+     * Gets a list of movies similar to genres that the user has watched before
+     * @param userID The ID of the user to get recommendations for
+     * @return An ArrayList of movies based on the movies the user has watched previously
+     * @throws DAOException Thrown if an error occurs when getting data from the database
+     */
     private static ArrayList<Movie> getRandomMovieBasedOnGenre(int userID) throws DAOException {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         WatchedMovieDAOInterface watchedMovieDAO = new MySQLWatchedMovieDAO();
@@ -343,6 +400,11 @@ class MovieRequestHandler {
         return recommendations;
     }
 
+    /**
+     * Gets a random movie from the database
+     * @return A random movie object
+     * @throws DAOException Thrown if an error occurs when getting data from the database
+     */
     private static Movie getRandomMovie() throws DAOException {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         int randomMovieID = getRandomInt(14, 1052);
@@ -358,7 +420,6 @@ class MovieRequestHandler {
 
     /**
      * Converts a Movie ArrayList to a JSON string
-     *
      * @param movies An ArrayList of movie
      * @return A JSON string
      */
@@ -383,7 +444,6 @@ class MovieRequestHandler {
 
     /**
      * Converts a movie JSON String back to a Movie object
-     *
      * @param jsonStringToConvert Movie JSON String
      * @return Movie object
      */
@@ -413,7 +473,7 @@ class MovieRequestHandler {
 
     /**
      * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt
-     *
+     * Hashes a password with the BCrypt method and 12 rounds of salting
      * @param password Raw password to hash
      * @return Hashed password
      */
@@ -424,7 +484,7 @@ class MovieRequestHandler {
 
     /**
      * Taken from - https://www.stubbornjava.com/posts/hashing-passwords-in-java-with-bcrypt
-     *
+     * Checks if a raw string and a hash are the same thing
      * @param password Raw password to compare
      * @param hash     The hash taken from the database
      * @return True if the hashes match
@@ -433,6 +493,10 @@ class MovieRequestHandler {
         return BCrypt.checkpw(password, hash);
     }
 
+    /**
+     * Writes any output to terminal and the log.txt file
+     * @param stringToWrite String to write to file and output to terminal
+     */
     static void writeToLogFile(String stringToWrite) {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
 
@@ -449,9 +513,12 @@ class MovieRequestHandler {
         }
     }
 
+    /**
+     * Writes any output to terminal and the error.txt file
+     * @param stringToWrite String to write to file and output to terminal
+     */
     static void writeToErrorLogFile(String stringToWrite) {
         //Taken from - https://stackoverflow.com/questions/4614227/how-to-add-a-new-line-of-text-to-an-existing-file-in-java
-
         writeToLogFile(MovieServiceDetails.ANSI_RED + stringToWrite + MovieServiceDetails.ANSI_RESET);
 
         try {

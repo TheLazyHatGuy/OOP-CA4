@@ -71,6 +71,23 @@ class MovieRequestHandler {
         return response;
     }
 
+    static String deleteUser(int userID) {
+        UserDAOInterface userDAO = new MySQLUserDAO();
+        String response = MovieServiceDetails.FAIL;
+
+        try {
+            boolean isDeleted = userDAO.deleteUser(userID);
+
+            if (isDeleted) {
+                response = MovieServiceDetails.DELETE_USER_SUCCESS;
+            }
+        } catch (DAOException e) {
+            writeToErrorLogFile(e.getMessage());
+        }
+
+        return response;
+    }
+
     static String searchForMovieByTitle(String searchString) {
         MovieDAOInterface movieDAO = new MySQLMovieDAO();
         String response = MovieServiceDetails.FAIL;

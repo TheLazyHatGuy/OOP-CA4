@@ -100,6 +100,19 @@ public class MovieConnectionHandler implements Runnable {
                         response = MovieServiceDetails.FAIL;
                     }
                     break;
+                case MovieServiceDetails.DELETE_USER:
+                    if (components.length > 1) {
+                        int userID = Integer.parseInt(components[1]);
+
+                        if (userID >= 1) {
+                            response = MovieRequestHandler.deleteUser(userID);
+                        } else {
+                            response = MovieServiceDetails.FAIL;
+                        }
+                    } else {
+                        response = MovieServiceDetails.FAIL;
+                    }
+                    break;
                 case MovieServiceDetails.SEARCH_MOVIE_TITLE:
                     if (components.length > 1) {
                         response = MovieRequestHandler.searchForMovieByTitle(components[1]);

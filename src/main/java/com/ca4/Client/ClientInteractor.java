@@ -199,8 +199,15 @@ public class ClientInteractor {
                 email = getEmail();
                 System.out.println("Please enter your password: ");
                 password = getPassword();
+
+                if(email == null){
+                    System.out.println("Please enter a valid email in the format " + MovieServiceDetails.ANSI_BLUE +
+                            "someone@example.com" + MovieServiceDetails.ANSI_RESET);
+                }
             }
             if(password == null){
+                System.out.println(MovieServiceDetails.ANSI_RED + "Your password must be at least 10 characters and contain\n" +
+                        "a uppercase letter, a lowercase letter, a number and have no spaces" + MovieServiceDetails.ANSI_RESET);
                 System.out.println("Please enter your password: ");
                 password = getPassword();
             }

@@ -7,10 +7,12 @@ import com.ca4.DTO.User;
 import com.ca4.DTO.WatchedMovie;
 import com.ca4.Exceptions.DAOException;
 import com.ca4.Server.Cache.Cache;
+import com.ca4.Utilities.SendEmail;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.mail.MessagingException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,6 +37,7 @@ class MovieRequestHandler {
                 int userID = userDAO.registerUser(email, hashedPassword);
 
                 response = MovieServiceDetails.REGISTER_SUCCESS + MovieServiceDetails.BREAKING_CHARACTER + userID;
+                sendRegistrationEmail(email);
             } else {
                 response = MovieServiceDetails.REGISTER_ALREADY_REGISTERED;
             }
@@ -43,6 +46,16 @@ class MovieRequestHandler {
         }
 
         return response;
+    }
+
+    private static void sendRegistrationEmail(String email) {
+        try {
+            System.out.println("Attempt to send email...");
+            SendEmail.sendRegistrationConfimation(email);
+        } catch (MessagingException e) {
+            System.out.println("Failed to send registration email");
+            e.printStackTrace();
+        }
     }
 
     static String loginUser(String email, String password) {

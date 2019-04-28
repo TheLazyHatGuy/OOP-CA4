@@ -11,6 +11,7 @@ public class MovieServiceDetails
     //Commands
     public static final String LOGIN                    = "HELO";
     public static final String REGISTER                 = "RJST";
+    public static final String DELETE_USER = "DEL USR";
     public static final String SEARCH_MOVIE_TITLE       = "SRX TTL";
     public static final String SEARCH_MOVIE_DIRECTOR    = "SRX TRKT";
     public static final String SEARCH_MOVIE_GENRE       = "SRX JNR";
@@ -28,6 +29,7 @@ public class MovieServiceDetails
     public static final String REGISTER_SUCCESS = "RJST";
     public static final String REGISTER_ALREADY_REGISTERED = "ERR ALRT RJST";
     public static final String ADD_SUCCESS = "SKSS";
+    public static final String DELETE_USER_SUCCESS = "SKSS";
     public static final String REMOVE_SUCCESS = "SKSS";
     public static final String UPDATE_SUCCESS = "SKSS";
     public static final String WATCH_SUCCESS = "SKSS";

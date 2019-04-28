@@ -74,7 +74,7 @@ public class MovieConnectionHandler implements Runnable {
         }
     }
 
-    private String processCommand(String commandToProcess) {
+    public String processCommand(String commandToProcess) {
         String response = "";
 
         //While the client doesn't want to end the session
@@ -96,6 +96,19 @@ public class MovieConnectionHandler implements Runnable {
                 case MovieServiceDetails.REGISTER:
                     if (components.length > 2) {
                         response = MovieRequestHandler.registerUser(components[1], components[2]);
+                    } else {
+                        response = MovieServiceDetails.FAIL;
+                    }
+                    break;
+                case MovieServiceDetails.DELETE_USER:
+                    if (components.length > 1) {
+                        int userID = Integer.parseInt(components[1]);
+
+                        if (userID >= 1) {
+                            response = MovieRequestHandler.deleteUser(userID);
+                        } else {
+                            response = MovieServiceDetails.FAIL;
+                        }
                     } else {
                         response = MovieServiceDetails.FAIL;
                     }

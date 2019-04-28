@@ -35,16 +35,8 @@ task clientJar(type: Jar){
 }
 
 dependencies {
-    testCompileOnly(
-            'junit:junit:4.12'
-    )
-    testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    )
-    testRuntimeOnly(
-            'org.junit.jupiter:junit-jupiter-engine:5.1.0',
-            'org.junit.vintage:junit-vintage-engine:5.1.0'
-    )
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
@@ -58,8 +50,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
     compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.4.2'
+
 }
 
 test {
     useJUnitPlatform()
+    maxHeapSize = '1G'
 }

@@ -110,6 +110,71 @@ class MovieConnectionHandlerTestJunit5 {
                 "    \"barcode\": \"5014437145734\"\n" +
                 "}]";
 
+        String action = "[{\n" +
+                "    \"year\": \"2000\",\n" +
+                "    \"director\": \"N/A\",\n" +
+                "    \"rating\": \"N/A\",\n" +
+                "    \"format\": \"DVD\",\n" +
+                "    \"user-rating\": \"6.6\",\n" +
+                "    \"runtime\": \"N/A\",\n" +
+                "    \"title\": \"Gone in 60 Seconds: The Ride\",\n" +
+                "    \"copies\": 1,\n" +
+                "    \"plot\": \"N/A\",\n" +
+                "    \"genre\": \"Action\",\n" +
+                "    \"location\": \"\",\n" +
+                "    \"id\": 242,\n" +
+                "    \"staring\": \"Denice Shakarian Halicki, Bobby Ore\",\n" +
+                "    \"barcode\": \"8717418057664\"\n" +
+                "},\n" +
+                "{\n" +
+                "    \"year\": \"1992\",\n" +
+                "    \"director\": \"Tim Burton\",\n" +
+                "    \"rating\": \"PG-13\",\n" +
+                "    \"format\": \"DVD\",\n" +
+                "    \"user-rating\": \"7.0\",\n" +
+                "    \"runtime\": \"126 min\",\n" +
+                "    \"title\": \"Batman Returns\",\n" +
+                "    \"copies\": 1,\n" +
+                "    \"plot\": \"Having defeated the Joker, Batman now faces the Penguin - a warped and deformed individual who is intent on being accepted into Gotham society. Crooked businessman Max Schreck is coerced into helping him become Mayor of Gotham and they both attempt to expose Batman in a different light. Earlier however, Selina Kyle, Max's secretary, is thrown from the top of a building and is transformed into Catwoman - a mysterious figure who has the same personality disorder as Batman. Batman must attempt to clear his name, all the time deciding just what must be done with the Catwoman.\",\n" +
+                "    \"genre\": \"Action\",\n" +
+                "    \"location\": \"\",\n" +
+                "    \"id\": 296,\n" +
+                "    \"staring\": \"Michael Keaton, Danny DeVito, Michelle Pfeiffer, Christopher Walken\",\n" +
+                "    \"barcode\": \"7321900190213\"\n" +
+                "},\n" +
+                "{\n" +
+                "    \"year\": \"1997\",\n" +
+                "    \"director\": \"Joel Schumacher\",\n" +
+                "    \"rating\": \"PG-13\",\n" +
+                "    \"format\": \"DVD\",\n" +
+                "    \"user-rating\": \"3.6\",\n" +
+                "    \"runtime\": \"125 min\",\n" +
+                "    \"title\": \"Batman & Robin\",\n" +
+                "    \"copies\": 1,\n" +
+                "    \"plot\": \"Batman and Robin are back working side-by-side to stop the villains of Gotham City, but is there tension appearing between them, especially when one villainess who calls herself Poison Ivy can make anyone fall in love with her...literally. Along with Poison Ivy, the icy Mr. Freeze is freezing anything which gets in his way from achieving his goal.\",\n" +
+                "    \"genre\": \"Action\",\n" +
+                "    \"location\": \"\",\n" +
+                "    \"id\": 298,\n" +
+                "    \"staring\": \"Arnold Schwarzenegger, George Clooney, Chris O'Donnell, Uma Thurman\",\n" +
+                "    \"barcode\": \"7321900190213\"\n" +
+                "},\n" +
+                "{\n" +
+                "    \"year\": \"1987\",\n" +
+                "    \"director\": \"Takashi Nishiyama\",\n" +
+                "    \"rating\": \"N/A\",\n" +
+                "    \"format\": \"DVD\",\n" +
+                "    \"user-rating\": \"5.5\",\n" +
+                "    \"runtime\": \"N/A\",\n" +
+                "    \"title\": \"Avengers\",\n" +
+                "    \"copies\": 1,\n" +
+                "    \"plot\": \"N/A\",\n" +
+                "    \"genre\": \"Action\",\n" +
+                "    \"location\": \"\",\n" +
+                "    \"id\": 969,\n" +
+                "    \"staring\": \"N/A\",\n" +
+                "    \"barcode\": \"\"\n" +
+                "}]";
+
         return Stream.of(
                 Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan),
                 Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan),
@@ -118,7 +183,11 @@ class MovieConnectionHandlerTestJunit5 {
                 Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau),
                 Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau),
                 Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, MovieServiceDetails.FAIL),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL)
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER + "Action", action),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER + "Action", action),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE, MovieServiceDetails.FAIL),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL)
         );
     }
 

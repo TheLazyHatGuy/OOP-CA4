@@ -7,9 +7,9 @@ before_install:
 # What Gradle version is Travis trying to use
 #- gradle -v
 # Download desired version of Gradle
-- wget https://services.gradle.org/distributions/gradle-4.10.2-bin.zip
-- unzip -qq gradle-4.10.2-bin.zip
-- export GRADLE_HOME=$PWD/gradle-4.10.2
+  - wget https://services.gradle.org/distributions/gradle-5.4-bin.zip
+  - unzip -qq gradle-5.4-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-5.4
 - export PATH=$GRADLE_HOME/bin:$PATH
 # just to test gradle version, against our provided one
 - gradle -v

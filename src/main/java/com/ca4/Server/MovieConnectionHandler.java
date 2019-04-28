@@ -74,7 +74,7 @@ public class MovieConnectionHandler implements Runnable {
         }
     }
 
-    private String processCommand(String commandToProcess) {
+    public String processCommand(String commandToProcess) {
         String response = "";
 
         //While the client doesn't want to end the session

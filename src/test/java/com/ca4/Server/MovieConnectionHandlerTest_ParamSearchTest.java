@@ -16,7 +16,7 @@ import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
-class MovieConnectionHandlerTestJunit5 {
+class MovieConnectionHandlerTest_ParamSearchTest {
 
     private static MovieConnectionHandler handler = new MovieConnectionHandler();
 

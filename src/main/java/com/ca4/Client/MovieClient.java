@@ -343,7 +343,7 @@ public class MovieClient
                     pad("Starring", maxStarringListlengthBeforeNewLIne) + "||" + pad("Copies", longestCopies) + "||");
 
             System.out.println("||" + pad(Integer.toString(movie.getId()), longestID) + "||" + pad(movie.getTitle(), longestTitle) +
-                    "||" + pad(movie.getGenre(), maxGenrelengthBeforeNewLIne) + "||" + pad(movie.getGenre(), longestDirector) +
+                    "||" + pad(movie.getGenre(), maxGenrelengthBeforeNewLIne) + "||" + pad(movie.getDirector(), longestDirector) +
                     "||" + pad(movie.getRuntime(), longestRuntime) + "||" + pad(movie.getRating(), longestRating) + "||"
                     + pad(movie.getFormat(), longestFormat) + "||" + pad(movie.getYear(), longestYear) + "||" +
                     pad(movie.getStarring(), maxStarringListlengthBeforeNewLIne) + "||" +
@@ -407,7 +407,7 @@ public class MovieClient
                 pad("Starring", maxStarringListlengthBeforeNewLIne) + "||" + pad("Copies", longestCopies) + "||");
 
         System.out.println("||" + pad(Integer.toString(movie.getId()), longestID) + "||" + pad(movie.getTitle(), longestTitle) +
-                "||" + pad(movie.getGenre(), maxGenrelengthBeforeNewLIne) + "||" + pad(movie.getGenre(), longestDirector) +
+                "||" + pad(movie.getGenre(), maxGenrelengthBeforeNewLIne) + "||" + pad(movie.getDirector(), longestDirector) +
                 "||" + pad(movie.getRuntime(), longestRuntime) + "||" + pad(movie.getRating(), longestRating) + "||"
                 + pad(movie.getFormat(), longestFormat) + "||" + pad(movie.getYear(), longestYear) + "||" +
                 pad(movie.getStarring(), maxStarringListlengthBeforeNewLIne) + "||" +

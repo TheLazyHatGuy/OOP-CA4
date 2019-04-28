@@ -32,7 +32,7 @@ cache:
 
 script:
 - gradle assemble
-- gradle test
+- gradle test --stacktrace
 - gradle serverJar
 - gradle clientJar
 

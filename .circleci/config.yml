@@ -49,7 +49,7 @@ jobs:
         key: v1-dependencies-{{ checksum "build.gradle" }}
 
     # run tests!
-    - run: gradle test
+    - run: gradle test --stacktrace
   jdk-test:
     docker:
     # specify the version you desire here
@@ -95,7 +95,7 @@ jobs:
         key: v1-dependencies-{{ checksum "build.gradle" }}
 
     # run tests!
-    - run: gradle test
+    - run: gradle test --stacktrace
   jdk-10:
     docker:
     # specify the version you desire here
@@ -141,7 +141,7 @@ jobs:
         key: v1-dependencies-{{ checksum "build.gradle" }}
 
     # run tests!
-    - run: gradle test
+    - run: gradle test --stacktrace
   jdk-11:
     docker:
     # specify the version you desire here
@@ -187,7 +187,7 @@ jobs:
         key: v1-dependencies-{{ checksum "build.gradle" }}
 
     # run tests!
-    - run: gradle test
+    - run: gradle test --stacktrace
 workflows:
   version: 2
   multiple_JDKs:

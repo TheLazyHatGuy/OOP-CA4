@@ -84,8 +84,8 @@ public class ClientInteractor {
     /**
      * allows the user to choose what part of the movie the user would like to update
      * keep running until the user is ready to update the movie
-     * @param movieToUpdate
-     * @return
+     * @param movieToUpdate the movie that the user wants to update
+     * @return the updated movie if it has been changed
      */
     public static Movie UpdateMovie(Movie movieToUpdate){
         boolean keepUpdating = true;

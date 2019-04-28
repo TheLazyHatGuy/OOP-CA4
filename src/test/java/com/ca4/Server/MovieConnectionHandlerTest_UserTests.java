@@ -137,6 +137,26 @@ class MovieConnectionHandlerTest_UserTests {
 
     @Order(8)
     @Test
+    @DisplayName("Login with only email")
+    void processCommand_LoginOnlyEmail() {
+        assertTimeout(ofMillis(5), () -> {
+            String response = handler.processCommand(MovieServiceDetails.LOGIN +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getEmail());
+            assertEquals(MovieServiceDetails.FAIL, response);
+        });
+    }
+
+    @Order(9)
+    @Test
+    @DisplayName("Login without email or password")
+    void processCommand_LoginNoParams() {
+        assertTimeout(ofMillis(5), () -> {
+            assertEquals(MovieServiceDetails.FAIL, handler.processCommand(MovieServiceDetails.LOGIN));
+        });
+    }
+
+    @Order(10)
+    @Test
     @DisplayName("Delete User")
     void processCommand_2_DeleteUser() {
         assertTimeout(ofMillis(50), () -> {

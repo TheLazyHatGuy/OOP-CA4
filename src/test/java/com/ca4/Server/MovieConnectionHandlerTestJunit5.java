@@ -2,6 +2,7 @@ package com.ca4.Server;
 
 /*
 Guide - https://www.petrikainulainen.net/programming/testing/junit-5-tutorial-writing-parameterized-tests/
+Timeout - https://howtodoinjava.com/junit/how-to-force-timeout-in-jnuit-testcase-execution/
  */
 
 import com.ca4.Core.MovieServiceDetails;
@@ -11,7 +12,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 class MovieConnectionHandlerTestJunit5 {
 
@@ -176,18 +179,19 @@ class MovieConnectionHandlerTestJunit5 {
                 "}]";
 
         return Stream.of(
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE, MovieServiceDetails.FAIL),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, MovieServiceDetails.FAIL),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER + "Action", action),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER + "Action", action),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE, MovieServiceDetails.FAIL),
-                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL)
+                //First command takes the longest due to reserving memory for caches
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan, 250),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan, 20),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE, MovieServiceDetails.FAIL, 10),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL, 10),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau, 50),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau, 20),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, MovieServiceDetails.FAIL, 10),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL, 10),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER + "Action", action, 50),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER + "Action", action, 20),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE, MovieServiceDetails.FAIL, 10),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_GENRE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL, 10)
         );
     }
 
@@ -195,5 +199,11 @@ class MovieConnectionHandlerTestJunit5 {
     @MethodSource("testConditions")
     void processCommand(String input, String expectedResult) {
         assertEquals(expectedResult, handler.processCommand(input));
+    }
+
+    @ParameterizedTest(name = "{index} => input={0}, timeout={2}")
+    @MethodSource("testConditions")
+    void processCommand(String input, String expectedResult, int timeout) {
+        assertTimeout(ofMillis(timeout), () -> assertEquals(expectedResult, handler.processCommand(input)));
     }
 }

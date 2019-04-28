@@ -107,7 +107,8 @@ public class Cache {
 
     /**
      * This function will compare the time stamps of all searches in the cache and the defined TTL for the cache.
-     * If the timestamp is passed the TTL for the cache, the cached item will be removed
+     *      * If the timestamp is passed the TTL for the cache, the cached item will be removed
+     * @param cacheToCheck The HashMap of the cache to be checked
      */
     private void checkCacheTTL(HashMap<String, CacheObject> cacheToCheck) {
         //Method for adding time taken from - https://www.tutorialspoint.com/javaexamples/date_add_time.htm
@@ -119,7 +120,7 @@ public class Cache {
 
             Calendar objectCalendar = Calendar.getInstance();
             objectCalendar.setTime(cacheObject.getTimestamp());
-            objectCalendar.add(Calendar.SECOND, MovieServiceDetails.CACHE_TTL);
+            objectCalendar.add(Calendar.HOUR, MovieServiceDetails.CACHE_TTL);
 
             //If the timestamp + TTL is before the current time, the cached item must be deleted
             if (objectCalendar.before(calendar)) {

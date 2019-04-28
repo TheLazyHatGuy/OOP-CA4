@@ -8,8 +8,8 @@ Old Repo - [Bitbucket](https://bitbucket.org/TheLazyHatGuy/oop-ca4/src/master/)
 New Repo - [GitHub](https://github.com/TheLazyHatGuy/OOP-CA4/)
 
 ## Authors 
-* Andrew Carolan
-* Cameron Scholes
+* [Andrew Carolan](https://github.com/AndyCarolan9)
+* [Cameron Scholes](https://github.com/TheLazyHatGuy)
 
 ## Project Description
 This *java* application is a client-server application which will grant users access to a database of movies that they can interact with.

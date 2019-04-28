@@ -12,6 +12,8 @@ import static java.time.Duration.ofSeconds;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
+//Taken from - https://blog.codeleak.pl/2019/03/test-execution-order-in-junit-5.html
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MovieConnectionHandlerTest_UserTests {
 
     private static Lock sequential;
@@ -37,9 +39,10 @@ class MovieConnectionHandlerTest_UserTests {
         sequential.unlock();
     }
 
+    @Order(1)
     @Test
     @DisplayName("Register new user")
-    void processCommand_1_RegisterNewUser() {
+    void processCommand_RegisterNewUser() {
         //First test takes a while to initialise cache
         //This test also takes a long time due to sending an email
         assertTimeout(ofSeconds(5), () -> {
@@ -61,13 +64,14 @@ class MovieConnectionHandlerTest_UserTests {
         });
     }
 
+    @Order(2)
     @Test
     @DisplayName("Delete User")
     void processCommand_2_DeleteUser() {
         assertTimeout(ofMillis(50), () -> {
             String response = handler.processCommand(MovieServiceDetails.DELETE_USER +
                     MovieServiceDetails.BREAKING_CHARACTER + userID);
-            assertEquals(MovieServiceDetails.DELETE_USER, response);
+            assertEquals(MovieServiceDetails.DELETE_USER_SUCCESS, response);
         });
     }
 }

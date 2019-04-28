@@ -1,5 +1,8 @@
 package com.ca4.Client;
 
+/**
+ * constants for switch statements in MovieClient
+ */
 public class MenuDetails {
     //Constants for menu when not logged in
     public static final String LOGIN = "A";

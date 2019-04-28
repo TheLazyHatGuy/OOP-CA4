@@ -23,7 +23,11 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(3);
 
-        return option.toUpperCase();
+        if(option != null){
+            return option.toUpperCase();
+        }else{
+            return "z"; // will always hit the default of the switch
+        }
     }
 
     /**
@@ -41,9 +45,13 @@ public class ClientInteractor {
         System.out.println("H) Add a movie to your list of watched movies");
         System.out.println("I) Logout and exit application");
 
-        String option = getMenuOptionFromUser(7);
+        String option = getMenuOptionFromUser(9);
 
-        return option.toUpperCase();
+        if(option != null){
+            return option.toUpperCase();
+        }else{
+            return "z"; // will always hit the default of the switch
+        }
     }
 
     /**
@@ -66,14 +74,18 @@ public class ClientInteractor {
 
         String option = getMenuOptionFromUser(12);
 
-        return option.toUpperCase();
+        if(option != null){
+            return option.toUpperCase();
+        }else{
+            return "z"; // will always hit the default of the switch
+        }
     }
 
     /**
      * allows the user to choose what part of the movie the user would like to update
      * keep running until the user is ready to update the movie
-     * @param movieToUpdate
-     * @return
+     * @param movieToUpdate the movie that the user wants to update
+     * @return the updated movie if it has been changed
      */
     public static Movie UpdateMovie(Movie movieToUpdate){
         boolean keepUpdating = true;
@@ -187,8 +199,15 @@ public class ClientInteractor {
                 email = getEmail();
                 System.out.println("Please enter your password: ");
                 password = getPassword();
+
+                if(email == null){
+                    System.out.println("Please enter a valid email in the format " + MovieServiceDetails.ANSI_BLUE +
+                            "someone@example.com" + MovieServiceDetails.ANSI_RESET);
+                }
             }
             if(password == null){
+                System.out.println(MovieServiceDetails.ANSI_RED + "Your password must be at least 10 characters and contain\n" +
+                        "a uppercase letter, a lowercase letter, a number and have no spaces" + MovieServiceDetails.ANSI_RESET);
                 System.out.println("Please enter your password: ");
                 password = getPassword();
             }

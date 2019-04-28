@@ -6,6 +6,7 @@ Timeout - https://howtodoinjava.com/junit/how-to-force-timeout-in-jnuit-testcase
  */
 
 import com.ca4.Core.MovieServiceDetails;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,7 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 class MovieConnectionHandlerTest_ParamSearchTest {
 
-    private static MovieConnectionHandler handler = new MovieConnectionHandler();
+    private static MovieConnectionHandler handler;
+
+    @BeforeAll
+    static void setUp() {
+        handler = new MovieConnectionHandler();
+    }
 
     private static Stream<Arguments> testConditions() {
         String ironMan = "{\n" +

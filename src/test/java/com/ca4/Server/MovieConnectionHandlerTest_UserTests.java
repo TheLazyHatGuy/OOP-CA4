@@ -62,9 +62,8 @@ class MovieConnectionHandlerTest_UserTests {
     @Test
     @DisplayName("Register same user")
     void processCommand_RegisterSameUser() {
-        //First test takes a while to initialise cache
-        //This test also takes a long time due to sending an email
-        assertTimeout(ofMillis(20), () -> {
+        //Second test is always delayed due to waiting
+        assertTimeout(ofMillis(400), () -> {
             String response = handler.processCommand(MovieServiceDetails.REGISTER +
                     MovieServiceDetails.BREAKING_CHARACTER + user.getEmail() +
                     MovieServiceDetails.BREAKING_CHARACTER + user.getPassword());
@@ -74,6 +73,28 @@ class MovieConnectionHandlerTest_UserTests {
     }
 
     @Order(3)
+    @Test
+    @DisplayName("Register with only email")
+    void processCommand_RegisterWithOnlyEmail() {
+        assertTimeout(ofMillis(5), () -> {
+            String response = handler.processCommand(MovieServiceDetails.REGISTER +
+                    MovieServiceDetails.BREAKING_CHARACTER + user.getEmail());
+
+            assertEquals(MovieServiceDetails.FAIL, response);
+        });
+    }
+
+    @Order(4)
+    @Test
+    @DisplayName("Register without any parameters")
+    void processCommand_RegisterWithoutParams() {
+        assertTimeout(ofMillis(5), () -> {
+            String response = handler.processCommand(MovieServiceDetails.REGISTER);
+            assertEquals(MovieServiceDetails.FAIL, response);
+        });
+    }
+
+    @Order(5)
     @Test
     @DisplayName("Delete User")
     void processCommand_2_DeleteUser() {

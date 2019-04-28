@@ -1,27 +1,23 @@
 package com.ca4.Server;
 
-import com.ca4.Core.MovieServiceDetails;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.Parameterized;
+/*
+Guide - https://www.petrikainulainen.net/programming/testing/junit-5-tutorial-writing-parameterized-tests/
+ */
 
-import java.util.Arrays;
-import java.util.Collection;
+import com.ca4.Core.MovieServiceDetails;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MovieConnectionHandlerTestJunit5 {
 
     private static MovieConnectionHandler handler = new MovieConnectionHandler();
-    private String input;
-    private String expectedResult;
 
-    public MovieConnectionHandlerTestJunit5(String input, String expectedResult) {
-        this.input = input;
-        this.expectedResult = expectedResult;
-    }
-
-    @Parameterized.Parameters
-    static Collection<String[]> testConditions() {
+    private static Stream<Arguments> testConditions() {
         String ironMan = "{\n" +
                 "    \"copies\": 3,\n" +
                 "    \"plot\": \"Tony Stark. Genius, billionaire, playboy, philanthropist. Son of legendary inventor and weapons contractor Howard Stark. When Tony Stark is assigned to give a weapons presentation to an Iraqi unit led by Lt. Col. James Rhodes, he's given a ride on enemy lines. That ride ends badly when Stark's Humvee that he's riding in is attacked by enemy combatants. He survives - barely - with a chest full of shrapnel and a car battery attached to his heart. In order to survive he comes up with a way to miniaturize the battery and figures out that the battery can power something else. Thus Iron Man is born. He uses the primitive device to escape from the cave in Iraq. Once back home, he then begins work on perfecting the Iron Man suit. But the man who was put in charge of Stark Industries has plans of his own to take over Tony's technology for other matters.\",\n" +
@@ -114,22 +110,21 @@ class MovieConnectionHandlerTestJunit5 {
                 "    \"barcode\": \"5014437145734\"\n" +
                 "}]";
 
-        String[][] expectedInputsAndOutputs = {
-                {MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan},
-                {MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan},
-                {MovieServiceDetails.SEARCH_MOVIE_TITLE, MovieServiceDetails.FAIL},
-                {MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL},
-                {MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau},
-                {MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau},
-                {MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, MovieServiceDetails.FAIL},
-                {MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL},
-        };
-
-        return Arrays.asList(expectedInputsAndOutputs);
+        return Stream.of(
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER + "Iron Man", ironMan),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE, MovieServiceDetails.FAIL),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_TITLE + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER + "Jon Favreau", jonFavreau),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR, MovieServiceDetails.FAIL),
+                Arguments.of(MovieServiceDetails.SEARCH_MOVIE_DIRECTOR + MovieServiceDetails.BREAKING_CHARACTER, MovieServiceDetails.FAIL)
+        );
     }
 
-    @Test
-    void processCommand() {
+    @ParameterizedTest(name = "{index} => input={0}")
+    @MethodSource("testConditions")
+    void processCommand(String input, String expectedResult) {
         assertEquals(expectedResult, handler.processCommand(input));
     }
 }

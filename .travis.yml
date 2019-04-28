@@ -33,7 +33,6 @@ cache:
 
 script:
 - gradle assemble
-- gradle test --stacktrace
 - gradle serverJar
 - gradle clientJar
 

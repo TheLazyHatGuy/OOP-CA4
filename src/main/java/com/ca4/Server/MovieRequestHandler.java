@@ -186,6 +186,8 @@ class MovieRequestHandler {
 
             if (isAdded) {
                 response = MovieServiceDetails.ADD_SUCCESS;
+                //The database has been updated so all the caches need to be rebuilt
+                cache.dumpAllCaches();
             }
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());
@@ -203,6 +205,8 @@ class MovieRequestHandler {
 
             if (isDeleted) {
                 response = MovieServiceDetails.REMOVE_SUCCESS;
+                //The database has been updated so all the caches need to be rebuilt
+                cache.dumpAllCaches();
             }
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());
@@ -227,6 +231,8 @@ class MovieRequestHandler {
 
             if (isUpdated) {
                 response = MovieServiceDetails.UPDATE_SUCCESS;
+                //The database has been updated so all the caches need to be rebuilt
+                cache.dumpAllCaches();
             }
         } catch (DAOException e) {
             writeToErrorLogFile(e.getMessage());

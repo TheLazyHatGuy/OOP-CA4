@@ -97,6 +97,16 @@ public class Cache {
     }
 
     /**
+     * This method will dump all of the data from the caches
+     * This is intended to be used when a change has been made to the movies table
+     */
+    public void dumpAllCaches() {
+        movieTitleCache = new HashMap<>();
+        movieDirectorCache = new HashMap<>();
+        movieGenreCache = new HashMap<>();
+    }
+
+    /**
      * Runs the cache TLL check for all of the HashMap caches
      */
     public void checkAllCaches() {

@@ -208,13 +208,13 @@ public class MovieClient
                         case MenuDetails.RECOMMENDED:
                             String[] userID = {Integer.toString(localUser.getId())};
                             MessageSender.sendStringArray(client, MovieServiceDetails.RECOMMEND_MOVIE, userID);
-                            jsonMovie = MessageSender.receiveJSONObject();
+                            jsMovieArray = MessageSender.receiveJSONArray();
 
                             //error checking
-                            if(!MessageSender.checkResponseForErrors(jsonMovie.toString())){
-                                Movie recommendedMovie = MessageSender.convertJSONStringToMovie(jsonMovie.toString());
+                            if(!MessageSender.checkResponseForErrors(jsMovieArray.toString())){
+                                movieArray = MessageSender.splitJSONMovieArray(jsMovieArray);
 
-                                printMovie(recommendedMovie);
+                                printMovieArray(movieArray);
                             }else{
                                 System.out.println(MovieServiceDetails.ANSI_RED + "ERROR no recommended movie was found"
                                         + MovieServiceDetails.ANSI_RESET);

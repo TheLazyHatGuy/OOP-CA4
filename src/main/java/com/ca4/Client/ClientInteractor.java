@@ -157,6 +157,7 @@ public class ClientInteractor {
                 case MenuDetails.UPDATECOPIES:
                     System.out.print("Please enter the updated amount of available copies of the movie:");
                     int updatedCopies = scan.nextInt();
+                    scan.nextLine();
                     updatedMovie.setCopies(updatedCopies);
                     break;
 
@@ -257,7 +258,7 @@ public class ClientInteractor {
     }
 
     public static Movie getMovieDetails(){
-        System.out.print("PLease enter the name of the movie: ");
+        System.out.print("Please enter the name of the movie: ");
         String name = scan.nextLine();
         System.out.print("Please enter the genres of the movie: ");
         String genre = scan.nextLine();
@@ -279,6 +280,8 @@ public class ClientInteractor {
         String userRating = scan.nextLine();
         System.out.print("Please enter the number of available copies of the movie: ");
         int copies = scan.nextInt();
+
+        scan.nextLine();
 
         return new Movie(0, name, genre, director, runtime, plot, "", "", rating,
                 format, year, starring, copies, generateRandomBarcode(), userRating);

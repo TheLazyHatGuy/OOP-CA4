@@ -148,7 +148,7 @@ public class MessageSender {
      */
     public static void sendMovieJSON(Socket clientSocket, Movie movieToSend, String serverCode){
         try{
-            String sendableMovie = serverCode + MovieServiceDetails.BREAKING_CHARACTER + movieToSend.toJSONString();
+            String sendableMovie = serverCode + MovieServiceDetails.BREAKING_CHARACTER + movieToSend.toJSONString(0);
 
             streamWriter = new PrintWriter(clientSocket.getOutputStream());
             streamWriter.println(sendableMovie);
@@ -249,7 +249,7 @@ public class MessageSender {
 
         if(splitres[0].equals(MovieServiceDetails.LOGIN_NOT_REGISTERED) ||
                 splitres[0].equals(MovieServiceDetails.LOGIN_WRONG_INFO) ||
-                        splitres[0].equals(MovieServiceDetails.REGISTER_ALREADY_REGISTERED)){
+                splitres[0].equals(MovieServiceDetails.REGISTER_ALREADY_REGISTERED)){
             return true;
         }else{
             return false;

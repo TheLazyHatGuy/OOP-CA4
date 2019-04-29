@@ -9,6 +9,7 @@ import com.ca4.Exceptions.DAOException;
 import com.ca4.Server.Cache.Cache;
 import com.ca4.Utilities.SendEmail;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -387,10 +388,12 @@ class MovieRequestHandler {
                     }
                 }
 
-                if (movies.size() >= 1) {
+                if (movies.size() > 1) {
                     //Pick a random movie from the list to recommend
-                    int randomMovieID = getRandomInt(0, movies.size());
+                    int randomMovieID = getRandomInt(0, movies.size() - 1);
                     recommendations.add(movies.get(randomMovieID));
+                } else if (movies.size() == 1) {
+                    recommendations.add(movies.get(0));
                 }
             }
 
@@ -458,14 +461,40 @@ class MovieRequestHandler {
         String runtime = movieJSON.getString("runtime");
         String plot = movieJSON.getString("plot");
         String location = movieJSON.getString("location");
-        String poster = movieJSON.getString("poster");
+        String poster = "";
+
+        try {
+            if (movieJSON.getString("poster") != null) {
+                poster = movieJSON.getString("poster");
+            }
+        } catch (JSONException e) {
+            poster = "";
+        }
+
         String rating = movieJSON.getString("rating");
         String format = movieJSON.getString("format");
         String year = movieJSON.getString("year");
         String starring = movieJSON.getString("staring");
         int copies = movieJSON.getInt("copies");
-        String barcode = movieJSON.getString("barcode");
-        String userRating = movieJSON.getString("user-rating");
+        String barcode = "";
+
+        try {
+            if (movieJSON.getString("barcode") != null) {
+                barcode = movieJSON.getString("barcode");
+            }
+        } catch (JSONException e) {
+            barcode = "";
+        }
+
+        String userRating = "";
+
+        try {
+            if (movieJSON.getString("user-rating") != null) {
+                userRating = movieJSON.getString("user-rating");
+            }
+        } catch (JSONException e) {
+            userRating = "";
+        }
 
         return new Movie(0, title, genre, director, runtime, plot, location, poster, rating,
                 format, year, starring, copies, barcode, userRating);
